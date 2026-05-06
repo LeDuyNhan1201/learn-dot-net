@@ -1,0 +1,11 @@
+﻿services:
+  base-solution:
+    container_name: base-solution
+    image: base-solution
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "60000:60000"
+      - "60001:60001"
+
