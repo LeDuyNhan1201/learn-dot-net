@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <PublishAot>true</PublishAot>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.7"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>Docker\DLL\.dockerignore</Link>
+      </Content>
+      <Content Include="Docker\Native\.dockerignore" />
+      <Content Include="Docker\Local\.dockerignore" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Docker\Native\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Docker\Local\" />
+    </ItemGroup>
+
+</Project>
