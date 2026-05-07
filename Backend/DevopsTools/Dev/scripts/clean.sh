@@ -29,4 +29,10 @@ sudo rm -rf "${ENV_DIR}/certs/"*
 sudo rm -rf "${ENV_DIR}/data/"*
 sudo rm -f "${ENV_DIR}/.env"
 
+# -------------------------------
+# Remove Docker Images
+# -------------------------------
+
+docker rmi "${IMAGE_PREFIX}/backend:${BACKEND_TAG}" || true
+
 echo "Cleanup completed successfully."

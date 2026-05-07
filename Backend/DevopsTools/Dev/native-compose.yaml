@@ -11,16 +11,13 @@
     command: [ "envoy", "-c", "/etc/envoy/envoy.yaml" ]
     volumes:
       - ./envoy/backend-gateway.yaml:/etc/envoy/envoy.yaml
-      - ./secrets/certs/backend-gateway:/etc/envoy/certificates
+      - ./certs/backend-gateway:/etc/envoy/certificates
       
   backend:
     container_name: backend
-    image: backend
-    build:
-      context: .
-      dockerfile: ../../API/Docker/Native/Dockerfile
+    image: ${NAMESPACE}/${REPOSITORY_NAME}/backend:${BACKEND_TAG}
     ports:
-      - "60000:60000"  
+      - "60001:60001"  
     networks:
       - dev-network
     

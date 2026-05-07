@@ -7,11 +7,13 @@
       - "${GATEWAY_PORT}:443"
       - "9901:9901"
     networks:
-      - cluster-network
+      - local-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: [ "envoy", "-c", "/etc/envoy/envoy.yaml" ]
     volumes:
-      - ./envoy/backend-gateway.yaml:/etc/envoy/envoy.yaml
-      - ./secrets/certs/backend-gateway:/etc/envoy/certificates
+      - ./envoy/backend-gateway.local.yaml:/etc/envoy/envoy.yaml
+      - ./certs/backend-gateway:/etc/envoy/certificates
   
 networks:
   local-network:

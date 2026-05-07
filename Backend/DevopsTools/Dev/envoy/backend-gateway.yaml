@@ -32,9 +32,9 @@ static_resources:
               common_tls_context:
                 tls_certificates:
                   - certificate_chain:
-                      filename: /etc/envoy/certificates/envoy.cert.pem
+                      filename: /etc/envoy/certificates/backend-gateway.cert.pem
                     private_key:
-                      filename: /etc/envoy/certificates/envoy.key.pem
+                      filename: /etc/envoy/certificates/backend-gateway.key.pem
 
           filters:
             - name: envoy.filters.network.http_connection_manager
@@ -48,9 +48,9 @@ static_resources:
                   virtual_hosts:
                     - name: services
                       domains:
-                        - "localhost:66666"
-                        - "192.168.155.40:66666"
-                        - "backend.learn-dot-net.dev:66666"
+                        - "localhost:60000"
+                        - "192.168.155.40:60000"
+                        - "backend.learn-dot-net.dev:60000"
 
                       routes:
                         - match:
@@ -64,7 +64,7 @@ static_resources:
                                 value: https
                             - header:
                                 key: x-forwarded-port
-                                value: "66666"
+                                value: "60000"
 
                 http_filters:
                   - name: envoy.filters.http.router
@@ -76,7 +76,6 @@ static_resources:
       connect_timeout: 5s
       type: logical_dns # logical_dns strict_dns
       lb_policy: round_robin # round_robin ring_hash
-      http2_protocol_options: {}
       dns_lookup_family: V4_ONLY
 
       load_assignment:
@@ -87,7 +86,7 @@ static_resources:
                 address:
                   socket_address:
                     address: backend
-                    port_value: 60000
+                    port_value: 60001
 
       health_checks:
         - timeout: 3s

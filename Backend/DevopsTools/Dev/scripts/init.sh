@@ -9,6 +9,7 @@ MODE="dev"
 export MODE
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ENV_DIR="$(cd "${SCRIPT_DIR}/.." >/dev/null 2>&1 && pwd)"
+BACKEND_DIR="$(cd "${SCRIPT_DIR}/../../../API" >/dev/null 2>&1 && pwd)"
 HELPER_DIR="${SCRIPT_DIR}/helper"
 export ENV_DIR
 
@@ -40,4 +41,16 @@ create_data_folders
 generate_root_ca
 generate_cert_with_keystore_and_truststore "backend-gateway" "backend-gateway" "${BACKEND_HOSTNAME}"
 
+# -------------------------------
+# Docker Image Build
+# -------------------------------
+
+IMAGE_PREFIX="${NAMESPACE}/${REPOSITORY_NAME}"
+
+docker build \
+  --build-arg BACKEND_TAG="${BACKEND_TAG}" \
+  -f "${BACKEND_DIR}/Docker/Native/Dockerfile" \
+  -t "${IMAGE_PREFIX}/backend:${BACKEND_TAG}" \
+  "${BACKEND_DIR}" || true
+  
 echo "Initialize completed successfully."

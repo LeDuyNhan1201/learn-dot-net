@@ -113,6 +113,7 @@ generate_cert_with_keystore_and_truststore() {
 
   san_text+="DNS.${count} = ${main_domain}"$'\n'; ((count++))
   san_text+="DNS.${count} = localhost"$'\n'; ((count++))
+  san_text+="DNS.${count} = host.docker.internal"$'\n'; ((count++))
   san_text+="IP.${count} = ${local_ip}"$'\n'; ((count++))
   san_text+="IP.${count} = 127.0.0.1"$'\n'; ((count++))
 

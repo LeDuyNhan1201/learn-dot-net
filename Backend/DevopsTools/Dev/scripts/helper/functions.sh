@@ -41,6 +41,7 @@ create_env_file() {
     REPOSITORY_NAME
 
     ENVOY_TAG
+    BACKEND_TAG
 
     CERT_SECRET
 
