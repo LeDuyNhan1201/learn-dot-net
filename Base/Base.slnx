@@ -1,8 +1,0 @@
-<Solution>
-  <Folder Name="/Solution Items/">
-    <File Path="dll-compose.yaml" />
-    <File Path="local-compose.yaml" />
-    <File Path="native-compose.yaml" />
-  </Folder>
-  <Project Path="API/API.csproj" />
-</Solution>

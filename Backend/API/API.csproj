@@ -14,19 +14,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>Docker\DLL\.dockerignore</Link>
-      </Content>
       <Content Include="Docker\Native\.dockerignore" />
-      <Content Include="Docker\Local\.dockerignore" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Docker\Native\" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Docker\Local\" />
     </ItemGroup>
 
 </Project>

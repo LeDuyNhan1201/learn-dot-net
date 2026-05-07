@@ -1,0 +1,19 @@
+﻿services:
+  # --------- Envoy ---------
+  backend-gateway:
+    image: envoyproxy/envoy:${ENVOY_TAG:-latest}
+    container_name: backend-gateway
+    ports:
+      - "${GATEWAY_PORT}:443"
+      - "9901:9901"
+    networks:
+      - cluster-network
+    command: [ "envoy", "-c", "/etc/envoy/envoy.yaml" ]
+    volumes:
+      - ./envoy/backend-gateway.yaml:/etc/envoy/envoy.yaml
+      - ./secrets/certs/backend-gateway:/etc/envoy/certificates
+  
+networks:
+  local-network:
+    driver: bridge
+

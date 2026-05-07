@@ -1,0 +1,30 @@
+﻿services:
+  # --------- Envoy ---------
+  backend-gateway:
+    image: envoyproxy/envoy:${ENVOY_TAG:-latest}
+    container_name: backend-gateway
+    ports:
+      - "${GATEWAY_PORT}:443"
+      - "9901:9901"
+    networks:
+      - dev-network
+    command: [ "envoy", "-c", "/etc/envoy/envoy.yaml" ]
+    volumes:
+      - ./envoy/backend-gateway.yaml:/etc/envoy/envoy.yaml
+      - ./secrets/certs/backend-gateway:/etc/envoy/certificates
+      
+  backend:
+    container_name: backend
+    image: backend
+    build:
+      context: .
+      dockerfile: ../../API/Docker/Native/Dockerfile
+    ports:
+      - "60000:60000"  
+    networks:
+      - dev-network
+    
+networks:
+  dev-network:
+    driver: bridge
+
