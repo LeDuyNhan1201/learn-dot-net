@@ -37,22 +37,7 @@ source "${KEYPAIR_SCRIPT}"
 
 create_env_file
 create_files_from_templates
-create_data_folders
 
-generate_root_ca
 generate_cert_with_keystore_and_truststore "backend-gateway" "backend-gateway" "${BACKEND_HOSTNAME}"
-
-# -------------------------------
-# Docker Image Build
-# -------------------------------
-
-IMAGE_PREFIX="${NAMESPACE}/${REPOSITORY_NAME}"
-
-docker build \
-  --build-arg BACKEND_TAG="${BACKEND_TAG}" \
-  --build-arg BACKEND_CONTAINER_PORT="${BACKEND_CONTAINER_PORT}" \
-  -f "${BACKEND_DIR}/Docker/Native/Dockerfile" \
-  -t "${IMAGE_PREFIX}/backend:${BACKEND_TAG}" \
-  "${BACKEND_DIR}" || true
   
-echo "Initialize completed successfully."
+echo "Re-create completed successfully."

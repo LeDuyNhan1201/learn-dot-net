@@ -3,7 +3,6 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine-aot AS build
 
 ARG BUILD_CONFIGURATION=Release
 ARG RUNTIME_IDENTIFIER=linux-musl-x64
-ARG BACKEND_TAG=latest
 
 WORKDIR /src
 
@@ -28,15 +27,16 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
 FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine
 
 ARG BACKEND_TAG=latest
+ARG BACKEND_CONTAINER_PORT=60001
 
 WORKDIR /app
 
-LABEL org.opencontainers.image.version="$BACKEND_TAG"
+LABEL org.opencontainers.image.version="${BACKEND_TAG}"
 
-ENV ASPNETCORE_URLS=http://+:60001
+ENV ASPNETCORE_URLS=http://+:${BACKEND_CONTAINER_PORT}
 
 COPY --link --from=build /app/publish .
 
-EXPOSE 60001
+EXPOSE ${BACKEND_CONTAINER_PORT}
 
 ENTRYPOINT ["./API"]

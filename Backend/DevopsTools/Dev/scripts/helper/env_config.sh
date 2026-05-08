@@ -21,3 +21,6 @@ export SECRETS_DIR="${SECRETS_DIR:-${ENV_DIR}/secrets}"
 export DATA_DIR="${DATA_DIR:-${ENV_DIR}/data}"
 export CERTS_DIR="${CERTS_DIR:-${ENV_DIR}/certs}"
 export KEYPAIR_DIR="${KEYPAIR_DIR:-${ENV_DIR}/keypair}"
+
+export BACKEND_CONTAINER_NAME="backend"
+export BACKEND_CONTAINER_PORT=60001

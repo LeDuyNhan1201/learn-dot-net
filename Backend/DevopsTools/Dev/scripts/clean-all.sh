@@ -17,11 +17,22 @@ ENV_FILE="${HELPER_DIR}/env_config.sh"
 # shellcheck source=scripts/helper/env_config.sh
 source "${ENV_FILE}"
 
+IMAGE_PREFIX="${NAMESPACE}/${REPOSITORY_NAME}"
+
 # -------------------------------
 # Cleanup Files
 # -------------------------------
 
-echo "Removing environment file..."
+echo "Removing certs, data and environment files..."
+
+sudo rm -rf "${ENV_DIR}/certs/"*
+sudo rm -rf "${ENV_DIR}/data/"*
 sudo rm -f "${ENV_DIR}/.env"
 
-echo "Cleanup completed successfully."
+# -------------------------------
+# Remove Docker Images
+# -------------------------------
+
+docker rmi "${IMAGE_PREFIX}/backend:${BACKEND_TAG}" || true
+
+echo "Cleanup all completed successfully."

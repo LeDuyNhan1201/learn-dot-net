@@ -14,10 +14,10 @@
       - ./certs/backend-gateway:/etc/envoy/certificates
       
   backend:
-    container_name: backend
     image: ${NAMESPACE}/${REPOSITORY_NAME}/backend:${BACKEND_TAG}
+    container_name: ${BACKEND_CONTAINER_NAME}
     ports:
-      - "60001:60001"  
+      - "60001:${BACKEND_CONTAINER_PORT}"  
     networks:
       - dev-network
     

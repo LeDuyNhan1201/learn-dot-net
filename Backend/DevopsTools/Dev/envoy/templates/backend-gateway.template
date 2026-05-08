@@ -21,7 +21,7 @@ static_resources:
       filter_chains:
         - filter_chain_match:
             server_names:
-              - "backend.learn-dot-net.dev"
+              - "${BACKEND_HOSTNAME}"
 
           transport_socket:
             name: envoy.transport_sockets.tls
@@ -46,7 +46,7 @@ static_resources:
                   virtual_hosts:
                     - name: services
                       domains:
-                        - "backend.learn-dot-net.dev:60000"
+                        - "${BACKEND_HOSTNAME}:${GATEWAY_PORT}"
 
                       routes:
                         - match:
@@ -60,7 +60,7 @@ static_resources:
                                 value: https
                             - header:
                                 key: x-forwarded-port
-                                value: "60000"
+                                value: "${GATEWAY_PORT}"
 
                 http_filters:
                   - name: envoy.filters.http.router
@@ -81,8 +81,8 @@ static_resources:
             - endpoint:
                 address:
                   socket_address:
-                    address: host.docker.internal
-                    port_value: 60001
+                    address: ${BACKEND_CONTAINER_NAME}
+                    port_value: ${BACKEND_CONTAINER_PORT}
 
       health_checks:
         - timeout: 3s

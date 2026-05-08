@@ -21,8 +21,6 @@ static_resources:
       filter_chains:
         - filter_chain_match:
             server_names:
-              - "localhost"
-              - "192.168.155.40"
               - "backend.learn-dot-net.dev"
 
           transport_socket:
@@ -48,8 +46,6 @@ static_resources:
                   virtual_hosts:
                     - name: services
                       domains:
-                        - "localhost:60000"
-                        - "192.168.155.40:60000"
                         - "backend.learn-dot-net.dev:60000"
 
                       routes:

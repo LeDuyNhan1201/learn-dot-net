@@ -44,6 +44,9 @@ create_env_file() {
     BACKEND_TAG
 
     CERT_SECRET
+    
+    BACKEND_CONTAINER_NAME
+    BACKEND_CONTAINER_PORT
 
     # TODO: Add more variables as needed
   )
@@ -53,4 +56,24 @@ create_env_file() {
   done
 
   echo "Env file created successfully."
+}
+
+create_files_from_templates() {
+  echo "Creating files from templates"
+
+  local templates=(
+    "${ENV_DIR}/envoy/templates/backend-gateway.template:${ENV_DIR}/envoy/backend-gateway.yaml"
+    "${ENV_DIR}/envoy/templates/backend-gateway.local.template:${ENV_DIR}/envoy/backend-gateway.local.yaml"
+
+    # TODO: Add more templates as needed, pattern is "source:destination"
+  )
+
+  for item in "${templates[@]}"; do
+    IFS=":" read -r src dest <<< "$item"
+
+    envsubst < "$src" > "$dest"
+    echo "$src --> $dest"
+  done
+
+  echo "Files created successfully."
 }
