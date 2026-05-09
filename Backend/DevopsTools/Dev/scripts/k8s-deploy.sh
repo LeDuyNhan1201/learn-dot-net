@@ -37,15 +37,16 @@ source "${KEYPAIR_SCRIPT}"
 
 create_env_file
 create_files_from_templates
-create_data_folders
-
-generate_root_ca
-generate_cert_with_keystore_and_truststore "api-gateway" "api-gateway" "${BACKEND_HOSTNAME}"
+ensure_root_ca
+generate_api_gateway_cert
 
 # -------------------------------
-# Docker Image Build
+# Build, Load & Deploy
 # -------------------------------
 
 build_backend_image "${BACKEND_DIR}"
-  
-echo "Initialize completed successfully."
+ensure_kind_cluster
+load_backend_image_to_kind
+deploy_k8s_resources
+
+echo "Kubernetes deploy completed successfully."

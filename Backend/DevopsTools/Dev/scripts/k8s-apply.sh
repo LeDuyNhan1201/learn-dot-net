@@ -9,14 +9,12 @@ MODE="dev"
 export MODE
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ENV_DIR="$(cd "${SCRIPT_DIR}/.." >/dev/null 2>&1 && pwd)"
-BACKEND_DIR="$(cd "${SCRIPT_DIR}/../../.." >/dev/null 2>&1 && pwd)"
 HELPER_DIR="${SCRIPT_DIR}/helper"
 export ENV_DIR
 
 ENV_FILE="${HELPER_DIR}/env_config.sh"
 FUNCTIONS_FILE="${HELPER_DIR}/functions.sh"
 CERT_SCRIPT="${HELPER_DIR}/generate_certs.sh"
-KEYPAIR_SCRIPT="${HELPER_DIR}/generate_keypair.sh"
 
 # -------------------------------
 # Load Environment & Helpers
@@ -28,24 +26,17 @@ source "${ENV_FILE}"
 source "${FUNCTIONS_FILE}"
 # shellcheck source=scripts/helper/generate_certs.sh
 source "${CERT_SCRIPT}"
-# shellcheck source=scripts/helper/generate_keypair.sh
-source "${KEYPAIR_SCRIPT}"
 
 # -------------------------------
-# Generate Environment & Certificates
+# Render & Apply Kubernetes Resources
 # -------------------------------
 
 create_env_file
 create_files_from_templates
-create_data_folders
+ensure_root_ca
+generate_api_gateway_cert
+ensure_kind_cluster
+load_backend_image_to_kind
+deploy_k8s_resources
 
-generate_root_ca
-generate_cert_with_keystore_and_truststore "api-gateway" "api-gateway" "${BACKEND_HOSTNAME}"
-
-# -------------------------------
-# Docker Image Build
-# -------------------------------
-
-build_backend_image "${BACKEND_DIR}"
-  
-echo "Initialize completed successfully."
+echo "Kubernetes resources applied successfully."

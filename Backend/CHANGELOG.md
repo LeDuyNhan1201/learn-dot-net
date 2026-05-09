@@ -2,6 +2,7 @@
 
 ## 2026-05-09
 
+- Added Kubernetes deploy, apply, clean, delete-cluster, and port-forward scripts plus an all-in-one Docker and Kubernetes runbook.
 - Fixed `init.sh` to build the native API image from the Backend context and restored the Dockerfile-specific ignore file for that context.
 - Standardized gateway naming on `api-gateway` across compose, Envoy configs, templates, scripts, generated cert paths, and Kubernetes manifests.
 - Renamed Kubernetes gateway manifests and generated resources from Envoy-centric names to `api-gateway` for consistent naming.

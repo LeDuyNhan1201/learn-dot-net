@@ -1,23 +1,32 @@
-# Kind / Kubernetes dev commands
+# Kubernetes dev commands
+
+The scripted flow is preferred:
+
+```bash
+Backend/DevopsTools/Dev/scripts/k8s-deploy.sh
+Backend/DevopsTools/Dev/scripts/k8s-port-forward.sh
+```
+
+Manual equivalent:
 
 ```bash
 kind create cluster --name learn-dot-net
-```
-
-```bash
 Backend/DevopsTools/Dev/scripts/init.sh
-Backend/DevopsTools/Dev/scripts/build-image.sh
 kind load docker-image leduynhan1201/learn-dot-net/backend:1.0.0 --name learn-dot-net
-```
-
-Apply all Kubernetes resources from the kustomize root. This generates `api-gateway-config` from `envoy/api-gateway.yaml` and mounts it into the api-gateway pod.
-
-```bash
 kubectl apply -k Backend/DevopsTools/Dev
+kubectl -n learn-dot-net port-forward svc/api-gateway 60000:60000
 ```
 
-Expose the gateway locally on the same port used by the generated Envoy config.
+Test through the gateway:
 
 ```bash
-kubectl -n learn-dot-net port-forward svc/api-gateway 60000:60000
+curl -k --resolve backend.learn-dot-net.dev:60000:127.0.0.1 \
+  https://backend.learn-dot-net.dev:60000/health/info
+```
+
+Clean up:
+
+```bash
+Backend/DevopsTools/Dev/scripts/k8s-clean.sh
+Backend/DevopsTools/Dev/scripts/k8s-delete-cluster.sh
 ```

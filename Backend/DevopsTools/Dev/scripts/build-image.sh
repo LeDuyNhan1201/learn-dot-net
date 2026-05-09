@@ -14,6 +14,7 @@ HELPER_DIR="${SCRIPT_DIR}/helper"
 export ENV_DIR
 
 ENV_FILE="${HELPER_DIR}/env_config.sh"
+FUNCTIONS_FILE="${HELPER_DIR}/functions.sh"
 
 # -------------------------------
 # Load Environment & Helpers
@@ -21,19 +22,13 @@ ENV_FILE="${HELPER_DIR}/env_config.sh"
 
 # shellcheck source=scripts/helper/env_config.sh
 source "${ENV_FILE}"
+# shellcheck source=scripts/helper/functions.sh
+source "${FUNCTIONS_FILE}"
 
 # -------------------------------
 # Docker Image Build
 # -------------------------------
 
-IMAGE_PREFIX="${NAMESPACE}/${REPOSITORY_NAME}"
-
-docker rmi "${IMAGE_PREFIX}/backend:${BACKEND_TAG}" || true
-docker build --no-cache \
-  --build-arg BACKEND_TAG="${BACKEND_TAG}" \
-  --build-arg BACKEND_CONTAINER_PORT="${BACKEND_CONTAINER_PORT}" \
-  -f "${BACKEND_DIR}/API/Docker/Native/Dockerfile" \
-  -t "${IMAGE_PREFIX}/backend:${BACKEND_TAG}" \
-  "${BACKEND_DIR}" || true
+build_backend_image "${BACKEND_DIR}"
   
 echo "Build image completed successfully."

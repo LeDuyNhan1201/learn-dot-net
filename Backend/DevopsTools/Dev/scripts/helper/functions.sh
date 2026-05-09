@@ -19,12 +19,41 @@ create_dir() {
   echo "Created $dir"
 }
 
+require_command() {
+  local command_name=$1
+
+  if ! command -v "$command_name" >/dev/null 2>&1; then
+    echo "Error: '$command_name' is required but was not found in PATH." >&2
+    return 1
+  fi
+}
+
+backend_image_name() {
+  echo "${NAMESPACE}/${REPOSITORY_NAME}/backend:${BACKEND_TAG}"
+}
+
+build_backend_image() {
+  local backend_dir=${1:?backend_dir is required}
+  local image_name
+  image_name="$(backend_image_name)"
+
+  require_command docker
+
+  docker rmi "$image_name" || true
+  docker build --no-cache \
+    --build-arg BACKEND_TAG="${BACKEND_TAG}" \
+    --build-arg BACKEND_CONTAINER_PORT="${BACKEND_CONTAINER_PORT}" \
+    -f "${backend_dir}/API/Docker/Native/Dockerfile" \
+    -t "$image_name" \
+    "${backend_dir}"
+}
+
 create_data_folders() {
   echo "Creating data folders"
 
   create_dir true "$DATA_DIR"
 
-  # TODO: Add more data folders as needed"
+  # TODO: Add more data folders as needed
 }
 
 create_env_file() {
@@ -44,9 +73,13 @@ create_env_file() {
     BACKEND_TAG
 
     CERT_SECRET
-    
+
+    API_GATEWAY_CONTAINER_NAME
     BACKEND_CONTAINER_NAME
     BACKEND_CONTAINER_PORT
+
+    K8S_CLUSTER_NAME
+    K8S_NAMESPACE
 
     # TODO: Add more variables as needed
   )
@@ -69,6 +102,8 @@ create_files_from_templates() {
   )
 
   for item in "${templates[@]}"; do
+    local src
+    local dest
     IFS=":" read -r src dest <<< "$item"
 
     envsubst < "$src" > "$dest"
@@ -76,4 +111,66 @@ create_files_from_templates() {
   done
 
   echo "Files created successfully."
+}
+
+ensure_root_ca() {
+  if [[ -f "${CERTS_DIR}/ca/ca.crt" && -f "${CERTS_DIR}/ca/ca.key" ]]; then
+    echo "Root CA already exists."
+    return 0
+  fi
+
+  generate_root_ca
+}
+
+generate_api_gateway_cert() {
+  generate_cert_with_keystore_and_truststore "api-gateway" "api-gateway" "${BACKEND_HOSTNAME}"
+}
+
+ensure_kind_cluster() {
+  require_command kind
+  require_command kubectl
+
+  if kind get clusters | grep -qx "${K8S_CLUSTER_NAME}"; then
+    echo "Kind cluster '${K8S_CLUSTER_NAME}' already exists."
+  else
+    kind create cluster --name "${K8S_CLUSTER_NAME}"
+  fi
+
+  kubectl config use-context "kind-${K8S_CLUSTER_NAME}" >/dev/null
+}
+
+load_backend_image_to_kind() {
+  require_command kind
+
+  kind load docker-image "$(backend_image_name)" --name "${K8S_CLUSTER_NAME}"
+}
+
+deploy_k8s_resources() {
+  require_command kubectl
+
+  kubectl apply -k "${ENV_DIR}"
+  kubectl -n "${K8S_NAMESPACE}" rollout status deployment/backend --timeout=120s
+  kubectl -n "${K8S_NAMESPACE}" rollout status deployment/api-gateway --timeout=120s
+}
+
+delete_k8s_resources() {
+  require_command kubectl
+
+  kubectl -n "" delete deployment backend api-gateway --ignore-not-found=true
+  kubectl -n "" delete service backend api-gateway --ignore-not-found=true
+  kubectl -n "" delete configmap api-gateway-config --ignore-not-found=true
+  kubectl -n "" delete secret api-gateway-certs --ignore-not-found=true
+  kubectl delete namespace "" --ignore-not-found=true
+}
+
+delete_kind_cluster() {
+  require_command kind
+
+  kind delete cluster --name "${K8S_CLUSTER_NAME}"
+}
+
+port_forward_api_gateway() {
+  require_command kubectl
+
+  kubectl -n "${K8S_NAMESPACE}" port-forward "svc/${API_GATEWAY_CONTAINER_NAME}" "${GATEWAY_PORT}:${GATEWAY_PORT}"
 }

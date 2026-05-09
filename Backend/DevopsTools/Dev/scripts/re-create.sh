@@ -9,7 +9,7 @@ MODE="dev"
 export MODE
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ENV_DIR="$(cd "${SCRIPT_DIR}/.." >/dev/null 2>&1 && pwd)"
-BACKEND_DIR="$(cd "${SCRIPT_DIR}/../../../API" >/dev/null 2>&1 && pwd)"
+BACKEND_DIR="$(cd "${SCRIPT_DIR}/../../.." >/dev/null 2>&1 && pwd)"
 HELPER_DIR="${SCRIPT_DIR}/helper"
 export ENV_DIR
 
