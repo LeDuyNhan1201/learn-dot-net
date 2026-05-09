@@ -10,10 +10,10 @@
 .git/
 .gitignore
 
-DevopsTools/Dev/data/
-DevopsTools/Dev/secrets/
-DevopsTools/Dev/certs/
-DevopsTools/Dev/keypair/
+Deployment/Dev/data/
+Deployment/Dev/secrets/
+Deployment/Dev/certs/
+Deployment/Dev/keypair/
 
 **/.env
 **/*.log
