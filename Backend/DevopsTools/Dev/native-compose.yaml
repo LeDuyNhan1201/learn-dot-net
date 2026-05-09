@@ -20,6 +20,8 @@
       - "60001:${BACKEND_CONTAINER_PORT}"  
     networks:
       - dev-network
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
     
 networks:
   dev-network:
