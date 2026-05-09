@@ -2,6 +2,10 @@
 
 ## 2026-05-09
 
+- Fixed `init.sh` to build the native API image from the Backend context and restored the Dockerfile-specific ignore file for that context.
+- Standardized gateway naming on `api-gateway` across compose, Envoy configs, templates, scripts, generated cert paths, and Kubernetes manifests.
+- Renamed Kubernetes gateway manifests and generated resources from Envoy-centric names to `api-gateway` for consistent naming.
+- Replaced the hand-copied Kubernetes Envoy ConfigMap with a kustomize-generated ConfigMap sourced from `DevopsTools/Dev/envoy/api-gateway.yaml`, and added Kubernetes Envoy mounts for config and TLS certificates.
 - Kept `appsettings.Development.json` in the native backend image and set the compose runtime environment to Development for both ASP.NET Core and .NET host configuration.
 - Fixed the native backend image build to use the Backend directory as Docker context so API, Application, Domain, and Infrastructure projects are available during restore and publish.
 - Added a Native Dockerfile-specific ignore file so `build-image.sh` excludes generated, local, and secret development files from the Backend build context.

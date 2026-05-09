@@ -1,8 +1,8 @@
 ﻿services:
   # --------- Envoy ---------
-  backend-gateway:
+  api-gateway:
     image: envoyproxy/envoy:${ENVOY_TAG:-latest}
-    container_name: backend-gateway
+    container_name: api-gateway
     ports:
       - "${GATEWAY_PORT}:443"
       - "9901:9901"
@@ -12,8 +12,8 @@
       - "host.docker.internal:host-gateway"
     command: [ "envoy", "-c", "/etc/envoy/envoy.yaml" ]
     volumes:
-      - ./envoy/backend-gateway.local.yaml:/etc/envoy/envoy.yaml
-      - ./certs/backend-gateway:/etc/envoy/certificates
+      - ./envoy/api-gateway.local.yaml:/etc/envoy/envoy.yaml
+      - ./certs/api-gateway:/etc/envoy/certificates
   
 networks:
   local-network:

@@ -38,6 +38,6 @@ source "${KEYPAIR_SCRIPT}"
 create_env_file
 create_files_from_templates
 
-generate_cert_with_keystore_and_truststore "backend-gateway" "backend-gateway" "${BACKEND_HOSTNAME}"
+generate_cert_with_keystore_and_truststore "api-gateway" "api-gateway" "${BACKEND_HOSTNAME}"
   
 echo "Re-create completed successfully."

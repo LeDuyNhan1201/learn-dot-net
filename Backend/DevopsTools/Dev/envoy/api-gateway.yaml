@@ -30,9 +30,9 @@ static_resources:
               common_tls_context:
                 tls_certificates:
                   - certificate_chain:
-                      filename: /etc/envoy/certificates/backend-gateway.cert.pem
+                      filename: /etc/envoy/certificates/api-gateway.cert.pem
                     private_key:
-                      filename: /etc/envoy/certificates/backend-gateway.key.pem
+                      filename: /etc/envoy/certificates/api-gateway.key.pem
 
           filters:
             - name: envoy.filters.network.http_connection_manager
@@ -52,7 +52,7 @@ static_resources:
                         - match:
                             prefix: "/"
                           route:
-                            cluster: backend_gateway
+                            cluster: api_gateway
 
                           request_headers_to_add:
                             - header:
@@ -68,20 +68,20 @@ static_resources:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
 
   clusters:
-    - name: backend_gateway
+    - name: api_gateway
       connect_timeout: 5s
       type: logical_dns # logical_dns strict_dns
       lb_policy: round_robin # round_robin ring_hash
       dns_lookup_family: V4_ONLY
 
       load_assignment:
-        cluster_name: backend_gateway
+        cluster_name: api_gateway
         endpoints:
           - lb_endpoints:
             - endpoint:
                 address:
                   socket_address:
-                    address: host.docker.internal
+                    address: backend
                     port_value: 60001
 
       health_checks:

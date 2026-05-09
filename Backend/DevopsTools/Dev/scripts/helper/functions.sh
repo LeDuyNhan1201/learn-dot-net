@@ -62,8 +62,8 @@ create_files_from_templates() {
   echo "Creating files from templates"
 
   local templates=(
-    "${ENV_DIR}/envoy/templates/backend-gateway.template:${ENV_DIR}/envoy/backend-gateway.yaml"
-    "${ENV_DIR}/envoy/templates/backend-gateway.local.template:${ENV_DIR}/envoy/backend-gateway.local.yaml"
+    "${ENV_DIR}/envoy/templates/api-gateway.template:${ENV_DIR}/envoy/api-gateway.yaml"
+    "${ENV_DIR}/envoy/templates/api-gateway.local.template:${ENV_DIR}/envoy/api-gateway.local.yaml"
 
     # TODO: Add more templates as needed, pattern is "source:destination"
   )

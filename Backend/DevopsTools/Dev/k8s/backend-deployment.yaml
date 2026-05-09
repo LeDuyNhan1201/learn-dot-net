@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend
-  namespace: learn-dotnet
+  namespace: learn-dot-net
 
 spec:
   replicas: 1
@@ -23,8 +23,11 @@ spec:
           imagePullPolicy: Never
 
           ports:
-            - containerPort: 60001
+            - name: http
+              containerPort: 60001
 
           env:
             - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: DOTNET_ENVIRONMENT
               value: Development
