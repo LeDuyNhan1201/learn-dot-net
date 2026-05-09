@@ -19,7 +19,7 @@ Install these tools before running the flows:
 The shared dev settings live in:
 
 ```bash
-Backend/DevopsTools/Dev/scripts/helper/env_config.sh
+Backend/Deployment/Dev/scripts/helper/env_config.sh
 ```
 
 Important defaults:
@@ -40,22 +40,22 @@ This flow runs the native AOT backend image and the API gateway with Docker Comp
 ### 1. Initialize dev files, certificates, and image
 
 ```bash
-Backend/DevopsTools/Dev/scripts/init.sh
+Backend/Deployment/Dev/scripts/init.sh
 ```
 
 This creates:
 
-- `Backend/DevopsTools/Dev/.env`
-- `Backend/DevopsTools/Dev/envoy/api-gateway.yaml`
-- `Backend/DevopsTools/Dev/envoy/api-gateway.local.yaml`
-- `Backend/DevopsTools/Dev/certs/ca/*`
-- `Backend/DevopsTools/Dev/certs/api-gateway/*`
+- `Backend/Deployment/Dev/.env`
+- `Backend/Deployment/Dev/envoy/api-gateway.yaml`
+- `Backend/Deployment/Dev/envoy/api-gateway.local.yaml`
+- `Backend/Deployment/Dev/certs/ca/*`
+- `Backend/Deployment/Dev/certs/api-gateway/*`
 - Docker image `leduynhan1201/learn-dot-net/backend:1.0.0`
 
 ### 2. Start Docker Compose
 
 ```bash
-cd Backend/DevopsTools/Dev
+cd Backend/Deployment/Dev
 docker compose -f native-compose.yaml up -d
 ```
 
@@ -69,20 +69,20 @@ curl -k --resolve backend.learn-dot-net.dev:60000:127.0.0.1 \
 ### 4. Stop Docker Compose
 
 ```bash
-cd Backend/DevopsTools/Dev
+cd Backend/Deployment/Dev
 docker compose -f native-compose.yaml down
 ```
 
 ### 5. Rebuild only the backend image
 
 ```bash
-Backend/DevopsTools/Dev/scripts/build-image.sh
+Backend/Deployment/Dev/scripts/build-image.sh
 ```
 
 Then recreate the backend container:
 
 ```bash
-cd Backend/DevopsTools/Dev
+cd Backend/Deployment/Dev
 docker compose -f native-compose.yaml up -d --force-recreate backend
 ```
 
@@ -93,7 +93,7 @@ Use this when you want to run the backend directly on the host and only run the 
 ### 1. Recreate gateway files and certificates
 
 ```bash
-Backend/DevopsTools/Dev/scripts/re-create.sh
+Backend/Deployment/Dev/scripts/re-create.sh
 ```
 
 ### 2. Run the backend on the host
@@ -107,7 +107,7 @@ dotnet run --project Backend/API/API.csproj --urls=http://0.0.0.0:60001
 In another terminal:
 
 ```bash
-cd Backend/DevopsTools/Dev
+cd Backend/Deployment/Dev
 docker compose -f local-compose.yaml up -d
 ```
 
@@ -121,7 +121,7 @@ curl -k --resolve backend.learn-dot-net.dev:60000:127.0.0.1 \
 ### 5. Stop the local gateway
 
 ```bash
-cd Backend/DevopsTools/Dev
+cd Backend/Deployment/Dev
 docker compose -f local-compose.yaml down
 ```
 
@@ -132,7 +132,7 @@ This flow deploys the native backend image and API gateway to a local kind clust
 ### 1. Deploy everything
 
 ```bash
-Backend/DevopsTools/Dev/scripts/k8s-deploy.sh
+Backend/Deployment/Dev/scripts/k8s-deploy.sh
 ```
 
 This script:
@@ -144,13 +144,13 @@ This script:
 - Builds the backend native AOT Docker image
 - Creates the kind cluster if it does not exist
 - Loads the backend image into kind
-- Applies `kubectl apply -k Backend/DevopsTools/Dev`
+- Applies `kubectl apply -k Backend/Deployment/Dev`
 - Waits for backend and API gateway rollouts
 
 ### 2. Port-forward the API gateway
 
 ```bash
-Backend/DevopsTools/Dev/scripts/k8s-port-forward.sh
+Backend/Deployment/Dev/scripts/k8s-port-forward.sh
 ```
 
 Keep this command running while testing.
@@ -169,19 +169,19 @@ curl -k --resolve backend.learn-dot-net.dev:60000:127.0.0.1 \
 Use this after editing k8s YAML, Envoy templates, or certificates when the backend image already exists locally:
 
 ```bash
-Backend/DevopsTools/Dev/scripts/k8s-apply.sh
+Backend/Deployment/Dev/scripts/k8s-apply.sh
 ```
 
 ### 5. Delete k8s resources
 
 ```bash
-Backend/DevopsTools/Dev/scripts/k8s-clean.sh
+Backend/Deployment/Dev/scripts/k8s-clean.sh
 ```
 
 ### 6. Delete the kind cluster
 
 ```bash
-Backend/DevopsTools/Dev/scripts/k8s-delete-cluster.sh
+Backend/Deployment/Dev/scripts/k8s-delete-cluster.sh
 ```
 
 ## Rendered Kubernetes Resources
@@ -189,32 +189,32 @@ Backend/DevopsTools/Dev/scripts/k8s-delete-cluster.sh
 The k8s flow uses kustomize from this root:
 
 ```bash
-Backend/DevopsTools/Dev/kustomization.yaml
+Backend/Deployment/Dev/kustomization.yaml
 ```
 
 Preview rendered manifests:
 
 ```bash
-kubectl kustomize Backend/DevopsTools/Dev
+kubectl kustomize Backend/Deployment/Dev
 ```
 
 Client-side dry run:
 
 ```bash
-kubectl apply --dry-run=client --validate=false -k Backend/DevopsTools/Dev
+kubectl apply --dry-run=client --validate=false -k Backend/Deployment/Dev
 ```
 
 The API gateway ConfigMap is generated from:
 
 ```bash
-Backend/DevopsTools/Dev/envoy/api-gateway.yaml
+Backend/Deployment/Dev/envoy/api-gateway.yaml
 ```
 
 The API gateway certificate Secret is generated from:
 
 ```bash
-Backend/DevopsTools/Dev/certs/api-gateway/api-gateway.cert.pem
-Backend/DevopsTools/Dev/certs/api-gateway/api-gateway.key.pem
+Backend/Deployment/Dev/certs/api-gateway/api-gateway.cert.pem
+Backend/Deployment/Dev/certs/api-gateway/api-gateway.key.pem
 ```
 
 ## Cleanup
@@ -222,13 +222,13 @@ Backend/DevopsTools/Dev/certs/api-gateway/api-gateway.key.pem
 Remove generated environment files only:
 
 ```bash
-Backend/DevopsTools/Dev/scripts/clean.sh
+Backend/Deployment/Dev/scripts/clean.sh
 ```
 
 Remove generated certs, data, `.env`, and backend image:
 
 ```bash
-Backend/DevopsTools/Dev/scripts/clean-all.sh
+Backend/Deployment/Dev/scripts/clean-all.sh
 ```
 
 For Kubernetes, run `k8s-clean.sh` before `clean-all.sh` if the resources are still deployed.
