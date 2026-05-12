@@ -1,0 +1,21 @@
+namespace: ${NAMESPACE}
+
+${BACKEND_CONTAINER_NAME}:
+  image:
+    repository: ${BACKEND_CONTAINER_NAME}
+    tag: ${BACKEND_TAG}
+
+  containerPort: ${BACKEND_CONTAINER_PORT}
+
+envoy:
+  image:
+    repository: envoyproxy/envoy
+    tag: ${ENVOY_TAG}
+
+  servicePort: 443
+  containerPort: 443
+  adminPort: 9901
+  
+apiGateway:
+  servicePort: ${GATEWAY_PORT}
+  adminPort: 9901

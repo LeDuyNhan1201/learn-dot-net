@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: {{ .Values.namespace }}
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: backend
+
+  template:
+    metadata:
+      labels:
+        app: backend
+
+    spec:
+      containers:
+        - name: ${BACKEND_CONTAINER_NAME}
+          image: {{ .Values.${BACKEND_CONTAINER_NAME}.image.repository }}:{{ .Values.${BACKEND_CONTAINER_NAME}.image.tag }}
+          imagePullPolicy: Never
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.${BACKEND_CONTAINER_NAME}.containerPort }}
+
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development

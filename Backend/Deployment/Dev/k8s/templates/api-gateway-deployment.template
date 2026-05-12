@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: {{ .Values.envoy.image.repository }}:{{ .Values.envoy.image.tag }}
+          imagePullPolicy: IfNotPresent
+          command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
+          ports:
+            - name: https
+              containerPort: {{ .Values.envoy.containerPort }}
+            - name: admin
+              containerPort: {{ .Values.envoy.adminPort }}
+          volumeMounts:
+            - name: api-gateway-config
+              mountPath: /etc/envoy/envoy.yaml
+              subPath: envoy.yaml
+              readOnly: true
+            - name: api-gateway-certs
+              mountPath: /etc/envoy/certificates
+              readOnly: true
+      volumes:
+        - name: api-gateway-config
+          configMap:
+            name: api-gateway-config
+            items:
+              - key: envoy.yaml
+                path: envoy.yaml
+        - name: api-gateway-certs
+          secret:
+            secretName: api-gateway-certs

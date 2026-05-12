@@ -97,6 +97,10 @@ create_files_from_templates() {
   local templates=(
     "${ENV_DIR}/envoy/templates/api-gateway.template:${ENV_DIR}/envoy/api-gateway.yaml"
     "${ENV_DIR}/envoy/templates/api-gateway.local.template:${ENV_DIR}/envoy/api-gateway.local.yaml"
+    "${ENV_DIR}/k8s/templates/backend-deployment.template:${ENV_DIR}/k8s/backend-deployment.yaml"
+    "${ENV_DIR}/k8s/templates/backend-service.template:${ENV_DIR}/k8s/backend-service.yaml"
+    "${ENV_DIR}/k8s/templates/api-gateway-deployment.template:${ENV_DIR}/k8s/api-gateway-deployment.yaml"
+    "${ENV_DIR}/k8s/templates/api-gateway-service.template:${ENV_DIR}/k8s/api-gateway-service.yaml"
 
     # TODO: Add more templates as needed, pattern is "source:destination"
   )

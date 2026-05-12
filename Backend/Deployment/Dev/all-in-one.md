@@ -13,8 +13,9 @@ Install these tools before running the flows:
 - `openssl`
 - `keytool`
 - `envsubst`
-- `kind` for the Kubernetes flow
-- `kubectl` for the Kubernetes flow
+- `kind`
+- `kubectl`
+- `helm`
 
 The shared dev settings live in:
 
