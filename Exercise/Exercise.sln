@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BreakWordExercise1", "BreakWordExercise1\BreakWordExercise1.csproj", "{BC716F74-9699-43ED-B5FE-258D7A4E225D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimezoneConverterExercise2", "TimezoneConverterExercise2\TimezoneConverterExercise2.csproj", "{0DA5219D-3631-481A-B80E-D77ABA83E556}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BC716F74-9699-43ED-B5FE-258D7A4E225D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC716F74-9699-43ED-B5FE-258D7A4E225D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC716F74-9699-43ED-B5FE-258D7A4E225D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC716F74-9699-43ED-B5FE-258D7A4E225D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DA5219D-3631-481A-B80E-D77ABA83E556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DA5219D-3631-481A-B80E-D77ABA83E556}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DA5219D-3631-481A-B80E-D77ABA83E556}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DA5219D-3631-481A-B80E-D77ABA83E556}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
