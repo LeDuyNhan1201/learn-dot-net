@@ -34,7 +34,7 @@ source "${CERT_SCRIPT}"
 create_env_file
 create_files_from_templates
 ensure_root_ca
-generate_api_gateway_cert
+generate_tls_certs
 ensure_kind_cluster
 load_backend_image_to_kind
 deploy_k8s_resources

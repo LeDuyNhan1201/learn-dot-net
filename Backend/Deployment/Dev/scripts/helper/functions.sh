@@ -126,7 +126,7 @@ ensure_root_ca() {
   generate_root_ca
 }
 
-generate_api_gateway_cert() {
+generate_tls_certs() {
   generate_cert_with_keystore_and_truststore "api-gateway" "api-gateway" "${BACKEND_HOSTNAME}"
 }
 
@@ -176,5 +176,5 @@ delete_kind_cluster() {
 port_forward_api_gateway() {
   require_command kubectl
 
-  kubectl -n "${K8S_NAMESPACE}" port-forward "svc/${API_GATEWAY_CONTAINER_NAME}" "${GATEWAY_PORT}:${GATEWAY_PORT}"
+  kubectl -n "${K8S_NAMESPACE}" port-forward "svc/${API_GATEWAY_CONTAINER_NAME}" "${GATEWAY_PORT}:443"
 }

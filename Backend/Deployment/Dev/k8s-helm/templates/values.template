@@ -15,7 +15,3 @@ envoy:
   servicePort: 443
   containerPort: 443
   adminPort: 9901
-  
-apiGateway:
-  servicePort: ${GATEWAY_PORT}
-  adminPort: 9901

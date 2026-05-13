@@ -38,7 +38,7 @@ source "${KEYPAIR_SCRIPT}"
 create_env_file
 create_files_from_templates
 ensure_root_ca
-generate_api_gateway_cert
+generate_tls_certs
 
 # -------------------------------
 # Build, Load & Deploy
