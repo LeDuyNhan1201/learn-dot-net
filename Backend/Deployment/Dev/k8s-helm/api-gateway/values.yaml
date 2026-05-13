@@ -1,0 +1,81 @@
+namespace:
+  create: false
+  name: learn-dot-net
+
+nameOverride: ""
+fullnameOverride: api-gateway
+
+replicaCount: 1
+
+image:
+  repository: envoyproxy/envoy
+  tag: tools-dev
+  pullPolicy: IfNotPresent
+
+command:
+  - envoy
+  - -c
+  - /etc/envoy/envoy.yaml
+
+containerPorts:
+  https: 443
+  admin: 9901
+
+serviceAccount:
+  create: false
+  automount: true
+  annotations: {}
+  name: ""
+
+service:
+  type: ClusterIP
+  httpsPort: 443
+  adminPort: 9901
+
+gateway:
+  host: backend.learn-dot-net.dev
+  externalPort: 60000
+
+backend:
+  serviceName: backend
+  servicePort: 60001
+
+envoy:
+  clusterName: api_gateway
+  connectTimeout: 5s
+  dnsLookupFamily: V4_ONLY
+  healthCheckPath: /health/info
+  configMapName: api-gateway-config
+
+tls:
+  create: false
+  existingSecret: api-gateway-certs
+  certFileName: api-gateway.cert.pem
+  keyFileName: api-gateway.key.pem
+  certificate: ""
+  privateKey: ""
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: backend.learn-dot-net.dev
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: null
+
+resources: {}
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

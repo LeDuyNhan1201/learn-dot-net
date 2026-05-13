@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "api-gateway.configMapName" . }}
+  namespace: {{ include "api-gateway.namespace" . }}
+  labels:
+    {{- include "api-gateway.labels" . | nindent 4 }}
+data:
+  envoy.yaml: |-
+    admin:
+      access_log_path: /tmp/admin_access.log
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: {{ .Values.containerPorts.admin }}
+
+    static_resources:
+      listeners:
+        - name: listener_https
+          address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: {{ .Values.containerPorts.https }}
+
+          listener_filters:
+            - name: envoy.filters.listener.tls_inspector
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.listener.tls_inspector.v3.TlsInspector
+
+          filter_chains:
+            - filter_chain_match:
+                server_names:
+                  - {{ .Values.gateway.host | quote }}
+
+              transport_socket:
+                name: envoy.transport_sockets.tls
+                typed_config:
+                  "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+                  common_tls_context:
+                    tls_certificates:
+                      - certificate_chain:
+                          filename: /etc/envoy/certificates/{{ .Values.tls.certFileName }}
+                        private_key:
+                          filename: /etc/envoy/certificates/{{ .Values.tls.keyFileName }}
+
+              filters:
+                - name: envoy.filters.network.http_connection_manager
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                    codec_type: AUTO
+                    stat_prefix: ingress_http
+
+                    route_config:
+                      name: local_route
+                      virtual_hosts:
+                        - name: services
+                          domains:
+                            - "{{ .Values.gateway.host }}:{{ .Values.gateway.externalPort }}"
+
+                          routes:
+                            - match:
+                                prefix: "/"
+                              route:
+                                cluster: {{ .Values.envoy.clusterName }}
+
+                              request_headers_to_add:
+                                - header:
+                                    key: x-forwarded-proto
+                                    value: https
+                                - header:
+                                    key: x-forwarded-port
+                                    value: "{{ .Values.gateway.externalPort }}"
+
+                    http_filters:
+                      - name: envoy.filters.http.router
+                        typed_config:
+                          "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
+      clusters:
+        - name: {{ .Values.envoy.clusterName }}
+          connect_timeout: {{ .Values.envoy.connectTimeout }}
+          type: logical_dns
+          lb_policy: round_robin
+          dns_lookup_family: {{ .Values.envoy.dnsLookupFamily }}
+
+          load_assignment:
+            cluster_name: {{ .Values.envoy.clusterName }}
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: {{ .Values.backend.serviceName | quote }}
+                          port_value: {{ .Values.backend.servicePort }}
+
+          health_checks:
+            - timeout: 3s
+              interval: 10s
+              unhealthy_threshold: 3
+              healthy_threshold: 2
+              http_health_check:
+                path: {{ .Values.envoy.healthCheckPath | quote }}

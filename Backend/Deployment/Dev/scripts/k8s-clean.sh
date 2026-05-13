@@ -25,9 +25,9 @@ source "${ENV_FILE}"
 source "${FUNCTIONS_FILE}"
 
 # -------------------------------
-# Uninstall Helm Release & Delete Kubernetes Resources
+# Uninstall Helm Releases & Delete Kubernetes Resources
 # -------------------------------
 
 delete_k8s_resources
 
-echo "Helm release and Kubernetes resources deleted successfully."
+echo "Helm releases and Kubernetes resources deleted successfully."

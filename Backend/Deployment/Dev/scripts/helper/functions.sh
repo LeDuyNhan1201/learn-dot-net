@@ -85,8 +85,11 @@ create_env_file() {
 
     K8S_CLUSTER_NAME
     K8S_NAMESPACE
-    HELM_RELEASE_NAME
-    HELM_CHART_DIR
+    K8S_HELM_DIR
+    BACKEND_HELM_RELEASE_NAME
+    API_GATEWAY_HELM_RELEASE_NAME
+    BACKEND_HELM_CHART_DIR
+    API_GATEWAY_HELM_CHART_DIR
     HELM_TIMEOUT
 
     # TODO: Add more variables as needed
@@ -169,10 +172,18 @@ api_gateway_key_file() {
 }
 
 ensure_helm_chart() {
-  if [[ ! -f "${HELM_CHART_DIR}/Chart.yaml" ]]; then
-    echo "Error: Helm chart was not found at '${HELM_CHART_DIR}'." >&2
+  local chart_dir=${1:?chart_dir is required}
+
+  if [[ ! -f "${chart_dir}/Chart.yaml" ]]; then
+    echo "Error: Helm chart was not found at '${chart_dir}'." >&2
     return 1
   fi
+}
+
+ensure_k8s_namespace() {
+  require_command kubectl
+
+  kubectl create namespace "${K8S_NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 }
 
 ensure_api_gateway_cert_secret() {
@@ -190,7 +201,7 @@ ensure_api_gateway_cert_secret() {
     return 1
   fi
 
-  kubectl create namespace "${K8S_NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
+  ensure_k8s_namespace
   kubectl -n "${K8S_NAMESPACE}" create secret generic "${API_GATEWAY_CERT_SECRET_NAME}" \
     --from-file="${API_GATEWAY_CERT_FILE_NAME}=${cert_file}" \
     --from-file="${API_GATEWAY_KEY_FILE_NAME}=${key_file}" \
@@ -201,31 +212,42 @@ deploy_k8s_resources() {
   require_command kubectl
   require_command helm
 
-  ensure_helm_chart
+  ensure_helm_chart "${BACKEND_HELM_CHART_DIR}"
+  ensure_helm_chart "${API_GATEWAY_HELM_CHART_DIR}"
+  ensure_k8s_namespace
   ensure_api_gateway_cert_secret
 
-  helm upgrade --install "${HELM_RELEASE_NAME}" "${HELM_CHART_DIR}" \
+  helm upgrade --install "${BACKEND_HELM_RELEASE_NAME}" "${BACKEND_HELM_CHART_DIR}" \
     --namespace "${K8S_NAMESPACE}" \
-    --create-namespace \
     --wait \
     --timeout "${HELM_TIMEOUT}" \
     --set "namespace.name=${K8S_NAMESPACE}" \
-    --set "backend.name=${BACKEND_CONTAINER_NAME}" \
-    --set-string "backend.image.repository=${NAMESPACE}/${REPOSITORY_NAME}/backend" \
-    --set-string "backend.image.tag=${BACKEND_TAG}" \
-    --set "backend.containerPort=${BACKEND_CONTAINER_PORT}" \
-    --set "backend.service.port=${BACKEND_CONTAINER_PORT}" \
-    --set "apiGateway.name=${API_GATEWAY_CONTAINER_NAME}" \
-    --set-string "apiGateway.host=${BACKEND_HOSTNAME}" \
-    --set "apiGateway.externalPort=${GATEWAY_PORT}" \
-    --set-string "apiGateway.image.tag=${ENVOY_TAG}" \
-    --set "apiGateway.containerPorts.https=${API_GATEWAY_HTTPS_PORT}" \
-    --set "apiGateway.containerPorts.admin=${API_GATEWAY_ADMIN_PORT}" \
-    --set "apiGateway.service.httpsPort=${API_GATEWAY_HTTPS_PORT}" \
-    --set "apiGateway.service.adminPort=${API_GATEWAY_ADMIN_PORT}" \
-    --set-string "apiGateway.tls.existingSecret=${API_GATEWAY_CERT_SECRET_NAME}" \
-    --set-string "apiGateway.tls.certFileName=${API_GATEWAY_CERT_FILE_NAME}" \
-    --set-string "apiGateway.tls.keyFileName=${API_GATEWAY_KEY_FILE_NAME}"
+    --set "fullnameOverride=${BACKEND_CONTAINER_NAME}" \
+    --set-string "image.repository=${NAMESPACE}/${REPOSITORY_NAME}/backend" \
+    --set-string "image.tag=${BACKEND_TAG}" \
+    --set "containerPort=${BACKEND_CONTAINER_PORT}" \
+    --set "service.port=${BACKEND_CONTAINER_PORT}" \
+    --set-string "ingress.hosts[0].host=${BACKEND_HOSTNAME}"
+
+  helm upgrade --install "${API_GATEWAY_HELM_RELEASE_NAME}" "${API_GATEWAY_HELM_CHART_DIR}" \
+    --namespace "${K8S_NAMESPACE}" \
+    --wait \
+    --timeout "${HELM_TIMEOUT}" \
+    --set "namespace.name=${K8S_NAMESPACE}" \
+    --set "fullnameOverride=${API_GATEWAY_CONTAINER_NAME}" \
+    --set-string "image.tag=${ENVOY_TAG}" \
+    --set "containerPorts.https=${API_GATEWAY_HTTPS_PORT}" \
+    --set "containerPorts.admin=${API_GATEWAY_ADMIN_PORT}" \
+    --set "service.httpsPort=${API_GATEWAY_HTTPS_PORT}" \
+    --set "service.adminPort=${API_GATEWAY_ADMIN_PORT}" \
+    --set-string "gateway.host=${BACKEND_HOSTNAME}" \
+    --set "gateway.externalPort=${GATEWAY_PORT}" \
+    --set-string "backend.serviceName=${BACKEND_CONTAINER_NAME}" \
+    --set "backend.servicePort=${BACKEND_CONTAINER_PORT}" \
+    --set-string "tls.existingSecret=${API_GATEWAY_CERT_SECRET_NAME}" \
+    --set-string "tls.certFileName=${API_GATEWAY_CERT_FILE_NAME}" \
+    --set-string "tls.keyFileName=${API_GATEWAY_KEY_FILE_NAME}" \
+    --set-string "ingress.hosts[0].host=${BACKEND_HOSTNAME}"
 
   kubectl -n "${K8S_NAMESPACE}" rollout status deployment/"${BACKEND_CONTAINER_NAME}" --timeout="${HELM_TIMEOUT}"
   kubectl -n "${K8S_NAMESPACE}" rollout status deployment/"${API_GATEWAY_CONTAINER_NAME}" --timeout="${HELM_TIMEOUT}"
@@ -235,10 +257,16 @@ delete_k8s_resources() {
   require_command kubectl
   require_command helm
 
-  if helm status "${HELM_RELEASE_NAME}" --namespace "${K8S_NAMESPACE}" >/dev/null 2>&1; then
-    helm uninstall "${HELM_RELEASE_NAME}" --namespace "${K8S_NAMESPACE}" --wait --timeout "${HELM_TIMEOUT}"
+  if helm status "${API_GATEWAY_HELM_RELEASE_NAME}" --namespace "${K8S_NAMESPACE}" >/dev/null 2>&1; then
+    helm uninstall "${API_GATEWAY_HELM_RELEASE_NAME}" --namespace "${K8S_NAMESPACE}" --wait --timeout "${HELM_TIMEOUT}"
   else
-    echo "Helm release '${HELM_RELEASE_NAME}' was not found in namespace '${K8S_NAMESPACE}'."
+    echo "Helm release '${API_GATEWAY_HELM_RELEASE_NAME}' was not found in namespace '${K8S_NAMESPACE}'."
+  fi
+
+  if helm status "${BACKEND_HELM_RELEASE_NAME}" --namespace "${K8S_NAMESPACE}" >/dev/null 2>&1; then
+    helm uninstall "${BACKEND_HELM_RELEASE_NAME}" --namespace "${K8S_NAMESPACE}" --wait --timeout "${HELM_TIMEOUT}"
+  else
+    echo "Helm release '${BACKEND_HELM_RELEASE_NAME}' was not found in namespace '${K8S_NAMESPACE}'."
   fi
 
   kubectl -n "${K8S_NAMESPACE}" delete secret "${API_GATEWAY_CERT_SECRET_NAME}" --ignore-not-found=true

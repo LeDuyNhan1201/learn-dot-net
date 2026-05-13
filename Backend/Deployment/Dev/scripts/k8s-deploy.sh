@@ -41,7 +41,7 @@ ensure_root_ca
 generate_tls_certs
 
 # -------------------------------
-# Build, Load & Deploy Helm Release
+# Build, Load & Deploy Helm Releases
 # -------------------------------
 
 build_backend_image "${BACKEND_DIR}"

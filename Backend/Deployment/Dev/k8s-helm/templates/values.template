@@ -1,17 +1,56 @@
-namespace: ${NAMESPACE}
+# Backend chart override values.
+namespace:
+  create: false
+  name: ${K8S_NAMESPACE}
 
-${BACKEND_CONTAINER_NAME}:
-  image:
-    repository: ${BACKEND_CONTAINER_NAME}
-    tag: ${BACKEND_TAG}
+fullnameOverride: ${BACKEND_CONTAINER_NAME}
 
-  containerPort: ${BACKEND_CONTAINER_PORT}
+image:
+  repository: ${NAMESPACE}/${REPOSITORY_NAME}/backend
+  tag: ${BACKEND_TAG}
+  pullPolicy: Never
 
-envoy:
-  image:
-    repository: envoyproxy/envoy
-    tag: ${ENVOY_TAG}
+containerPort: ${BACKEND_CONTAINER_PORT}
 
-  servicePort: 443
-  containerPort: 443
-  adminPort: 9901
+service:
+  type: ClusterIP
+  port: ${BACKEND_CONTAINER_PORT}
+
+env:
+  ASPNETCORE_ENVIRONMENT: Development
+
+---
+# API gateway chart override values.
+namespace:
+  create: false
+  name: ${K8S_NAMESPACE}
+
+fullnameOverride: ${API_GATEWAY_CONTAINER_NAME}
+
+image:
+  repository: envoyproxy/envoy
+  tag: ${ENVOY_TAG}
+  pullPolicy: IfNotPresent
+
+containerPorts:
+  https: ${API_GATEWAY_HTTPS_PORT}
+  admin: ${API_GATEWAY_ADMIN_PORT}
+
+service:
+  type: ClusterIP
+  httpsPort: ${API_GATEWAY_HTTPS_PORT}
+  adminPort: ${API_GATEWAY_ADMIN_PORT}
+
+gateway:
+  host: ${BACKEND_HOSTNAME}
+  externalPort: ${GATEWAY_PORT}
+
+backend:
+  serviceName: ${BACKEND_CONTAINER_NAME}
+  servicePort: ${BACKEND_CONTAINER_PORT}
+
+tls:
+  create: false
+  existingSecret: ${API_GATEWAY_CERT_SECRET_NAME}
+  certFileName: ${API_GATEWAY_CERT_FILE_NAME}
+  keyFileName: ${API_GATEWAY_KEY_FILE_NAME}

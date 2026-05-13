@@ -28,7 +28,7 @@ source "${FUNCTIONS_FILE}"
 source "${CERT_SCRIPT}"
 
 # -------------------------------
-# Render & Apply Helm Release
+# Render & Apply Helm Releases
 # -------------------------------
 
 create_env_file
@@ -39,4 +39,4 @@ ensure_kind_cluster
 load_backend_image_to_kind
 deploy_k8s_resources
 
-echo "Helm release applied successfully."
+echo "Helm releases applied successfully."

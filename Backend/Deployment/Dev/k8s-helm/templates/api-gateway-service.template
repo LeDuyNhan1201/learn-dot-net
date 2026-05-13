@@ -1,15 +1,20 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: api-gateway
-  namespace: {{ .Values.namespace }}
+  name: ${API_GATEWAY_CONTAINER_NAME}
+  namespace: ${K8S_NAMESPACE}
+  labels:
+    app: ${API_GATEWAY_CONTAINER_NAME}
+    app.kubernetes.io/name: ${API_GATEWAY_CONTAINER_NAME}
+    app.kubernetes.io/component: api-gateway
 spec:
+  type: ClusterIP
   selector:
-    app: api-gateway
+    app: ${API_GATEWAY_CONTAINER_NAME}
   ports:
     - name: https
-      port: {{ .Values.envoy.servicePort }}
+      port: ${API_GATEWAY_HTTPS_PORT}
       targetPort: https
     - name: admin
-      port: {{ .Values.envoy.adminPort }}
+      port: ${API_GATEWAY_ADMIN_PORT}
       targetPort: admin

@@ -30,5 +30,5 @@ source "${FUNCTIONS_FILE}"
 # -------------------------------
 
 build_backend_image "${BACKEND_DIR}"
-  
+
 echo "Build image completed successfully."

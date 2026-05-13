@@ -32,8 +32,10 @@ Backend container port: 60001
 Backend image: leduynhan1201/learn-dot-net/backend:1.0.0
 Kind cluster: learn-dot-net
 Kubernetes namespace: learn-dot-net
-Helm release: learn-dot-net
-Helm chart: Backend/charts/learn-dot-net
+Backend Helm release: backend
+Backend Helm chart: Backend/Deployment/Dev/k8s-helm/backend
+API gateway Helm release: api-gateway
+API gateway Helm chart: Backend/Deployment/Dev/k8s-helm/api-gateway
 API gateway certificate secret: api-gateway-certs
 ```
 
@@ -149,7 +151,8 @@ This script:
 - Creates the kind cluster if it does not exist
 - Loads the backend image into kind
 - Creates or updates the `api-gateway-certs` Kubernetes Secret
-- Installs or upgrades the `learn-dot-net` Helm release from `Backend/charts/learn-dot-net`
+- Installs or upgrades the `backend` Helm release from `Backend/Deployment/Dev/k8s-helm/backend`
+- Installs or upgrades the `api-gateway` Helm release from `Backend/Deployment/Dev/k8s-helm/api-gateway`
 - Waits for backend and API gateway rollouts
 
 ### 2. Port-forward the API gateway
@@ -183,7 +186,7 @@ Backend/Deployment/Dev/scripts/k8s-apply.sh
 Backend/Deployment/Dev/scripts/k8s-clean.sh
 ```
 
-This uninstalls the Helm release, deletes the generated API gateway certificate Secret, and deletes the development namespace.
+This uninstalls the `api-gateway` and `backend` Helm releases, deletes the generated API gateway certificate Secret, and deletes the development namespace.
 
 ### 6. Delete the kind cluster
 
@@ -193,31 +196,38 @@ Backend/Deployment/Dev/scripts/k8s-delete-cluster.sh
 
 ## Rendered Kubernetes Resources
 
-The k8s flow uses this Helm chart:
+The k8s flow uses these Helm charts:
 
 ```bash
-Backend/charts/learn-dot-net
+Backend/Deployment/Dev/k8s-helm/backend
+Backend/Deployment/Dev/k8s-helm/api-gateway
 ```
 
 Preview rendered manifests:
 
 ```bash
-helm template learn-dot-net Backend/charts/learn-dot-net --namespace learn-dot-net
+helm template backend Backend/Deployment/Dev/k8s-helm/backend --namespace learn-dot-net
+helm template api-gateway Backend/Deployment/Dev/k8s-helm/api-gateway --namespace learn-dot-net
 ```
 
 Helm dry run:
 
 ```bash
-helm upgrade --install learn-dot-net Backend/charts/learn-dot-net \
+helm upgrade --install backend Backend/Deployment/Dev/k8s-helm/backend \
+  --namespace learn-dot-net \
+  --create-namespace \
+  --dry-run
+
+helm upgrade --install api-gateway Backend/Deployment/Dev/k8s-helm/api-gateway \
   --namespace learn-dot-net \
   --create-namespace \
   --dry-run
 ```
 
-The Kubernetes API gateway ConfigMap is rendered by the Helm chart from:
+The Kubernetes API gateway ConfigMap is rendered by this Helm template:
 
 ```bash
-Backend/charts/learn-dot-net/templates/api-gateway-configmap.yaml
+Backend/Deployment/Dev/k8s-helm/api-gateway/templates/configmap.yaml
 ```
 
 The Docker Compose API gateway configs are still rendered from:
@@ -248,4 +258,4 @@ Remove generated certs, data, `.env`, and backend image:
 Backend/Deployment/Dev/scripts/clean-all.sh
 ```
 
-For Kubernetes, run `k8s-clean.sh` before `clean-all.sh` if the Helm release or namespace is still deployed.
+For Kubernetes, run `k8s-clean.sh` before `clean-all.sh` if the Helm releases or namespace are still deployed.
