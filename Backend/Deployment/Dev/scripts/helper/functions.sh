@@ -75,11 +75,19 @@ create_env_file() {
     CERT_SECRET
 
     API_GATEWAY_CONTAINER_NAME
+    API_GATEWAY_CERT_SECRET_NAME
+    API_GATEWAY_CERT_FILE_NAME
+    API_GATEWAY_KEY_FILE_NAME
+    API_GATEWAY_HTTPS_PORT
+    API_GATEWAY_ADMIN_PORT
     BACKEND_CONTAINER_NAME
     BACKEND_CONTAINER_PORT
 
     K8S_CLUSTER_NAME
     K8S_NAMESPACE
+    HELM_RELEASE_NAME
+    HELM_CHART_DIR
+    HELM_TIMEOUT
 
     # TODO: Add more variables as needed
   )
@@ -94,13 +102,11 @@ create_env_file() {
 create_files_from_templates() {
   echo "Creating files from templates"
 
+  require_command envsubst
+
   local templates=(
     "${ENV_DIR}/envoy/templates/api-gateway.template:${ENV_DIR}/envoy/api-gateway.yaml"
     "${ENV_DIR}/envoy/templates/api-gateway.local.template:${ENV_DIR}/envoy/api-gateway.local.yaml"
-    "${ENV_DIR}/k8s/templates/backend-deployment.template:${ENV_DIR}/k8s/backend-deployment.yaml"
-    "${ENV_DIR}/k8s/templates/backend-service.template:${ENV_DIR}/k8s/backend-service.yaml"
-    "${ENV_DIR}/k8s/templates/api-gateway-deployment.template:${ENV_DIR}/k8s/api-gateway-deployment.yaml"
-    "${ENV_DIR}/k8s/templates/api-gateway-service.template:${ENV_DIR}/k8s/api-gateway-service.yaml"
 
     # TODO: Add more templates as needed, pattern is "source:destination"
   )
@@ -109,6 +115,11 @@ create_files_from_templates() {
     local src
     local dest
     IFS=":" read -r src dest <<< "$item"
+
+    if [[ ! -f "$src" ]]; then
+      echo "Skipping missing template: $src"
+      continue
+    fi
 
     envsubst < "$src" > "$dest"
     echo "$src --> $dest"
@@ -127,7 +138,7 @@ ensure_root_ca() {
 }
 
 generate_tls_certs() {
-  generate_cert_with_keystore_and_truststore "api-gateway" "api-gateway" "${BACKEND_HOSTNAME}"
+  generate_cert_with_keystore_and_truststore "${API_GATEWAY_CONTAINER_NAME}" "${API_GATEWAY_CONTAINER_NAME}" "${BACKEND_HOSTNAME}"
 }
 
 ensure_kind_cluster() {
@@ -149,22 +160,89 @@ load_backend_image_to_kind() {
   kind load docker-image "$(backend_image_name)" --name "${K8S_CLUSTER_NAME}"
 }
 
-deploy_k8s_resources() {
+api_gateway_cert_file() {
+  echo "${CERTS_DIR}/${API_GATEWAY_CONTAINER_NAME}/${API_GATEWAY_CERT_FILE_NAME}"
+}
+
+api_gateway_key_file() {
+  echo "${CERTS_DIR}/${API_GATEWAY_CONTAINER_NAME}/${API_GATEWAY_KEY_FILE_NAME}"
+}
+
+ensure_helm_chart() {
+  if [[ ! -f "${HELM_CHART_DIR}/Chart.yaml" ]]; then
+    echo "Error: Helm chart was not found at '${HELM_CHART_DIR}'." >&2
+    return 1
+  fi
+}
+
+ensure_api_gateway_cert_secret() {
   require_command kubectl
 
-  kubectl apply -k "${ENV_DIR}"
-  kubectl -n "${K8S_NAMESPACE}" rollout status deployment/backend --timeout=120s
-  kubectl -n "${K8S_NAMESPACE}" rollout status deployment/api-gateway --timeout=120s
+  local cert_file
+  local key_file
+  cert_file="$(api_gateway_cert_file)"
+  key_file="$(api_gateway_key_file)"
+
+  if [[ ! -f "$cert_file" || ! -f "$key_file" ]]; then
+    echo "Error: API gateway certificate files were not found." >&2
+    echo "Expected: $cert_file" >&2
+    echo "Expected: $key_file" >&2
+    return 1
+  fi
+
+  kubectl create namespace "${K8S_NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
+  kubectl -n "${K8S_NAMESPACE}" create secret generic "${API_GATEWAY_CERT_SECRET_NAME}" \
+    --from-file="${API_GATEWAY_CERT_FILE_NAME}=${cert_file}" \
+    --from-file="${API_GATEWAY_KEY_FILE_NAME}=${key_file}" \
+    --dry-run=client -o yaml | kubectl apply -f -
+}
+
+deploy_k8s_resources() {
+  require_command kubectl
+  require_command helm
+
+  ensure_helm_chart
+  ensure_api_gateway_cert_secret
+
+  helm upgrade --install "${HELM_RELEASE_NAME}" "${HELM_CHART_DIR}" \
+    --namespace "${K8S_NAMESPACE}" \
+    --create-namespace \
+    --wait \
+    --timeout "${HELM_TIMEOUT}" \
+    --set "namespace.name=${K8S_NAMESPACE}" \
+    --set "backend.name=${BACKEND_CONTAINER_NAME}" \
+    --set-string "backend.image.repository=${NAMESPACE}/${REPOSITORY_NAME}/backend" \
+    --set-string "backend.image.tag=${BACKEND_TAG}" \
+    --set "backend.containerPort=${BACKEND_CONTAINER_PORT}" \
+    --set "backend.service.port=${BACKEND_CONTAINER_PORT}" \
+    --set "apiGateway.name=${API_GATEWAY_CONTAINER_NAME}" \
+    --set-string "apiGateway.host=${BACKEND_HOSTNAME}" \
+    --set "apiGateway.externalPort=${GATEWAY_PORT}" \
+    --set-string "apiGateway.image.tag=${ENVOY_TAG}" \
+    --set "apiGateway.containerPorts.https=${API_GATEWAY_HTTPS_PORT}" \
+    --set "apiGateway.containerPorts.admin=${API_GATEWAY_ADMIN_PORT}" \
+    --set "apiGateway.service.httpsPort=${API_GATEWAY_HTTPS_PORT}" \
+    --set "apiGateway.service.adminPort=${API_GATEWAY_ADMIN_PORT}" \
+    --set-string "apiGateway.tls.existingSecret=${API_GATEWAY_CERT_SECRET_NAME}" \
+    --set-string "apiGateway.tls.certFileName=${API_GATEWAY_CERT_FILE_NAME}" \
+    --set-string "apiGateway.tls.keyFileName=${API_GATEWAY_KEY_FILE_NAME}"
+
+  kubectl -n "${K8S_NAMESPACE}" rollout status deployment/"${BACKEND_CONTAINER_NAME}" --timeout="${HELM_TIMEOUT}"
+  kubectl -n "${K8S_NAMESPACE}" rollout status deployment/"${API_GATEWAY_CONTAINER_NAME}" --timeout="${HELM_TIMEOUT}"
 }
 
 delete_k8s_resources() {
   require_command kubectl
+  require_command helm
 
-  kubectl -n "" delete deployment backend api-gateway --ignore-not-found=true
-  kubectl -n "" delete service backend api-gateway --ignore-not-found=true
-  kubectl -n "" delete configmap api-gateway-config --ignore-not-found=true
-  kubectl -n "" delete secret api-gateway-certs --ignore-not-found=true
-  kubectl delete namespace "" --ignore-not-found=true
+  if helm status "${HELM_RELEASE_NAME}" --namespace "${K8S_NAMESPACE}" >/dev/null 2>&1; then
+    helm uninstall "${HELM_RELEASE_NAME}" --namespace "${K8S_NAMESPACE}" --wait --timeout "${HELM_TIMEOUT}"
+  else
+    echo "Helm release '${HELM_RELEASE_NAME}' was not found in namespace '${K8S_NAMESPACE}'."
+  fi
+
+  kubectl -n "${K8S_NAMESPACE}" delete secret "${API_GATEWAY_CERT_SECRET_NAME}" --ignore-not-found=true
+  kubectl delete namespace "${K8S_NAMESPACE}" --ignore-not-found=true
 }
 
 delete_kind_cluster() {
@@ -176,5 +254,5 @@ delete_kind_cluster() {
 port_forward_api_gateway() {
   require_command kubectl
 
-  kubectl -n "${K8S_NAMESPACE}" port-forward "svc/${API_GATEWAY_CONTAINER_NAME}" "${GATEWAY_PORT}:443"
+  kubectl -n "${K8S_NAMESPACE}" port-forward "svc/${API_GATEWAY_CONTAINER_NAME}" "${GATEWAY_PORT}:${API_GATEWAY_HTTPS_PORT}"
 }

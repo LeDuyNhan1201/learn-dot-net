@@ -32,7 +32,7 @@ source "${CERT_SCRIPT}"
 source "${KEYPAIR_SCRIPT}"
 
 # -------------------------------
-# Generate Environment & Certificates
+# Generate Environment, Envoy Configs & Certificates
 # -------------------------------
 
 create_env_file
@@ -41,7 +41,7 @@ ensure_root_ca
 generate_tls_certs
 
 # -------------------------------
-# Build, Load & Deploy
+# Build, Load & Deploy Helm Release
 # -------------------------------
 
 build_backend_image "${BACKEND_DIR}"

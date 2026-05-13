@@ -23,8 +23,16 @@ export CERTS_DIR="${CERTS_DIR:-${ENV_DIR}/certs}"
 export KEYPAIR_DIR="${KEYPAIR_DIR:-${ENV_DIR}/keypair}"
 
 export API_GATEWAY_CONTAINER_NAME="api-gateway"
+export API_GATEWAY_CERT_SECRET_NAME="api-gateway-certs"
+export API_GATEWAY_CERT_FILE_NAME="api-gateway.cert.pem"
+export API_GATEWAY_KEY_FILE_NAME="api-gateway.key.pem"
+export API_GATEWAY_HTTPS_PORT=443
+export API_GATEWAY_ADMIN_PORT=9901
 export BACKEND_CONTAINER_NAME="backend"
 export BACKEND_CONTAINER_PORT=60001
 
 export K8S_CLUSTER_NAME="learn-dot-net"
 export K8S_NAMESPACE="learn-dot-net"
+export HELM_RELEASE_NAME="${HELM_RELEASE_NAME:-learn-dot-net}"
+export HELM_CHART_DIR="${HELM_CHART_DIR:-${ENV_DIR}/../../charts/learn-dot-net}"
+export HELM_TIMEOUT="${HELM_TIMEOUT:-120s}"

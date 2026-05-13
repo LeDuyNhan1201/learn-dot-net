@@ -23,9 +23,10 @@ IMAGE_PREFIX="${NAMESPACE}/${REPOSITORY_NAME}"
 # Cleanup Files
 # -------------------------------
 
-echo "Removing certs, data and environment files..."
+echo "Removing certs, keypairs, data and environment files..."
 
 sudo rm -rf "${ENV_DIR}/certs/"*
+sudo rm -rf "${ENV_DIR}/keypair/"*
 sudo rm -rf "${ENV_DIR}/data/"*
 sudo rm -f "${ENV_DIR}/.env"
 

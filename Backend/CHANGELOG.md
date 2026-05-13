@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-13
+
+- Added the `Backend/charts/learn-dot-net` Helm chart for the backend API and Envoy API gateway.
+- Updated Kubernetes scripts to install, upgrade, and uninstall the Helm release instead of using kustomize manifests.
+- Added Helm-related environment defaults, Kubernetes secret creation for API gateway TLS files, and namespace-aware cleanup.
+- Updated deployment documentation to use the Helm chart flow consistently.
+
 ## 2026-05-09
 
 - Added Kubernetes deploy, apply, clean, delete-cluster, and port-forward scripts plus an all-in-one Docker and Kubernetes runbook.

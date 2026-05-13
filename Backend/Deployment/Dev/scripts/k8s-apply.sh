@@ -28,7 +28,7 @@ source "${FUNCTIONS_FILE}"
 source "${CERT_SCRIPT}"
 
 # -------------------------------
-# Render & Apply Kubernetes Resources
+# Render & Apply Helm Release
 # -------------------------------
 
 create_env_file
@@ -39,4 +39,4 @@ ensure_kind_cluster
 load_backend_image_to_kind
 deploy_k8s_resources
 
-echo "Kubernetes resources applied successfully."
+echo "Helm release applied successfully."

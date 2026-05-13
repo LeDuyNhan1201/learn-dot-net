@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "learn-dot-net.apiGatewayName" . }}
+  namespace: {{ include "learn-dot-net.namespace" . }}
+  labels:
+    {{- include "learn-dot-net.labels" . | nindent 4 }}
+    app.kubernetes.io/component: api-gateway
+spec:
+  replicas: {{ .Values.apiGateway.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "learn-dot-net.apiGatewaySelectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "learn-dot-net.apiGatewaySelectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ include "learn-dot-net.apiGatewayName" . }}
+          image: "{{ .Values.apiGateway.image.repository }}:{{ .Values.apiGateway.image.tag }}"
+          imagePullPolicy: {{ .Values.apiGateway.image.pullPolicy }}
+          command: {{ toJson .Values.apiGateway.command }}
+          ports:
+            - name: https
+              containerPort: {{ .Values.apiGateway.containerPorts.https }}
+            - name: admin
+              containerPort: {{ .Values.apiGateway.containerPorts.admin }}
+          volumeMounts:
+            - name: api-gateway-config
+              mountPath: /etc/envoy/envoy.yaml
+              subPath: envoy.yaml
+              readOnly: true
+            - name: api-gateway-certs
+              mountPath: /etc/envoy/certificates
+              readOnly: true
+          {{- with .Values.apiGateway.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: api-gateway-config
+          configMap:
+            name: {{ include "learn-dot-net.apiGatewayConfigName" . }}
+            items:
+              - key: envoy.yaml
+                path: envoy.yaml
+        - name: api-gateway-certs
+          secret:
+            secretName: {{ include "learn-dot-net.apiGatewaySecretName" . }}

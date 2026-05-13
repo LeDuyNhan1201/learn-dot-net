@@ -32,6 +32,9 @@ Backend container port: 60001
 Backend image: leduynhan1201/learn-dot-net/backend:1.0.0
 Kind cluster: learn-dot-net
 Kubernetes namespace: learn-dot-net
+Helm release: learn-dot-net
+Helm chart: Backend/charts/learn-dot-net
+API gateway certificate secret: api-gateway-certs
 ```
 
 ## Docker Native Flow
@@ -139,13 +142,14 @@ Backend/Deployment/Dev/scripts/k8s-deploy.sh
 This script:
 
 - Creates `.env`
-- Renders Envoy config from templates
+- Renders Docker Compose Envoy configs from templates
 - Ensures the root CA exists
 - Generates API gateway certificates
 - Builds the backend native AOT Docker image
 - Creates the kind cluster if it does not exist
 - Loads the backend image into kind
-- Applies `kubectl apply -k Backend/Deployment/Dev`
+- Creates or updates the `api-gateway-certs` Kubernetes Secret
+- Installs or upgrades the `learn-dot-net` Helm release from `Backend/charts/learn-dot-net`
 - Waits for backend and API gateway rollouts
 
 ### 2. Port-forward the API gateway
@@ -165,19 +169,21 @@ curl -k --resolve backend.learn-dot-net.dev:60000:127.0.0.1 \
   https://backend.learn-dot-net.dev:60000/health/info
 ```
 
-### 4. Apply k8s resources again without rebuilding
+### 4. Apply Kubernetes resources again without rebuilding
 
-Use this after editing k8s YAML, Envoy templates, or certificates when the backend image already exists locally:
+Use this after editing Helm templates, chart values, Envoy templates, or certificates when the backend image already exists locally:
 
 ```bash
 Backend/Deployment/Dev/scripts/k8s-apply.sh
 ```
 
-### 5. Delete k8s resources
+### 5. Delete Kubernetes resources
 
 ```bash
 Backend/Deployment/Dev/scripts/k8s-clean.sh
 ```
+
+This uninstalls the Helm release, deletes the generated API gateway certificate Secret, and deletes the development namespace.
 
 ### 6. Delete the kind cluster
 
@@ -187,31 +193,41 @@ Backend/Deployment/Dev/scripts/k8s-delete-cluster.sh
 
 ## Rendered Kubernetes Resources
 
-The k8s flow uses kustomize from this root:
+The k8s flow uses this Helm chart:
 
 ```bash
-Backend/Deployment/Dev/kustomization.yaml
+Backend/charts/learn-dot-net
 ```
 
 Preview rendered manifests:
 
 ```bash
-kubectl kustomize Backend/Deployment/Dev
+helm template learn-dot-net Backend/charts/learn-dot-net --namespace learn-dot-net
 ```
 
-Client-side dry run:
+Helm dry run:
 
 ```bash
-kubectl apply --dry-run=client --validate=false -k Backend/Deployment/Dev
+helm upgrade --install learn-dot-net Backend/charts/learn-dot-net \
+  --namespace learn-dot-net \
+  --create-namespace \
+  --dry-run
 ```
 
-The API gateway ConfigMap is generated from:
+The Kubernetes API gateway ConfigMap is rendered by the Helm chart from:
 
 ```bash
-Backend/Deployment/Dev/envoy/api-gateway.yaml
+Backend/charts/learn-dot-net/templates/api-gateway-configmap.yaml
 ```
 
-The API gateway certificate Secret is generated from:
+The Docker Compose API gateway configs are still rendered from:
+
+```bash
+Backend/Deployment/Dev/envoy/templates/api-gateway.template
+Backend/Deployment/Dev/envoy/templates/api-gateway.local.template
+```
+
+The API gateway certificate Secret is created from:
 
 ```bash
 Backend/Deployment/Dev/certs/api-gateway/api-gateway.cert.pem
@@ -232,4 +248,4 @@ Remove generated certs, data, `.env`, and backend image:
 Backend/Deployment/Dev/scripts/clean-all.sh
 ```
 
-For Kubernetes, run `k8s-clean.sh` before `clean-all.sh` if the resources are still deployed.
+For Kubernetes, run `k8s-clean.sh` before `clean-all.sh` if the Helm release or namespace is still deployed.

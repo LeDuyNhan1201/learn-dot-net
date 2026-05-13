@@ -40,12 +40,12 @@ create_files_from_templates
 create_data_folders
 
 generate_root_ca
-generate_cert_with_keystore_and_truststore "api-gateway" "api-gateway" "${BACKEND_HOSTNAME}"
+generate_tls_certs
 
 # -------------------------------
 # Docker Image Build
 # -------------------------------
 
 build_backend_image "${BACKEND_DIR}"
-  
+
 echo "Initialize completed successfully."

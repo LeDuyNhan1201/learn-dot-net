@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "learn-dot-net.apiGatewayName" . }}
+  namespace: {{ include "learn-dot-net.namespace" . }}
+  labels:
+    {{- include "learn-dot-net.labels" . | nindent 4 }}
+    app.kubernetes.io/component: api-gateway
+spec:
+  type: {{ .Values.apiGateway.service.type }}
+  selector:
+    {{- include "learn-dot-net.apiGatewaySelectorLabels" . | nindent 4 }}
+  ports:
+    - name: https
+      port: {{ .Values.apiGateway.service.httpsPort }}
+      targetPort: https
+    - name: admin
+      port: {{ .Values.apiGateway.service.adminPort }}
+      targetPort: admin
