@@ -5,14 +5,17 @@ set -euo pipefail
 create_dir() {
   local use_sudo=$1
   local dir=$2
+  local owner="${OBSERVABILITY_UID:-1000}:${OBSERVABILITY_GID:-1000}"
 
-  if [ "$use_sudo" = true ]; then
+  if [ "$use_sudo" = true ] && [[ ${EUID:-$(id -u)} -ne 0 ]] && command -v sudo >/dev/null 2>&1; then
     sudo mkdir -p "$dir"
-    sudo chown -R 1000:1000 "$dir"
+    sudo chown -R "$owner" "$dir"
     sudo chmod -R 755 "$dir"
   else
     mkdir -p "$dir"
-    chown -R 1000:1000 "$dir"
+    if [[ ${EUID:-$(id -u)} -eq 0 ]]; then
+      chown -R "$owner" "$dir"
+    fi
     chmod -R 755 "$dir"
   fi
 

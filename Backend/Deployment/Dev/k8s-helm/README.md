@@ -5,6 +5,9 @@ This folder contains the development Helm charts used by the Kubernetes scripts:
 - `backend`: deploys the native AOT backend API image.
 - `api-gateway`: deploys Envoy, renders `envoy.yaml`, and mounts API gateway TLS certificates.
 
+The Docker Compose observability stack is documented in `Backend/Deployment/Dev/all-in-one.md`.
+These Helm charts do not currently deploy Grafana, Loki, Tempo, Prometheus, or the OpenTelemetry Collector.
+
 Run commands from the repository root unless a step says otherwise.
 
 ## Defaults

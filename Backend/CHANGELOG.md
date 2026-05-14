@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-05-14
+
+- Added the Docker Compose observability stack for OpenTelemetry Collector, Grafana, Loki, Tempo, and Prometheus to both native and local Docker flows.
+- Centralized observability image tags, ports, retention settings, and data directories in `Deployment/Dev/scripts/helper/env_config.sh`.
+- Updated deployment scripts to generate observability `.env` values and persistent data folders.
+- Updated deployment documentation with observability architecture, ports, environment variables, startup flows, troubleshooting, and Loki TSDB migration notes.
+
 ## 2026-05-13
 
 - Added Helm chart content under `Backend/Deployment/Dev/k8s-helm/backend` and `Backend/Deployment/Dev/k8s-helm/api-gateway`.
