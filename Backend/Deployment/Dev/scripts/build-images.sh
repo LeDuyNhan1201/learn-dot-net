@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # -------------------------------
-# Configuration
+# Configurations
 # -------------------------------
 
 MODE="dev"
@@ -14,19 +14,22 @@ HELPER_DIR="${SCRIPT_DIR}/helper"
 export ENV_DIR
 
 ENV_FILE="${HELPER_DIR}/env_config.sh"
-FUNCTIONS_FILE="${HELPER_DIR}/functions.sh"
+UTILS_FILE="${HELPER_DIR}/utils.sh"
+GENERATOR_FILE="${HELPER_DIR}/generator.sh"
 
 # -------------------------------
-# Load Environment & Helpers
+# Load Environments & Helpers
 # -------------------------------
 
 # shellcheck source=scripts/helper/env_config.sh
 source "${ENV_FILE}"
-# shellcheck source=scripts/helper/functions.sh
-source "${FUNCTIONS_FILE}"
+# shellcheck source=scripts/helper/utils.sh
+source "${UTILS_FILE}"
+# shellcheck source=scripts/helper/generator.sh
+source "${GENERATOR_FILE}"
 
 # -------------------------------
-# Docker Image Build
+# Docker Images Build
 # -------------------------------
 
 build_backend_image "${BACKEND_DIR}"

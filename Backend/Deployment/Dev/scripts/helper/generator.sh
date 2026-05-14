@@ -1,6 +1,95 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# --------- Files and folders generation functions ---------
+create_data_folders() {
+  echo "Creating data folders"
+
+  create_dir true "$DATA_DIR"
+
+  # TODO: Add more data folders as needed
+}
+
+create_env_file() {
+  echo "Creating env file"
+
+  : > "${ENV_DIR}/.env"
+
+  local vars=(
+    LOCAL_IP
+    GATEWAY_PORT
+    BACKEND_HOSTNAME
+
+    NAMESPACE
+    REPOSITORY_NAME
+
+    ENVOY_TAG
+    BACKEND_TAG
+
+    CERT_SECRET
+
+    API_GATEWAY_CONTAINER_NAME
+    API_GATEWAY_CERT_SECRET_NAME
+    API_GATEWAY_CERT_FILE_NAME
+    API_GATEWAY_KEY_FILE_NAME
+    API_GATEWAY_HTTPS_PORT
+    API_GATEWAY_ADMIN_PORT
+    BACKEND_CONTAINER_NAME
+    BACKEND_CONTAINER_PORT
+
+    K8S_CLUSTER_NAME
+    K8S_NAMESPACE
+    K8S_HELM_DIR
+    BACKEND_HELM_RELEASE_NAME
+    API_GATEWAY_HELM_RELEASE_NAME
+    BACKEND_HELM_CHART_DIR
+    API_GATEWAY_HELM_CHART_DIR
+    HELM_TIMEOUT
+
+    # TODO: Add more variables as needed
+  )
+
+  for var in "${vars[@]}"; do
+    echo "$var=\"${!var}\"" >> "${ENV_DIR}/.env"
+  done
+
+  echo "Env file created successfully."
+}
+
+create_files_from_templates() {
+  echo "Creating files from templates"
+
+  require_command envsubst
+
+  local templates=(
+    "${ENV_DIR}/envoy/templates/api-gateway.template:${ENV_DIR}/envoy/api-gateway.yaml"
+    "${ENV_DIR}/envoy/templates/api-gateway.local.template:${ENV_DIR}/envoy/api-gateway.local.yaml"
+
+    # TODO: Add more templates as needed, pattern is "source:destination"
+  )
+
+  for item in "${templates[@]}"; do
+    local src
+    local dest
+    IFS=":" read -r src dest <<< "$item"
+
+    if [[ ! -f "$src" ]]; then
+      echo "Skipping missing template: $src"
+      continue
+    fi
+
+    envsubst < "$src" > "$dest"
+    echo "$src --> $dest"
+  done
+
+  echo "Files created successfully."
+}
+
+# --------- Secrets generation functions ---------
+
+# ===== Example usage =====
+# generate_root_ca "LDNhanCA"
+# generate_root_ca "ExampleCA" 730
 generate_root_ca() {
   local ca_name=${CA_NAME:? CA_NAME is not set}
   local ca_days="${1:-3650}"   # default 10 years
@@ -71,9 +160,8 @@ EOF
 }
 
 # ===== Example usage =====
-# generate_root_ca "LDNhanCA"
-# generate_root_ca "ExampleCA" 730
-
+# export CERT_SECRET="your-pass"
+# generate_keystore_and_truststore "/path/to/certs" "example.com" "rest_api.example.com" "admin.example.com"
 generate_cert_with_keystore_and_truststore() {
   local certs_dir="$CERTS_DIR/$1"
   local main_domain="$2"
@@ -220,6 +308,69 @@ EOF
   echo "====================================================================="
 }
 
+generate_tls_certs() {
+  generate_cert_with_keystore_and_truststore "${API_GATEWAY_CONTAINER_NAME}" "${API_GATEWAY_CONTAINER_NAME}" "${BACKEND_HOSTNAME}"
+}
+
 # ===== Example usage =====
-# export CERT_SECRET="your-pass"
-# generate_keystore_and_truststore "/path/to/certs" "example.com" "rest_api.example.com" "admin.example.com"
+# generate_jwt_keypair auth auth-service
+generate_jwt_keypair() {
+  local output_dir="${1:-.}"
+  local name="${2:-}"
+
+  if [[ -z "$name" ]]; then
+    echo "Error: key name is required"
+    return 1
+  fi
+
+  if ! command -v openssl >/dev/null 2>&1; then
+    echo "Error: openssl is not installed"
+    return 1
+  fi
+
+  mkdir -p "${KEYPAIR_DIR}/${output_dir}"
+
+  local private_key="${KEYPAIR_DIR}/${output_dir}/${name}.key.pem"
+  local public_key="${KEYPAIR_DIR}/${output_dir}/${name}.pub.pem"
+
+  echo "Generating RSA keypair for JWT (RS256)..."
+
+  # Generate private key
+  openssl genpkey \
+    -algorithm RSA \
+    -pkeyopt rsa_keygen_bits:2048 \
+    -out "$private_key"
+
+  # Extract public key
+  openssl rsa \
+    -pubout \
+    -in "$private_key" \
+    -out "$public_key"
+
+  chmod 600 "$private_key"
+  chmod 644 "$public_key"
+
+  echo "Private key: $private_key"
+  echo "Public key : $public_key"
+}
+
+# --------- Docker image generation functions ---------
+backend_image_name() {
+  echo "${NAMESPACE}/${REPOSITORY_NAME}/backend:${BACKEND_TAG}"
+}
+
+build_backend_image() {
+  local backend_dir=${1:?backend_dir is required}
+  local image_name
+  image_name="$(backend_image_name)"
+
+  require_command docker
+
+  docker rmi "$image_name" || true
+  docker build --no-cache \
+    --build-arg BACKEND_TAG="${BACKEND_TAG}" \
+    --build-arg BACKEND_CONTAINER_PORT="${BACKEND_CONTAINER_PORT}" \
+    -f "${backend_dir}/API/Docker/Native/Dockerfile" \
+    -t "$image_name" \
+    "${backend_dir}"
+}

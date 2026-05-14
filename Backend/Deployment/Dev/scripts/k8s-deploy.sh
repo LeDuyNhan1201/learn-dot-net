@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # -------------------------------
-# Configuration
+# Configurations
 # -------------------------------
 
 MODE="dev"
@@ -14,29 +14,30 @@ HELPER_DIR="${SCRIPT_DIR}/helper"
 export ENV_DIR
 
 ENV_FILE="${HELPER_DIR}/env_config.sh"
-FUNCTIONS_FILE="${HELPER_DIR}/functions.sh"
-CERT_SCRIPT="${HELPER_DIR}/generate_certs.sh"
-KEYPAIR_SCRIPT="${HELPER_DIR}/generate_keypair.sh"
+UTILS_FILE="${HELPER_DIR}/utils.sh"
+GENERATOR_FILE="${HELPER_DIR}/generator.sh"
+K8S_FILE="${HELPER_DIR}/k8s_functions.sh"
 
 # -------------------------------
-# Load Environment & Helpers
+# Load Environments & Helpers
 # -------------------------------
 
 # shellcheck source=scripts/helper/env_config.sh
 source "${ENV_FILE}"
-# shellcheck source=scripts/helper/functions.sh
-source "${FUNCTIONS_FILE}"
-# shellcheck source=scripts/helper/generate_certs.sh
-source "${CERT_SCRIPT}"
-# shellcheck source=scripts/helper/generate_keypair.sh
-source "${KEYPAIR_SCRIPT}"
+# shellcheck source=scripts/helper/utils.sh
+source "${UTILS_FILE}"
+# shellcheck source=scripts/helper/generator.sh
+source "${GENERATOR_FILE}"
+# shellcheck source=scripts/helper/k8s_functions.sh
+source "${K8S_FILE}"
 
 # -------------------------------
-# Generate Environment, Envoy Configs & Certificates
+# Generate Environments, Envoy Configs & Certificates
 # -------------------------------
 
 create_env_file
 create_files_from_templates
+
 ensure_root_ca
 generate_tls_certs
 

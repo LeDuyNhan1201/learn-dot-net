@@ -14,9 +14,8 @@ HELPER_DIR="${SCRIPT_DIR}/helper"
 export ENV_DIR
 
 ENV_FILE="${HELPER_DIR}/env_config.sh"
-FUNCTIONS_FILE="${HELPER_DIR}/functions.sh"
-CERT_SCRIPT="${HELPER_DIR}/generate_certs.sh"
-KEYPAIR_SCRIPT="${HELPER_DIR}/generate_keypair.sh"
+UTILS_FILE="${HELPER_DIR}/utils.sh"
+GENERATOR_FILE="${HELPER_DIR}/generator.sh"
 
 # -------------------------------
 # Load Environment & Helpers
@@ -24,15 +23,13 @@ KEYPAIR_SCRIPT="${HELPER_DIR}/generate_keypair.sh"
 
 # shellcheck source=scripts/helper/env_config.sh
 source "${ENV_FILE}"
+# shellcheck source=scripts/helper/utils.sh
+source "${UTILS_FILE}"
 # shellcheck source=scripts/helper/functions.sh
-source "${FUNCTIONS_FILE}"
-# shellcheck source=scripts/helper/generate_certs.sh
-source "${CERT_SCRIPT}"
-# shellcheck source=scripts/helper/generate_keypair.sh
-source "${KEYPAIR_SCRIPT}"
+source "${GENERATOR_FILE}"
 
 # -------------------------------
-# Generate Environment & Certificates
+# Generate Environments & Certificates
 # -------------------------------
 
 create_env_file
