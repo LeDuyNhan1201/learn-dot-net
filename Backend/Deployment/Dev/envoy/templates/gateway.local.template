@@ -1,9 +1,11 @@
 admin:
   access_log_path: /tmp/admin_access.log
-  address:
-    socket_address:
-      address: 0.0.0.0
-      port_value: 9901
+  listeners:
+    - name: listener_https
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 9901
 
 static_resources:
   listeners:
@@ -21,7 +23,7 @@ static_resources:
       filter_chains:
         - filter_chain_match:
             server_names:
-              - "backend.learn-dot-net.dev"
+              - "${APP_HOSTNAME}"
 
           transport_socket:
             name: envoy.transport_sockets.tls
@@ -30,9 +32,9 @@ static_resources:
               common_tls_context:
                 tls_certificates:
                   - certificate_chain:
-                      filename: /etc/envoy/certificates/api-gateway.cert.pem
+                      filename: /etc/envoy/certificates/gateway.cert.pem
                     private_key:
-                      filename: /etc/envoy/certificates/api-gateway.key.pem
+                      filename: /etc/envoy/certificates/gateway.key.pem
 
           filters:
             - name: envoy.filters.network.http_connection_manager
@@ -46,13 +48,13 @@ static_resources:
                   virtual_hosts:
                     - name: services
                       domains:
-                        - "backend.learn-dot-net.dev:60000"
+                        - "${APP_HOSTNAME}:${GATEWAY_PORT}"
 
                       routes:
                         - match:
                             prefix: "/"
                           route:
-                            cluster: api_gateway
+                            cluster: gateway
 
                           request_headers_to_add:
                             - header:
@@ -60,7 +62,7 @@ static_resources:
                                 value: https
                             - header:
                                 key: x-forwarded-port
-                                value: "60000"
+                                value: "${GATEWAY_PORT}"
 
                 http_filters:
                   - name: envoy.filters.http.router
@@ -68,21 +70,21 @@ static_resources:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
 
   clusters:
-    - name: api_gateway
+    - name: gateway
       connect_timeout: 5s
       type: logical_dns # logical_dns strict_dns
       lb_policy: round_robin # round_robin ring_hash
       dns_lookup_family: V4_ONLY
 
       load_assignment:
-        cluster_name: api_gateway
+        cluster_name: gateway
         endpoints:
           - lb_endpoints:
             - endpoint:
                 address:
                   socket_address:
-                    address: backend
-                    port_value: 60001
+                    address: host.docker.internal
+                    port_value: 9999
 
       health_checks:
         - timeout: 3s
@@ -90,4 +92,4 @@ static_resources:
           unhealthy_threshold: 3
           healthy_threshold: 2
           http_health_check:
-            path: "/health/ready"
+            path: "/health/info"

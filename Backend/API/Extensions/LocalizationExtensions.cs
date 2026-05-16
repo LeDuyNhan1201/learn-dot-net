@@ -2,9 +2,9 @@ using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
 
-namespace API.Configurations;
+namespace API.Extensions;
 
-public static class LocalizationConfiguration
+public static class LocalizationExtensions
 {
     public static IServiceCollection AddAppLocalization(this IServiceCollection services)
     {

@@ -23,7 +23,7 @@ create_env_file() {
     MODE
     LOCAL_IP
     GATEWAY_PORT
-    BACKEND_HOSTNAME
+    APP_HOSTNAME
 
     NAMESPACE
     REPOSITORY_NAME
@@ -43,51 +43,39 @@ create_env_file() {
     TEMPO_DATA_DIR
     PROMETHEUS_DATA_DIR
 
-    API_GATEWAY_CONTAINER_NAME
-    API_GATEWAY_CERT_SECRET_NAME
-    API_GATEWAY_CERT_FILE_NAME
-    API_GATEWAY_KEY_FILE_NAME
-    API_GATEWAY_HTTPS_PORT
-    API_GATEWAY_ADMIN_PORT
-    BACKEND_CONTAINER_NAME
-    BACKEND_CONTAINER_PORT
-    GRAFANA_CONTAINER_NAME
-    GRAFANA_CONTAINER_PORT
+    GATEWAY_CERT_SECRET_NAME
+    GATEWAY_CERT_FILE_NAME
+    GATEWAY_KEY_FILE_NAME
+    GATEWAY_HTTPS_PORT
+    GATEWAY_ADMIN_PORT
+
     GRAFANA_PORT
     GRAFANA_ADMIN_USER
     GRAFANA_ADMIN_PASSWORD
-    LOKI_CONTAINER_NAME
-    LOKI_CONTAINER_PORT
+  
     LOKI_PORT
-    LOKI_GRPC_CONTAINER_PORT
-    TEMPO_CONTAINER_NAME
-    TEMPO_CONTAINER_PORT
     TEMPO_PORT
-    TEMPO_OTLP_GRPC_CONTAINER_PORT
-    TEMPO_OTLP_HTTP_CONTAINER_PORT
-    PROMETHEUS_CONTAINER_NAME
-    PROMETHEUS_CONTAINER_PORT
+    
     PROMETHEUS_PORT
     PROMETHEUS_RETENTION_TIME
     PROMETHEUS_RETENTION_SIZE
-    OTEL_COLLECTOR_CONTAINER_NAME
+    
     OTEL_COLLECTOR_OTLP_GRPC_PORT
     OTEL_COLLECTOR_OTLP_HTTP_PORT
-    OTEL_COLLECTOR_METRICS_PORT
-    OTEL_COLLECTOR_INTERNAL_METRICS_PORT
     OTEL_COLLECTOR_HEALTH_PORT
+    
     OBSERVABILITY_UID
     OBSERVABILITY_GID
+    
     DOCKER_LOG_MAX_SIZE
     DOCKER_LOG_MAX_FILE
 
     K8S_CLUSTER_NAME
     K8S_NAMESPACE
     K8S_HELM_DIR
-    BACKEND_HELM_RELEASE_NAME
-    API_GATEWAY_HELM_RELEASE_NAME
+    
     BACKEND_HELM_CHART_DIR
-    API_GATEWAY_HELM_CHART_DIR
+    GATEWAY_HELM_CHART_DIR
     HELM_TIMEOUT
 
     # TODO: Add more variables as needed
@@ -106,8 +94,8 @@ create_files_from_templates() {
   require_command envsubst
 
   local templates=(
-    "${ENV_DIR}/envoy/templates/api-gateway.template:${ENV_DIR}/envoy/api-gateway.yaml"
-    "${ENV_DIR}/envoy/templates/api-gateway.local.template:${ENV_DIR}/envoy/api-gateway.local.yaml"
+    "${ENV_DIR}/envoy/templates/gateway.template:${ENV_DIR}/envoy/gateway.yaml"
+    "${ENV_DIR}/envoy/templates/gateway.local.template:${ENV_DIR}/envoy/gateway.local.yaml"
 
     # TODO: Add more templates as needed, pattern is "source:destination"
   )
@@ -353,7 +341,7 @@ EOF
 }
 
 generate_tls_certs() {
-  generate_cert_with_keystore_and_truststore "${API_GATEWAY_CONTAINER_NAME}" "${API_GATEWAY_CONTAINER_NAME}" "${BACKEND_HOSTNAME}"
+  generate_cert_with_keystore_and_truststore "gateway" "gateway" "${APP_HOSNAME}"
 }
 
 # ===== Example usage =====
@@ -413,7 +401,7 @@ build_backend_image() {
   docker rmi "$image_name" || true
   docker build --no-cache \
     --build-arg BACKEND_TAG="${BACKEND_TAG}" \
-    --build-arg BACKEND_CONTAINER_PORT="${BACKEND_CONTAINER_PORT}" \
+    --build-arg BACKEND_CONTAINER_PORT="9999" \
     -f "${backend_dir}/API/Docker/Native/Dockerfile" \
     -t "$image_name" \
     "${backend_dir}"

@@ -1,11 +1,11 @@
 using API.Extensions;
 
-var builder = WebApplication.CreateSlimBuilder(args);
+var builder = WebApplication
+    .CreateBuilder(args)
+    .AddApplicationServices();
 
-builder.AddApplicationServices();
-
-var app = builder.Build();
-
-app.UseApplicationPipeline();
+var app = builder
+    .Build()
+    .UseApplicationPipeline();
 
 app.Run();

@@ -1,23 +1,37 @@
-using API.Configurations;
 using API.Endpoints;
+using Infrastructure.Observability;
+using Infrastructure.Swagger;
 
 namespace API.Extensions;
 
-internal static class HostingExtensions
+internal static class ApplicationBuilderExtensions
 {
     public static WebApplication UseApplicationPipeline(this WebApplication app)
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        app.UseAppLocalization();
+        app
+            .UseAppLocalization()
+            .UseMetricsExporter(app.Configuration);
+        
+        app.UsePathBase(app.Configuration["Server:BasePath"]);
+        
+        var apiVersion = app.Configuration["Server:ApiVersion"] ?? "v1";
+        var apiV1 = app
+            .MapGroup(apiVersion)
+            .WithTags(apiVersion);
+
+        apiV1.MapTodoEndpoints();
+        apiV1.MapHealthEndpoints();
 
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
-        }
 
-        app.MapTodoEndpoints();
-        app.MapHealthEndpoints();
+            app
+                .UseSwaggerUi(app.Configuration)
+                .UseDeveloperExceptionPage();
+        }
 
         return app;
     }

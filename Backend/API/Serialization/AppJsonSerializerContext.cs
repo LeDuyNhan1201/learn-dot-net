@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
-using API.Options;
 using Domain.Entities;
+using Infrastructure.Options;
 
 namespace API.Serialization;
 
@@ -10,7 +10,7 @@ namespace API.Serialization;
 [JsonSerializable(typeof(IReadOnlyList<Todo>))]
 [JsonSerializable(typeof(Todo))]
 
-[JsonSerializable(typeof(AppOptions))]
+[JsonSerializable(typeof(ServerOptions))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
 {
 }
