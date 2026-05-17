@@ -88,7 +88,6 @@ static_resources:
 
                           route:
                             cluster: backend
-                            prefix_rewrite: "/"
 
                           request_headers_to_add:
                             - header:
@@ -122,7 +121,7 @@ static_resources:
 
       connect_timeout: 5s
       type: LOGICAL_DNS
-      lb_policy: ROUND_ROBIN
+      lb_policy: c
       dns_lookup_family: V4_ONLY
 
       load_assignment:

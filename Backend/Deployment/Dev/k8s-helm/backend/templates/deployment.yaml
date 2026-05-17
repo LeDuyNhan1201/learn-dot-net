@@ -2,69 +2,99 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "backend.fullname" . }}
-  namespace: {{ include "backend.namespace" . }}
   labels:
     {{- include "backend.labels" . | nindent 4 }}
+
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+
   selector:
     matchLabels:
       {{- include "backend.selectorLabels" . | nindent 6 }}
+
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
-      annotations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
       labels:
         {{- include "backend.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-    spec:
-      {{- $serviceAccountName := include "backend.serviceAccountName" . }}
-      {{- if $serviceAccountName }}
-      serviceAccountName: {{ $serviceAccountName }}
+
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
+
+    spec:
+      serviceAccountName: {{ include "backend.serviceAccountName" . }}
+
       containers:
-        - name: {{ include "backend.fullname" . }}
+        - name: {{ include "backend.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
           ports:
             - name: http
               containerPort: {{ .Values.containerPort }}
-          {{- with .Values.env }}
+
           env:
-            {{- range $name, $value := . }}
-            - name: {{ $name }}
-              value: {{ $value | quote }}
+            {{- range $k, $v := .Values.env }}
+            - name: {{ $k }}
+              value: {{ $v | quote }}
             {{- end }}
-          {{- end }}
-          {{- if or .Values.config.enabled .Values.secret.enabled }}
+
+          {{- if or .Values.config.data .Values.secret.stringData }}
           envFrom:
-            {{- if .Values.config.enabled }}
+            {{- if .Values.config.data }}
             - configMapRef:
                 name: {{ include "backend.fullname" . }}-config
             {{- end }}
-            {{- if .Values.secret.enabled }}
+            {{- if .Values.secret.stringData }}
             - secretRef:
-                name: {{ include "backend.fullname" . }}-secret
+                name: {{ default (printf "%s-secret" (include "backend.fullname" .)) .Values.secret.name }}
             {{- end }}
           {{- end }}
+
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+
+          # production health checks (recommended)
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}

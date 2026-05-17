@@ -143,6 +143,8 @@ services:
       tempo:
         condition: service_healthy
     environment:
+      GF_SERVER_ROOT_URL: https://${APP_HOSTNAME}/observability
+      GF_SERVER_SERVE_FROM_SUB_PATH: true
       GF_SERVER_HTTP_PORT: 3000
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}

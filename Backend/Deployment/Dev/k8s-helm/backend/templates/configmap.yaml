@@ -1,15 +1,10 @@
-{{- if .Values.config.enabled }}
+{{- if .Values.config.data }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "backend.fullname" . }}-config
-  namespace: {{ include "backend.namespace" . }}
   labels:
     {{- include "backend.labels" . | nindent 4 }}
 data:
-  {{- with .Values.config.data }}
-  {{- toYaml . | nindent 2 }}
-  {{- else }}
-  {}
-  {{- end }}
+  {{- toYaml .Values.config.data | nindent 2 }}
 {{- end }}

@@ -6,7 +6,7 @@ Expand the chart name.
 {{- end }}
 
 {{/*
-Create a stable resource name. The default is "backend" to match Envoy routing.
+Create full application name.
 */}}
 {{- define "backend.fullname" -}}
 {{- if .Values.fullnameOverride -}}
@@ -17,17 +17,10 @@ Create a stable resource name. The default is "backend" to match Envoy routing.
 {{- end }}
 
 {{/*
-Namespace used by all rendered resources.
-*/}}
-{{- define "backend.namespace" -}}
-{{- default .Release.Namespace .Values.namespace.name -}}
-{{- end }}
-
-{{/*
 Common labels.
 */}}
 {{- define "backend.labels" -}}
-helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" }}
 app.kubernetes.io/name: {{ include "backend.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: backend
@@ -36,22 +29,22 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
-Selector labels must remain stable across upgrades.
+Selector labels.
+Must remain stable.
 */}}
 {{- define "backend.selectorLabels" -}}
-app: {{ include "backend.fullname" . }}
 app.kubernetes.io/name: {{ include "backend.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/component: backend
 {{- end }}
 
 {{/*
-Service account name.
+ServiceAccount name.
 */}}
 {{- define "backend.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create -}}
-{{- default (include "backend.fullname" .) .Values.serviceAccount.name -}}
+{{- if .Values.serviceAccount.name -}}
+{{- .Values.serviceAccount.name -}}
 {{- else -}}
-{{- default "" .Values.serviceAccount.name -}}
+{{- include "backend.fullname" . -}}
 {{- end -}}
 {{- end }}

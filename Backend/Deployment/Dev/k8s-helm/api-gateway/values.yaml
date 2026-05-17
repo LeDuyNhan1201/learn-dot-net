@@ -1,9 +1,5 @@
-namespace:
-  create: false
-  name: learn-dot-net
-
 nameOverride: ""
-fullnameOverride: api-gateway
+fullnameOverride: gateway
 
 replicaCount: 1
 
@@ -17,50 +13,60 @@ command:
   - -c
   - /etc/envoy/envoy.yaml
 
-containerPorts:
-  https: 443
-  admin: 9901
-
 serviceAccount:
   create: false
-  automount: true
+  automount: false
   annotations: {}
   name: ""
 
+containerPorts:
+  https: 443
+  admin: 9901
+  
 service:
   type: ClusterIP
   httpsPort: 443
   adminPort: 9901
 
 gateway:
-  host: backend.learn-dot-net.dev
+  host: leduynhan1201.learn-dot-net.dev
   externalPort: 60000
 
+config:
+  data: {}
+  
 backend:
   serviceName: backend
-  servicePort: 60001
+  servicePort: 9999
+  healthCheckPath: /health/info
+  
+grafana:
+  serviceName: grafana
+  servicePort: 3000
+  healthCheckPath: /api/health
 
 envoy:
-  clusterName: api_gateway
+  clusterName: gateway
   connectTimeout: 5s
   dnsLookupFamily: V4_ONLY
   healthCheckPath: /health/info
-  configMapName: api-gateway-config
+  configMapName: gateway-config
+  connectionLimit: 10000
 
 tls:
   create: false
-  existingSecret: api-gateway-certs
-  certFileName: api-gateway.cert.pem
-  keyFileName: api-gateway.key.pem
+  existingSecret: gateway-certs
+  certFileName: gateway.cert.pem
+  keyFileName: gateway.key.pem
   certificate: ""
   privateKey: ""
 
 ingress:
   enabled: false
-  className: ""
+  className: nginx
   annotations: {}
   hosts:
-    - host: backend.learn-dot-net.dev
+    - host: leduynhan1201.learn-dot-net.dev
       paths:
         - path: /
           pathType: Prefix
@@ -68,12 +74,19 @@ ingress:
 
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 3
+  minReplicas: 2
+  maxReplicas: 10
   targetCPUUtilizationPercentage: 80
-  targetMemoryUtilizationPercentage: null
+  targetMemoryUtilizationPercentage:
 
-resources: {}
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+    
 podAnnotations: {}
 podLabels: {}
 nodeSelector: {}

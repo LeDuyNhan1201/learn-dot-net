@@ -1,73 +1,107 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "api-gateway.fullname" . }}
-  namespace: {{ include "api-gateway.namespace" . }}
+  name: {{ include "gateway.fullname" . }}
   labels:
-    {{- include "api-gateway.labels" . | nindent 4 }}
+    {{- include "gateway.labels" . | nindent 4 }}
+  
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
+  
   selector:
     matchLabels:
-      {{- include "api-gateway.selectorLabels" . | nindent 6 }}
+      {{- include "gateway.selectorLabels" . | nindent 6 }}
+    
   template:
     metadata:
+      labels:
+        {{- include "gateway.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+
       {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      labels:
-        {{- include "api-gateway.selectorLabels" . | nindent 8 }}
-        {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
+      
     spec:
-      {{- $serviceAccountName := include "api-gateway.serviceAccountName" . }}
-      {{- if $serviceAccountName }}
-      serviceAccountName: {{ $serviceAccountName }}
-      {{- end }}
+      serviceAccountName: {{ include "gateway.serviceAccountName" . }}
+      
       containers:
-        - name: {{ include "api-gateway.fullname" . }}
+        - name: {{ include "gateway.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: {{ toJson .Values.command }}
+          
           ports:
             - name: https
               containerPort: {{ .Values.containerPorts.https }}
             - name: admin
               containerPort: {{ .Values.containerPorts.admin }}
+              
           volumeMounts:
-            - name: api-gateway-config
+            - name: gateway-config
               mountPath: /etc/envoy/envoy.yaml
               subPath: envoy.yaml
               readOnly: true
-            - name: api-gateway-certs
+            - name: gateway-certs
               mountPath: /etc/envoy/certificates
               readOnly: true
+              
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+
+          # production health checks (recommended)
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ "ALL" ]
+              
       volumes:
-        - name: api-gateway-config
+        - name: gateway-config
           configMap:
-            name: {{ include "api-gateway.configMapName" . }}
+            name: {{ include "gateway.configMapName" . }}
             items:
               - key: envoy.yaml
                 path: envoy.yaml
-        - name: api-gateway-certs
+                
+        - name: gateway-certs
           secret:
-            secretName: {{ include "api-gateway.tlsSecretName" . }}
+            secretName: {{ include "gateway.tlsSecretName" . }}
+            
+        
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
