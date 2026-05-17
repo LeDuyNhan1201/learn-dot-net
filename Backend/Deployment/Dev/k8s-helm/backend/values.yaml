@@ -17,11 +17,11 @@ serviceAccount:
   annotations: {}
   name: ""
 
-containerPort: 9999
+containerPort: 60001
 
 service:
   type: ClusterIP
-  port: 9999
+  port: 60001
 
 config:
   data: {}

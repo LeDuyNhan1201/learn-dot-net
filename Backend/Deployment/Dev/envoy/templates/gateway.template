@@ -121,7 +121,7 @@ static_resources:
 
       connect_timeout: 5s
       type: LOGICAL_DNS
-      lb_policy: c
+      lb_policy: ROUND_ROBIN
       dns_lookup_family: V4_ONLY
 
       load_assignment:
@@ -133,7 +133,7 @@ static_resources:
                   address:
                     socket_address:
                       address: backend
-                      port_value: 9999
+                      port_value: 60001
 
       health_checks:
         - timeout: 3s

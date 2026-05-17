@@ -1,13 +1,13 @@
 export NAMESPACE="leduynhan1201"
 export REPOSITORY_NAME="learn-dot-net"
 
-export ENVOY_TAG=tools-dev # https://hub.docker.com/r/envoyproxy/envoy/tags
 export BACKEND_TAG="1.0.0"
-export GRAFANA_TAG="13.0.1"
-export LOKI_TAG="3.7.1"
-export TEMPO_TAG="2.10.5"
-export PROMETHEUS_TAG="3.11.3"
-export OTEL_COLLECTOR_TAG="0.152.0"
+export ENVOY_TAG="1-debian13-dev" # https://hub.docker.com/hardened-images/catalog/dhi/envoy
+export GRAFANA_TAG="13-debian13-dev" # https://hub.docker.com/hardened-images/catalog/dhi/grafana
+export LOKI_TAG="3" # https://hub.docker.com/hardened-images/catalog/dhi/loki
+export TEMPO_TAG="2" # https://hub.docker.com/hardened-images/catalog/dhi/tempo
+export PROMETHEUS_TAG="3.11" # https://hub.docker.com/hardened-images/catalog/dhi/prometheus
+export OTEL_COLLECTOR_TAG="0-contrib-dev" # https://hub.docker.com/hardened-images/catalog/dhi/opentelemetry-collector
 
 LOCAL_IP="${LOCAL_IP:-$(hostname -I 2>/dev/null | awk '{print $1}')}"
 LOCAL_IP="${LOCAL_IP:-127.0.0.1}"
@@ -62,8 +62,12 @@ export DOCKER_LOG_MAX_FILE="${DOCKER_LOG_MAX_FILE:-3}"
 export K8S_CLUSTER_NAME="learn-dot-net"
 export K8S_NAMESPACE="learn-dot-net"
 export K8S_HELM_DIR="${K8S_HELM_DIR:-${ENV_DIR}/k8s-helm}"
-export BACKEND_HELM_RELEASE_NAME="${BACKEND_HELM_RELEASE_NAME:-backend}"
-export API_GATEWAY_HELM_RELEASE_NAME="${API_GATEWAY_HELM_RELEASE_NAME:-api-gateway}"
-export BACKEND_HELM_CHART_DIR="${BACKEND_HELM_CHART_DIR:-${K8S_HELM_DIR}/backend}"
-export API_GATEWAY_HELM_CHART_DIR="${API_GATEWAY_HELM_CHART_DIR:-${K8S_HELM_DIR}/api-gateway}"
 export HELM_TIMEOUT="${HELM_TIMEOUT:-120s}"
+
+export BACKEND_HELM_RELEASE_NAME="${BACKEND_HELM_RELEASE_NAME:-backend}"
+export GATEWAY_HELM_RELEASE_NAME="${GATEWAY_HELM_RELEASE_NAME:-api-gateway}"
+
+export BACKEND_HELM_CHART_DIR="${BACKEND_HELM_CHART_DIR:-${K8S_HELM_DIR}/backend}"
+export GATEWAY_HELM_CHART_DIR="${GATEWAY_HELM_CHART_DIR:-${K8S_HELM_DIR}/api-gateway}"
+
+

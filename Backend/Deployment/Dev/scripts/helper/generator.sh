@@ -341,7 +341,7 @@ EOF
 }
 
 generate_tls_certs() {
-  generate_cert_with_keystore_and_truststore "gateway" "gateway" "${APP_HOSNAME}"
+  generate_cert_with_keystore_and_truststore "gateway" "gateway" "${APP_HOSTNAME}"
 }
 
 # ===== Example usage =====
