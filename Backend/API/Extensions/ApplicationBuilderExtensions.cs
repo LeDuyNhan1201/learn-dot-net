@@ -1,6 +1,6 @@
 using API.Endpoints;
 using Infrastructure.Observability;
-using Infrastructure.Swagger;
+using Infrastructure.OpenApi;
 
 namespace API.Extensions;
 
@@ -24,7 +24,7 @@ internal static class ApplicationBuilderExtensions
         apiV1.MapTodoEndpoints();
         apiV1.MapHealthEndpoints();
 
-        app.UseSwaggerUi(app.Configuration);
+        app.UseOpenApiUi(app.Configuration);
 
         return app;
     }

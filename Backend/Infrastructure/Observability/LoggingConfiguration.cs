@@ -7,6 +7,9 @@ public static class LoggingConfiguration
 {
     public static void ConfigureLogging(this LoggerProviderBuilder builder, ObservabilityOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+        ArgumentNullException.ThrowIfNull(builder);
+        
         switch (options.UseLoggingExporter.ToUpperInvariant())
         {
             case "OTLP":

@@ -10,6 +10,9 @@ public static class ObservabilityExtensions
 {
     public static IServiceCollection AddObservability(this IServiceCollection services, IConfiguration configuration)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(services);
+        
         var appOptions = configuration.GetSection(ServerOptions.SectionName).Get<ServerOptions>() 
                       ?? throw new InvalidOperationException("Application configuration is missing.");
         
@@ -18,7 +21,8 @@ public static class ObservabilityExtensions
         
         services.AddSingleton<InstrumentationSource>();
 
-        services.AddOpenTelemetry()
+        services
+            .AddOpenTelemetry()
             .ConfigureResource(resource =>
             {
                 resource.AddService(

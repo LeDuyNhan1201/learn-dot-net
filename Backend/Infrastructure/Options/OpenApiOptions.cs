@@ -1,8 +1,8 @@
 ﻿namespace Infrastructure.Options;
 
-public class SwaggerOptions
+public sealed class OpenApiOptions
 {
-    public const string SectionName = "Swagger";
+    public const string SectionName = "OpenApi";
     public string Title { get; set; } = "Learn DotNet App";
     public string ApiDocs { get; set; } = "v1";
     public string Version { get; set; } = "1.0.0";

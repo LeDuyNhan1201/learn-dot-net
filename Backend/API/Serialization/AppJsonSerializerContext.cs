@@ -9,6 +9,7 @@ namespace API.Serialization;
 [JsonSerializable(typeof(List<Todo>))]
 [JsonSerializable(typeof(IReadOnlyList<Todo>))]
 [JsonSerializable(typeof(Todo))]
+[JsonSerializable(typeof(IFormFile))]
 
 [JsonSerializable(typeof(ServerOptions))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext

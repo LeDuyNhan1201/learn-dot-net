@@ -8,6 +8,9 @@ public static class MetricsConfiguration
 {
     public static void ConfigureMetrics(this MeterProviderBuilder builder, ObservabilityOptions options)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(options);
+        
         builder
             .AddMeter(InstrumentationSource.MeterName)
             .AddRuntimeInstrumentation()

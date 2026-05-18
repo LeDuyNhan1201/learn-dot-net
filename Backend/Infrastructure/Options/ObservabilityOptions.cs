@@ -1,6 +1,6 @@
 namespace Infrastructure.Options;
 
-public class ObservabilityOptions
+public sealed class ObservabilityOptions
 {
     public const string SectionName = "Observability";
     public string UseTracingExporter { get; set; } = "Console";

@@ -7,6 +7,9 @@ public static class TracingConfiguration
 {
     public static void ConfigureTracing(this TracerProviderBuilder builder, ObservabilityOptions options)
     {
+        ArgumentNullException.ThrowIfNull(builder);
+        ArgumentNullException.ThrowIfNull(options);
+        
         builder
             .AddSource(InstrumentationSource.ActivitySourceName)
             .SetSampler(new AlwaysOnSampler())

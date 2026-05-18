@@ -20,6 +20,9 @@ public static class TodoEndpoints
                     ? TypedResults.Ok(todo)
                     : TypedResults.NotFound();
             });
+        
+        group.MapPost("/upload", (IFormFile file) => Results.Ok())
+            .RequireAuthorization();
 
         return group;
     }

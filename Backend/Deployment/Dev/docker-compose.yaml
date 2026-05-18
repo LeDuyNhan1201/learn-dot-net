@@ -26,19 +26,19 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       
       # --------- API Documentation ---------
-      Swagger__Title: "Learn DotNet REST APIs for Development (Native)"
-      Swagger__ApiDocs: "learn-dot-net-api-docs-dev-native"
-      Swagger__Description: "This is the APIs documentation for Learn DotNet for Development."
-      Swagger__Version: "v1.0.0"
-      Swagger__ServerUrl: "https://${APP_HOSTNAME}:${GATEWAY_PORT}/api"
-      Swagger__ContactName: "Le Duy Nhan"
-      Swagger__ContactEmail: "ldnhan.dev@gmail.com"
+      OpenApi__Title: "Learn DotNet REST APIs for Development (Native)"
+      OpenApi__ApiDocs: "learn-dot-net-api-docs-dev-native"
+      OpenApi__Description: "This is the APIs documentation for Learn DotNet for Development."
+      OpenApi__Version: "v1.0.0"
+      OpenApi__ServerUrl: "https://${APP_HOSTNAME}:${GATEWAY_PORT}/api"
+      OpenApi__ContactName: "Le Duy Nhan"
+      OpenApi__ContactEmail: "ldnhan.dev@gmail.com"
       
       # ---------- Observability ---------
       Observability__UseTracingExporter: "otlp"
       Observability__UseMetricsExporter: "otlp"
       Observability__UseLogExporter: "otlp"
-      Observability__HistogramAggregation: "explicit"
+      Observability__HistogramAggregation: "exponential"
       Observability__Otlp__Endpoint: "http://otel-collector:4318"
 
   # --------- Envoy ---------
