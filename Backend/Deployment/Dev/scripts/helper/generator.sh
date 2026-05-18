@@ -401,7 +401,6 @@ build_backend_image() {
   docker rmi "$image_name" || true
   docker build --no-cache \
     --build-arg BACKEND_TAG="${BACKEND_TAG}" \
-    --build-arg BACKEND_CONTAINER_PORT="9999" \
     -f "${backend_dir}/API/Docker/Native/Dockerfile" \
     -t "$image_name" \
     "${backend_dir}"

@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using Scalar.AspNetCore;
 
 namespace Infrastructure.Swagger;
 
@@ -17,10 +18,9 @@ public static class SwaggerExtensions
                       ?? throw new InvalidOperationException("Swagger configuration is missing.");
 
         // Register the Swagger generator, defining one or more Swagger documents
-        services.AddSwaggerGen(c =>
+        services.AddSwaggerGen(swaggerGenOptions =>
         {
-            c.EnableAnnotations();
-            c.SwaggerDoc(options.Version, new OpenApiInfo
+            swaggerGenOptions.SwaggerDoc(options.Version, new OpenApiInfo
             {
                 Title = options.Title,
                 Version = options.Version,
@@ -38,13 +38,13 @@ public static class SwaggerExtensions
                 }
             });
 
-            c.AddServer(new OpenApiServer
+            swaggerGenOptions.AddServer(new OpenApiServer
             {
                 Url = options.ServerUrl,
                 Description = options.Description
             });
 
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            swaggerGenOptions.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Name = "Authorization",
                 Type = SecuritySchemeType.Http,
@@ -54,40 +54,51 @@ public static class SwaggerExtensions
                 Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
             });
 
-            c.OperationFilter<MultiPartFileOperationFilter>();
-            c.OperationFilter<AuthOperationFilter>();
+            swaggerGenOptions.OperationFilter<MultiPartFileOperationFilter>();
+            swaggerGenOptions.OperationFilter<AuthOperationFilter>();
         });
         
         services.AddEndpointsApiExplorer();
         return services;
     }
 
-    public static IApplicationBuilder UseSwaggerUi(this IApplicationBuilder app, IConfiguration configuration)
+    public static IApplicationBuilder UseSwaggerUi(this WebApplication app, IConfiguration configuration)
     {
         var options = configuration.GetSection(SwaggerOptions.SectionName).Get<SwaggerOptions>() 
                       ?? throw new InvalidOperationException("Swagger configuration is missing.");
         
-        app.UseSwagger();
-
-        // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
-        app.UseSwaggerUI(swaggerUiOptions =>
+        string apiDocsRoute = "/swagger/" + options.Version + "/{documentName}.json";
+        if (app.Environment.IsDevelopment())
         {
-            swaggerUiOptions.ConfigObject = new ConfigObject
+            app.MapOpenApi(apiDocsRoute);
+            app.MapScalarApiReference("/docs", scalarOptions =>
             {
-                ShowCommonExtensions = true
-            };
-            swaggerUiOptions.SupportedSubmitMethods
-            (
-                SubmitMethod.Get, 
-                SubmitMethod.Post, 
-                SubmitMethod.Put, 
-                SubmitMethod.Delete, 
-                SubmitMethod.Patch);
-            
-            swaggerUiOptions.SwaggerEndpoint("/swagger/" + options.Version + "/swagger.json", options.ApiDocs);
-            //redirect root url to swagger ui
-            // swaggerUiOptions.RoutePrefix = configuration["Server:BasePath"];
-        });
+                scalarOptions
+                    .WithOpenApiRoutePattern(apiDocsRoute)
+                    .AddDocument(options.ApiDocs, options.Title);
+            });
+            app.UseDeveloperExceptionPage();
+        }
+        
+        // // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
+        // app.UseSwaggerUI(swaggerUiOptions =>
+        // {
+        //     swaggerUiOptions.ConfigObject = new ConfigObject
+        //     {
+        //         ShowCommonExtensions = true
+        //     };
+        //     swaggerUiOptions.SupportedSubmitMethods
+        //     (
+        //         SubmitMethod.Get, 
+        //         SubmitMethod.Post, 
+        //         SubmitMethod.Put, 
+        //         SubmitMethod.Delete, 
+        //         SubmitMethod.Patch);
+        //     
+        //     swaggerUiOptions.SwaggerEndpoint("/swagger/" + options.Version + "/swagger.json", options.ApiDocs);
+        //     //redirect root url to swagger ui
+        //     // swaggerUiOptions.RoutePrefix = configuration["Server:BasePath"];
+        // });
 
         return app;
     }

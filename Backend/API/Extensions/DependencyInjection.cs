@@ -5,6 +5,7 @@ using Application.Services;
 using Infrastructure.Observability;
 using Infrastructure.Options;
 using Infrastructure.Swagger;
+using Microsoft.OpenApi;
 
 namespace API.Extensions;
 
@@ -28,8 +29,50 @@ public static class DependencyInjection
             .AddInfrastructure(builder.Configuration)
 
             .AddApiServices()
+            
+            .AddOpenApi(builder.Configuration["Swagger:ApiDocs"] ?? "learn-dot-net-api-docs", options =>
+            {
+                options.AddDocumentTransformer((document, _, _) =>
+                {
+                    document.Components ??= new OpenApiComponents();
 
-            .AddOpenApi();
+                    document.Servers ??= new List<OpenApiServer>();
+                    
+                    document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+                    
+                    document.Security ??= new List<OpenApiSecurityRequirement>();
+                    
+                    document.Servers.Clear();
+                    document.Servers.Add(new OpenApiServer
+                    {
+                        Url = builder.Configuration["Swagger:ServerUrl"] ?? "http://localhost:9999",
+                        Description = builder.Configuration["Swagger:Description"] ?? "Learn .NET API"
+                    });
+                    
+                    document.Components.SecuritySchemes["Bearer"] =
+                        new OpenApiSecurityScheme
+                        {
+                            Type = SecuritySchemeType.Http,
+                            Scheme = "bearer",
+                            BearerFormat = "JWT",
+                            In = ParameterLocation.Header,
+                            Name = "Authorization",
+                            Description = "JWT Bearer token"
+                        };
+
+                    document.Security.Add(
+                        new OpenApiSecurityRequirement
+                        {
+                            [
+                                new OpenApiSecuritySchemeReference(
+                                    "Bearer",
+                                    document)
+                            ] = []
+                        });
+
+                    return Task.CompletedTask;
+                });
+            });
 
         return builder;
     }

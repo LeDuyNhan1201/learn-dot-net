@@ -38,7 +38,6 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
 FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine
 
 ARG BACKEND_TAG=latest
-ARG BACKEND_CONTAINER_PORT=60001
 
 WORKDIR /app
 
@@ -49,10 +48,10 @@ RUN apk add --no-cache icu-libs
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 
-ENV ASPNETCORE_URLS=http://+:${BACKEND_CONTAINER_PORT}
+ENV ASPNETCORE_URLS=http://+:60001
 
 COPY --link --from=build /app/publish .
 
-EXPOSE ${BACKEND_CONTAINER_PORT}
+EXPOSE 60001
 
 ENTRYPOINT ["./API"]

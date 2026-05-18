@@ -2,12 +2,19 @@ export NAMESPACE="leduynhan1201"
 export REPOSITORY_NAME="learn-dot-net"
 
 export BACKEND_TAG="1.0.0"
-export ENVOY_TAG="1-debian13-dev" # https://hub.docker.com/hardened-images/catalog/dhi/envoy
-export GRAFANA_TAG="13-debian13-dev" # https://hub.docker.com/hardened-images/catalog/dhi/grafana
-export LOKI_TAG="3" # https://hub.docker.com/hardened-images/catalog/dhi/loki
-export TEMPO_TAG="2" # https://hub.docker.com/hardened-images/catalog/dhi/tempo
-export PROMETHEUS_TAG="3.11" # https://hub.docker.com/hardened-images/catalog/dhi/prometheus
-export OTEL_COLLECTOR_TAG="0-contrib-dev" # https://hub.docker.com/hardened-images/catalog/dhi/opentelemetry-collector
+#export ENVOY_TAG="1-debian13-dev" # https://hub.docker.com/hardened-images/catalog/dhi/envoy
+#export GRAFANA_TAG="13-debian13-dev" # https://hub.docker.com/hardened-images/catalog/dhi/grafana
+#export LOKI_TAG="3" # https://hub.docker.com/hardened-images/catalog/dhi/loki
+#export TEMPO_TAG="2" # https://hub.docker.com/hardened-images/catalog/dhi/tempo
+#export PROMETHEUS_TAG="3.11" # https://hub.docker.com/hardened-images/catalog/dhi/prometheus
+#export OTEL_COLLECTOR_TAG="0-contrib-dev" # https://hub.docker.com/hardened-images/catalog/dhi/opentelemetry-collector
+
+export ENVOY_TAG="tools-dev" # https://hub.docker.com/r/envoyproxy/envoy/tags
+export GRAFANA_TAG="main-distroless-slim" # https://hub.docker.com/r/grafana/grafana/tags
+export LOKI_TAG="3.7.2" # https://hub.docker.com/r/grafana/loki/tags
+export TEMPO_TAG="2.9.2" # https://hub.docker.com/r/grafana/tempo/tags
+export PROMETHEUS_TAG="main-distroless" # https://hub.docker.com/r/prom/prometheus/tags
+export OTEL_COLLECTOR_TAG="nightly" # https://hub.docker.com/r/otel/opentelemetry-collector-contrib/tags
 
 LOCAL_IP="${LOCAL_IP:-$(hostname -I 2>/dev/null | awk '{print $1}')}"
 LOCAL_IP="${LOCAL_IP:-127.0.0.1}"

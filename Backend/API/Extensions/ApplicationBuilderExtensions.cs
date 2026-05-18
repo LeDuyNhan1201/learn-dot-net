@@ -24,14 +24,7 @@ internal static class ApplicationBuilderExtensions
         apiV1.MapTodoEndpoints();
         apiV1.MapHealthEndpoints();
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-
-            app
-                .UseSwaggerUi(app.Configuration)
-                .UseDeveloperExceptionPage();
-        }
+        app.UseSwaggerUi(app.Configuration);
 
         return app;
     }
