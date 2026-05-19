@@ -36,7 +36,7 @@ create_env_file
 create_files_from_templates
 create_data_folders
 
-ensure_root_ca
-generate_tls_certs
+#ensure_root_ca
+#generate_tls_certs
 
 echo "Re-create completed successfully."

@@ -14,6 +14,12 @@ public static class HealthEndpoints
         group.MapGet("/info", (IOptions<ServerOptions> options) => options.Value);
         
         group.MapGet("/hello", (string name, [FromServices] IStringLocalizer<Messages> localizer) => localizer["Hello", name].Value);
+        
+        group.MapGet("/test-log", (ILogger<Program> logger) =>
+        {
+            logger.LogInformation("HELLO FROM OTEL LOGGING");
+            return "OK";
+        });
 
         return group;
     }

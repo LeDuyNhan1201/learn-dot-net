@@ -1,4 +1,5 @@
 using Infrastructure.Options;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 
 namespace Infrastructure.Observability;
@@ -13,9 +14,10 @@ public static class LoggingConfiguration
         switch (options.UseLoggingExporter.ToUpperInvariant())
         {
             case "OTLP":
-                builder.AddOtlpExporter(exporter =>
+                builder.AddOtlpExporter(otlp =>
                 {
-                    exporter.Endpoint = new Uri(options.Otlp.Endpoint);
+                    otlp.Endpoint = new Uri(options.Otlp.Endpoint);
+                    otlp.Protocol = OtlpExportProtocol.Grpc;
                 });
                 break;
             

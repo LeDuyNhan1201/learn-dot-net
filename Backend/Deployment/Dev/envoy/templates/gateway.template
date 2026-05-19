@@ -70,7 +70,10 @@ static_resources:
 
                           route:
                             cluster: grafana
-                            prefix_rewrite: "/"
+                            timeout: 0s
+                            
+                            upgrade_configs:
+                              - upgrade_type: websocket
 
                           request_headers_to_add:
                             - header:
@@ -88,6 +91,7 @@ static_resources:
 
                           route:
                             cluster: backend
+                            timeout: 0s
 
                           request_headers_to_add:
                             - header:

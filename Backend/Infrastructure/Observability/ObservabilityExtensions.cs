@@ -19,7 +19,7 @@ public static class ObservabilityExtensions
         var observeOptions = configuration.GetSection(ObservabilityOptions.SectionName).Get<ObservabilityOptions>() 
                       ?? throw new InvalidOperationException("Observability configuration is missing.");
         
-        services.AddSingleton<InstrumentationSource>();
+        services.AddSingleton<Telemetry>();
 
         services
             .AddOpenTelemetry()

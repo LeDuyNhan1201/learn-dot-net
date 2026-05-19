@@ -13,32 +13,6 @@ x-observability-service: &observability-service
   logging: *observability-logging
 
 services:
-  backend:
-    image: ${NAMESPACE}/${REPOSITORY_NAME}/backend:${BACKEND_TAG}
-    container_name: backend
-    networks:
-      - dev-network
-      - observability-network
-    depends_on:
-      otel-collector:
-        condition: service_started
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-      Server_Name: "LearnDotNet_Dev"
-      
-      # --------- API Documentation ---------
-      OpenApi__Title: "Learn DotNet REST APIs for Development"
-      OpenApi__ApiDocs: "learn-dot-net-api-docs-dev-dev"
-      OpenApi__Description: "This is the APIs documentation for Learn DotNet for Development."
-      OpenApi__ServerUrl: "https://${APP_HOSTNAME}:${GATEWAY_PORT}/api"
-      
-      # ---------- Observability ---------
-      Observability__UseTracingExporter: "otlp"
-      Observability__UseMetricsExporter: "otlp"
-      Observability__UseLoggingExporter: "otlp"
-      Observability__HistogramAggregation: "exponential"
-      Observability__Otlp__Endpoint: "http://otel-collector:4317"
-
   # --------- Envoy ---------
   gateway:
     image: envoyproxy/envoy:${ENVOY_TAG:-latest}
@@ -47,8 +21,8 @@ services:
       - "${GATEWAY_PORT}:443"
       - "${GATEWAY_ADMIN_PORT}:9001"
     networks:
-      - dev-network
-      - observability-network
+      - local-network
+      - local-observability-network
     command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
     volumes:
       - ./envoy/gateway.yaml:/etc/envoy/envoy.yaml:ro
@@ -61,16 +35,10 @@ services:
     container_name: loki
     command: ["-config.file=/etc/loki/loki.yaml"]
     networks:
-      - observability-network
+      - local-observability-network
     volumes:
       - ./loki/loki.yaml:/etc/loki/loki.yaml:ro
       - ${LOKI_DATA_DIR}:/loki
-#    healthcheck:
-#      test: ["CMD", "/usr/bin/loki", "-version"]
-#      interval: 30s
-#      timeout: 5s
-#      retries: 3
-#      start_period: 10s
 
   tempo:
     <<: *observability-service
@@ -78,19 +46,13 @@ services:
     container_name: tempo
     command: ["-config.file=/etc/tempo/tempo.yaml"]
     networks:
-      - observability-network
+      - local-observability-network
     volumes:
       - ./tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
       - ${TEMPO_DATA_DIR}:/var/tempo
     depends_on:
       prometheus:
         condition: service_started
-#    healthcheck:
-#      test: ["CMD", "/tempo", "-version"]
-#      interval: 30s
-#      timeout: 5s
-#      retries: 3
-#      start_period: 10s
 
   otel-collector:
     <<: *observability-service
@@ -100,8 +62,8 @@ services:
     ports:
       - "${OTEL_COLLECTOR_HEALTH_PORT}:13133"
     networks:
-      - dev-network
-      - observability-network
+      - local-network
+      - local-observability-network
     volumes:
       - ./otel/otel.yml:/etc/otelcol-contrib/otel.yml:ro
     depends_on:
@@ -109,12 +71,6 @@ services:
         condition: service_started
       tempo:
         condition: service_started
-#    healthcheck:
-#      test: ["CMD", "/otelcol-contrib", "--version"]
-#      interval: 30s
-#      timeout: 5s
-#      retries: 3
-#      start_period: 10s
 
   prometheus:
     <<: *observability-service
@@ -129,23 +85,17 @@ services:
       - --web.enable-remote-write-receiver
       - --enable-feature=exemplar-storage
     networks:
-      - observability-network
+      - local-observability-network
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ${PROMETHEUS_DATA_DIR}:/prometheus
-#    healthcheck:
-#      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9090/-/healthy"]
-#      interval: 30s
-#      timeout: 5s
-#      retries: 3
-#      start_period: 15s
 
   grafana:
     <<: *observability-service
     image: grafana/grafana:${GRAFANA_TAG}
     container_name: grafana
     networks:
-      - observability-network
+      - local-observability-network
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/dashboards:/etc/grafana/dashboards:ro
@@ -168,21 +118,10 @@ services:
       GF_AUTH_ANONYMOUS_ENABLED: "false"
       GF_ANALYTICS_REPORTING_ENABLED: "false"
       GF_METRICS_ENABLED: "true"
-      
-#      GF_INSTALL_PLUGINS: ""
-#      GF_PLUGINS_PREINSTALL_DISABLED: "true"
-#      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
-#      GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: "false"
       GF_LOG_MODE: console
-#    healthcheck:
-#      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/health"]
-#      interval: 30s
-#      timeout: 5s
-#      retries: 5
-#      start_period: 30s
 
 networks:
-  dev-network:
+  local-network:
     driver: bridge
-  observability-network:
+  local-observability-network:
     driver: bridge

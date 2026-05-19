@@ -18,8 +18,9 @@ public static class OpenApiExtensions
         var options = configuration.GetSection(OpenApiOptions.SectionName).Get<OpenApiOptions>()
                       ?? throw new InvalidOperationException("Open APi configuration is missing.");
 
-        services.AddOpenApi(options.ApiDocs, openApiOptions =>
+        services.AddOpenApi(options.ApiDocs!, openApiOptions =>
         {
+            openApiOptions.AddOperationTransformer<LanguageOperationTransformer>();
             openApiOptions.AddOperationTransformer<MultiPartFileOperationTransformer>();
             openApiOptions.AddOperationTransformer<AuthOperationTransformer>();
 
@@ -51,12 +52,14 @@ public static class OpenApiExtensions
                     }
                 };
 
+                var defaultServerUrl = document.Servers.FirstOrDefault();
                 document.Servers.Clear();
                 document.Servers.Add(new OpenApiServer
                 {
                     Url = options.ServerUrl,
                     Description = options.Description
                 });
+                if (defaultServerUrl != null) document.Servers.Add(defaultServerUrl);
 
                 document.Components.SecuritySchemes[SecuritySchemeType.Http.GetDisplayName()] =
                     new OpenApiSecurityScheme
@@ -119,7 +122,7 @@ public static class OpenApiExtensions
         {
             scalarOptions
                 .WithOpenApiRoutePattern(apiDocsRoute)
-                .AddDocument(options.ApiDocs, options.Title);
+                .AddDocument(options.ApiDocs!, options.Title);
         });
         app.UseDeveloperExceptionPage();
         return app;

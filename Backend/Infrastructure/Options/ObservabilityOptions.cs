@@ -8,10 +8,10 @@ public sealed class ObservabilityOptions
     public string UseLoggingExporter { get; set; } = "Console";
     public string HistogramAggregation { get; set; } = "Explicit";
     
-    public OtlpOptions Otlp { get; set; } = new();
+    public OtlpOptions? Otlp { get; set; }
     
     public class OtlpOptions
     {
-        public string Endpoint { get; set; } = "http://localhost:4318";
+        public string Endpoint { get; set; } = "http://localhost:4317";
     }
 }

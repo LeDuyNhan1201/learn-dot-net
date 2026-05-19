@@ -17,27 +17,29 @@ public sealed class AuthOperationTransformer : IOpenApiOperationTransformer
 
         operation.Security ??= [];
 
-        operation.Security.Add(
+        operation.Security.Add(new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecuritySchemeReference(SecuritySchemeType.Http.GetDisplayName(), context.Document)] = []
+        });
 
-            new OpenApiSecurityRequirement
-            {
-                [new OpenApiSecuritySchemeReference(SecuritySchemeType.Http.GetDisplayName(), context.Document)] = []
-            });
         operation.Security.Add(new OpenApiSecurityRequirement
-            {
-                [new OpenApiSecuritySchemeReference(SecuritySchemeType.OAuth2.GetDisplayName(), context.Document)] = [
-                    "read",
-                    "write"
-                ]
-            });
+        {
+            [new OpenApiSecuritySchemeReference(SecuritySchemeType.OAuth2.GetDisplayName(), context.Document)] =
+            [
+                "read",
+                "write"
+            ]
+        });
+
         operation.Security.Add(new OpenApiSecurityRequirement
-            {
-                [new OpenApiSecuritySchemeReference(SecuritySchemeType.OpenIdConnect.GetDisplayName(), context.Document)] = [
-                    "openid",
-                    "profile",
-                    "email"
-                ]
-            });
+        {
+            [new OpenApiSecuritySchemeReference(SecuritySchemeType.OpenIdConnect.GetDisplayName(), context.Document)] =
+            [
+                "openid",
+                "profile",
+                "email"
+            ]
+        });
 
         return Task.CompletedTask;
     }

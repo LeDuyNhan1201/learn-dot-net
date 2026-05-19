@@ -1,4 +1,5 @@
 using Infrastructure.Options;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Trace;
 
 namespace Infrastructure.Observability;
@@ -11,7 +12,7 @@ public static class TracingConfiguration
         ArgumentNullException.ThrowIfNull(options);
         
         builder
-            .AddSource(InstrumentationSource.ActivitySourceName)
+            .AddSource(Telemetry.ActivitySourceName)
             .SetSampler(new AlwaysOnSampler())
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation();
@@ -19,9 +20,10 @@ public static class TracingConfiguration
         switch (options.UseTracingExporter.ToUpperInvariant())
         {
             case "OTLP":
-                builder.AddOtlpExporter(exporter =>
+                builder.AddOtlpExporter(otlp =>
                 {
-                    exporter.Endpoint = new Uri(options.Otlp.Endpoint);
+                    otlp.Endpoint = new Uri(options.Otlp.Endpoint);
+                    otlp.Protocol = OtlpExportProtocol.Grpc;
                 });
                 break;
 

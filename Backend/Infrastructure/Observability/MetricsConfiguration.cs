@@ -1,5 +1,6 @@
 using System.Diagnostics.Metrics;
 using Infrastructure.Options;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 
 namespace Infrastructure.Observability;
@@ -12,7 +13,7 @@ public static class MetricsConfiguration
         ArgumentNullException.ThrowIfNull(options);
         
         builder
-            .AddMeter(InstrumentationSource.MeterName)
+            .AddMeter(Telemetry.MeterName)
             .AddRuntimeInstrumentation()
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation();
@@ -28,9 +29,10 @@ public static class MetricsConfiguration
         switch (options.UseMetricsExporter.ToUpperInvariant())
         {
             case "OTLP":
-                builder.AddOtlpExporter(exporter =>
+                builder.AddOtlpExporter(otlp =>
                 {
-                    exporter.Endpoint = new Uri(options.Otlp.Endpoint);
+                    otlp.Endpoint = new Uri(options.Otlp.Endpoint);
+                    otlp.Protocol = OtlpExportProtocol.Grpc;
                 });
                 break;
             
