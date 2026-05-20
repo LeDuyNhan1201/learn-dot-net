@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Options;
 
-public sealed class OpenApiOptions
+public sealed class ApiDocsOptions
 {
     public const string SectionName = "OpenApi";
     public string? Title { get; set; }

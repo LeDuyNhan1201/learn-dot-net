@@ -43,7 +43,7 @@ public static class CoreComponentsExtensions
 
         services.Configure<ObservabilityOptions>(configuration.GetSection(ObservabilityOptions.SectionName));
 
-        services.Configure<OpenApiOptions>(configuration.GetSection(OpenApiOptions.SectionName));
+        services.Configure<ApiDocsOptions>(configuration.GetSection(ApiDocsOptions.SectionName));
         
         // TODO: Inject more options here
 
@@ -55,7 +55,7 @@ public static class CoreComponentsExtensions
         services
             .AddObservability(configuration)
             
-            .AddOpenAPI(configuration);
+            .AddOpenAPI();
 
         // TODO: Inject more infrastructure services here
 
