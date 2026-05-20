@@ -1,0 +1,189 @@
+admin:
+  access_log_path: /tmp/admin_access.log
+  address:
+    socket_address:
+      address: 0.0.0.0
+      port_value: 9901
+
+static_resources:
+  listeners:
+    - name: https_listener
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 443
+
+      listener_filters:
+        - name: envoy.filters.listener.tls_inspector
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.listener.tls_inspector.v3.TlsInspector
+
+      filter_chains:
+        - filter_chain_match:
+            server_names:
+              - "${APP_HOSTNAME}"
+
+          transport_socket:
+            name: envoy.transport_sockets.tls
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+              common_tls_context:
+                tls_certificates:
+                  - certificate_chain:
+                      filename: /etc/envoy/certificates/gateway.cert.pem
+                    private_key:
+                      filename: /etc/envoy/certificates/gateway.key.pem
+
+          filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+
+                stat_prefix: ingress_https
+                codec_type: AUTO
+                use_remote_address: true
+                generate_request_id: true
+                normalize_path: true
+                merge_slashes: true
+
+                access_log:
+                  - name: envoy.access_loggers.stdout
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+
+                route_config:
+                  name: local_routes
+
+                  virtual_hosts:
+                    - name: app_services
+
+                      domains:
+                        - "${APP_HOSTNAME}"
+                        - "${APP_HOSTNAME}:${GATEWAY_PORT}"
+
+                      routes:
+                        # =========================
+                        # Grafana
+                        # =========================
+                        - match:
+                            prefix: "/observability"
+
+                          route:
+                            cluster: grafana
+                            timeout: 0s
+                            
+                            upgrade_configs:
+                              - upgrade_type: websocket
+
+                          request_headers_to_add:
+                            - header:
+                                key: x-forwarded-proto
+                                value: https
+                            - header:
+                                key: x-forwarded-port
+                                value: "${GATEWAY_PORT}"
+
+                        # =========================
+                        # Backend API
+                        # =========================
+                        - match:
+                            prefix: "/api"
+
+                          route:
+                            cluster: backend
+                            timeout: 0s
+
+                          request_headers_to_add:
+                            - header:
+                                key: x-forwarded-proto
+                                value: https
+                            - header:
+                                key: x-forwarded-port
+                                value: "${GATEWAY_PORT}"
+
+                        # =========================
+                        # Default fallback
+                        # =========================
+                        - match:
+                            prefix: "/"
+
+                          direct_response:
+                            status: 404
+                            body:
+                              inline_string: "Route not found"
+
+                http_filters:
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
+  clusters:
+    # ======================================
+    # Backend Cluster
+    # ======================================
+    - name: backend
+
+      connect_timeout: 5s
+      type: LOGICAL_DNS
+      lb_policy: ROUND_ROBIN
+      dns_lookup_family: V4_ONLY
+
+      load_assignment:
+        cluster_name: backend
+
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: host.docker.internal
+                      port_value: 60001
+
+      health_checks:
+        - timeout: 3s
+          interval: 10s
+          unhealthy_threshold: 3
+          healthy_threshold: 2
+
+          http_health_check:
+            path: /health/info
+
+    # ======================================
+    # Grafana Cluster
+    # ======================================
+    - name: grafana
+
+      connect_timeout: 5s
+      type: LOGICAL_DNS
+      lb_policy: ROUND_ROBIN
+      dns_lookup_family: V4_ONLY
+
+      load_assignment:
+        cluster_name: grafana
+
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: grafana
+                      port_value: 3000
+
+      health_checks:
+        - timeout: 3s
+          interval: 10s
+          unhealthy_threshold: 3
+          healthy_threshold: 2
+
+          http_health_check:
+            path: /api/health
+
+layered_runtime:
+  layers:
+    - name: static_layer
+      static_layer:
+        envoy:
+          resource_limits:
+            listener:
+              https_listener:
+                connection_limit: 10000

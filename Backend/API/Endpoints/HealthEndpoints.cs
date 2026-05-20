@@ -7,7 +7,18 @@ namespace API.Endpoints;
 
 public static class HealthEndpoints
 {
-    public static RouteGroupBuilder MapHealthEndpoints(this IEndpointRouteBuilder app)
+    public static RouteGroupBuilder MapHealthEndpointsV1(this IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/health").WithTags("Health").WithDisplayName("Health APIs");
+
+        group.MapGet("/info", (IOptions<ServerOptions> options) => options.Value);
+        
+        group.MapGet("/hello", (string name, [FromServices] IStringLocalizer<Messages> localizer) => localizer["Hello", name].Value);
+
+        return group;
+    }
+    
+    public static RouteGroupBuilder MapHealthEndpointsV2(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/health").WithTags("Health").WithDisplayName("Health APIs");
 

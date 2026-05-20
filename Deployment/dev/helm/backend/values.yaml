@@ -1,0 +1,63 @@
+nameOverride: ""
+fullnameOverride: backend
+
+replicaCount: 1
+
+image:
+  repository: leduynhan1201/learn-dot-net/backend
+  tag: "1.0.0"
+  pullPolicy: Never
+
+env:
+  ASPNETCORE_ENVIRONMENT: Development
+
+serviceAccount:
+  create: false
+  automount: false
+  annotations: {}
+  name: ""
+
+containerPort: 60001
+
+service:
+  type: ClusterIP
+  port: 60001
+
+config:
+  data: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage:
+
+secret:
+  name: ""
+  stringData: {}
+  
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: leduynhan1201.learn-dot-net.dev
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+    
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

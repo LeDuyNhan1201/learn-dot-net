@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "gateway.fullname" . }}
+  labels:
+    {{- include "gateway.labels" . | nindent 4 }}
+data:
+  envoy.yaml: |-
+    admin:
+      access_log_path: /tmp/admin_access.log
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: {{ .Values.containerPorts.admin }}
+
+    static_resources:
+      listeners:
+        - name: listener_https
+          address:
+            socket_address:
+              address: 0.0.0.0
+              port_value: {{ .Values.containerPorts.https }}
+
+          listener_filters:
+            - name: envoy.filters.listener.tls_inspector
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.listener.tls_inspector.v3.TlsInspector
+
+          filter_chains:
+            - filter_chain_match:
+                server_names:
+                  - {{ .Values.gateway.host | quote }}
+
+              transport_socket:
+                name: envoy.transport_sockets.tls
+                typed_config:
+                  "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+                  common_tls_context:
+                    tls_certificates:
+                      - certificate_chain:
+                          filename: /etc/envoy/certificates/{{ .Values.tls.certFileName }}
+                        private_key:
+                          filename: /etc/envoy/certificates/{{ .Values.tls.keyFileName }}
+
+              filters:
+                - name: envoy.filters.network.http_connection_manager
+                  typed_config:
+                    "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                      
+                    stat_prefix: ingress_https
+                    codec_type: AUTO
+                    use_remote_address: true
+                    generate_request_id: true
+                    normalize_path: true
+                    merge_slashes: true
+
+                    access_log:
+                      - name: envoy.access_loggers.stdout
+                        typed_config:
+                          "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+
+                    route_config:
+                      name: local_routes
+                      
+                      virtual_hosts:
+                        - name: app_services
+                          
+                          domains:
+                            - "{{ .Values.gateway.host }}"
+                            - "{{ .Values.gateway.host }}:{{ .Values.gateway.externalPort }}"
+
+                          routes:
+                            - match:
+                                prefix: "/observability"
+                              route:
+                                cluster: {{ .Values.grafana.serviceName }}
+                                prefix_rewrite: "/"
+
+                              request_headers_to_add:
+                                - header:
+                                    key: x-forwarded-proto
+                                    value: https
+                                - header:
+                                    key: x-forwarded-port
+                                    value: "{{ .Values.gateway.externalPort }}"
+
+                            - match:
+                                prefix: "/api"
+                              route:
+                                cluster: {{ .Values.backend.serviceName }}
+                                prefix_rewrite: "/"
+
+                              request_headers_to_add:
+                                - header:
+                                    key: x-forwarded-proto
+                                    value: https
+                                - header:
+                                    key: x-forwarded-port
+                                    value: "{{ .Values.gateway.externalPort }}"
+
+                    http_filters:
+                      - name: envoy.filters.http.router
+                        typed_config:
+                          "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
+      clusters:
+        - name: {{ .Values.backend.serviceName }}
+          connect_timeout: {{ .Values.envoy.connectTimeout }}
+          type: LOGICAL_DNS
+          lb_policy: LOGICAL_DNS
+          dns_lookup_family: {{ .Values.envoy.dnsLookupFamily }}
+
+          load_assignment:
+            cluster_name: {{ .Values.backend.serviceName }}
+            
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: {{ .Values.backend.serviceName | quote }}
+                          port_value: {{ .Values.backend.servicePort }}
+
+          health_checks:
+            - timeout: 3s
+              interval: 10s
+              unhealthy_threshold: 3
+              healthy_threshold: 2
+              
+              http_health_check:
+                path: {{ .Values.backend.healthCheckPath | quote }}
+
+        - name: {{ .Values.grafana.serviceName }}
+          connect_timeout: {{ .Values.envoy.connectTimeout }}
+          type: LOGICAL_DNS
+          lb_policy: LOGICAL_DNS
+          dns_lookup_family: {{ .Values.envoy.dnsLookupFamily }}
+
+          load_assignment:
+            cluster_name: {{ .Values.grafana.serviceName }}
+
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: {{ .Values.grafana.serviceName | quote }}
+                          port_value: {{ .Values.grafana.servicePort }}
+
+          health_checks:
+            - timeout: 3s
+              interval: 10s
+              unhealthy_threshold: 3
+              healthy_threshold: 2
+
+              http_health_check:
+                path: {{ .Values.grafana.healthCheckPath | quote }}
+                
+    layered_runtime:
+      layers:
+        - name: static_layer
+          static_layer:
+            envoy:
+              resource_limits:
+                listener:
+                  https_listener:
+                    connection_limit: {{ .Values.envoy.connectionLimit }}

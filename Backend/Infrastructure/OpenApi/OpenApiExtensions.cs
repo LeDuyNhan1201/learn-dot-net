@@ -3,105 +3,34 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
 namespace Infrastructure.OpenApi;
 
 public static class OpenApiExtensions
 {
-    public static IServiceCollection AddOpenAPI(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddOpenAPI(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
-        ArgumentNullException.ThrowIfNull(configuration);
 
-        var options = configuration.GetSection(OpenApiOptions.SectionName).Get<OpenApiOptions>()
-                      ?? throw new InvalidOperationException("Open APi configuration is missing.");
-
-        services.AddOpenApi(options.ApiDocs!, openApiOptions =>
+        services.AddOpenApi(Version1DocumentTransfomer.Version1, openApiOptions =>
         {
-            openApiOptions.AddOperationTransformer<LanguageOperationTransformer>();
-            openApiOptions.AddOperationTransformer<MultiPartFileOperationTransformer>();
-            openApiOptions.AddOperationTransformer<AuthOperationTransformer>();
-
-            openApiOptions.AddDocumentTransformer((document, _, _) =>
-            {
-                document.Components ??= new OpenApiComponents();
-
-                document.Servers ??= new List<OpenApiServer>();
-
-                document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
-
-                document.Security ??= new List<OpenApiSecurityRequirement>();
-
-                document.Info = new OpenApiInfo
-                {
-                    Title = options.Title,
-                    Version = options.Version,
-                    Description = options.Description,
-                    TermsOfService = new Uri("https://openapi.io/terms/"),
-                    Contact = new OpenApiContact
-                    {
-                        Name = options.ContactName,
-                        Email = options.ContactEmail
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "Apache 2.0",
-                        Url = new Uri("https://www.apache.org/licenses/LICENSE-2.0.html")
-                    }
-                };
-
-                var defaultServerUrl = document.Servers.FirstOrDefault();
-                document.Servers.Clear();
-                document.Servers.Add(new OpenApiServer
-                {
-                    Url = options.ServerUrl,
-                    Description = options.Description
-                });
-                if (defaultServerUrl != null) document.Servers.Add(defaultServerUrl);
-
-                document.Components.SecuritySchemes[SecuritySchemeType.Http.GetDisplayName()] =
-                    new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.Http,
-                        Scheme = "bearer",
-                        BearerFormat = "JWT",
-                        In = ParameterLocation.Header,
-                        Name = "Authorization",
-                        Description = "JWT Bearer token"
-                    };
-                
-                document.Components.SecuritySchemes[SecuritySchemeType.OAuth2.GetDisplayName()] =
-                    new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.OAuth2,
-                        Flows = new OpenApiOAuthFlows
-                        {
-                            AuthorizationCode = new OpenApiOAuthFlow
-                            {
-                                AuthorizationUrl = new Uri("https://example.com/auth"),
-                                TokenUrl = new Uri("https://example.com/token"),
-                                Scopes = new Dictionary<string, string>
-                                {
-                                    { "read", "Read access" },
-                                    { "write", "Write access" }
-                                }
-                            }
-                        }
-                    };
-
-                document.Components.SecuritySchemes[SecuritySchemeType.OpenIdConnect.GetDisplayName()] =
-                    new OpenApiSecurityScheme
-                    {
-                        Type = SecuritySchemeType.OpenIdConnect,
-                        OpenIdConnectUrl = new Uri("https://your-keycloak.com/realms/your-realm/.well-known/openid-configuration")
-                    };
-                
-                return Task.CompletedTask;
-            });
+            openApiOptions
+                .AddOperationTransformer<LanguageOperationTransformer>()
+                .AddOperationTransformer<MultiPartFileOperationTransformer>()
+                .AddOperationTransformer<AuthOperationTransformer>()
+                .AddDocumentTransformer<Version1DocumentTransfomer>();
         });
-
+        
+        services.AddOpenApi(Version2DocumentTransfomer.Version2, openApiOptions =>
+        {
+            openApiOptions
+                .AddOperationTransformer<LanguageOperationTransformer>()
+                .AddOperationTransformer<MultiPartFileOperationTransformer>()
+                .AddOperationTransformer<AuthOperationTransformer>()
+                .AddDocumentTransformer<Version2DocumentTransfomer>();
+        });
+        
         services.AddEndpointsApiExplorer();
         return services;
     }
@@ -113,16 +42,17 @@ public static class OpenApiExtensions
 
         if (app.Environment.IsProduction()) return app;
 
-        var options = configuration.GetSection(OpenApiOptions.SectionName).Get<OpenApiOptions>()
+        var options = configuration.GetSection(ApiDocsOptions.SectionName).Get<ApiDocsOptions>()
                       ?? throw new InvalidOperationException("Open API configuration is missing.");
 
-        var apiDocsRoute = "/open-api/" + options.Version + "/{documentName}.json";
+        var apiDocsRoute = $"/{options.ApiDocs}/{{documentName}}.json";
         app.MapOpenApi(apiDocsRoute);
         app.MapScalarApiReference("/docs", scalarOptions =>
         {
             scalarOptions
                 .WithOpenApiRoutePattern(apiDocsRoute)
-                .AddDocument(options.ApiDocs!, options.Title);
+                .AddDocument(Version1DocumentTransfomer.Version1, $"{options.Title} {Version1DocumentTransfomer.Version1}")
+                .AddDocument(Version2DocumentTransfomer.Version2, $"{options.Title} {Version2DocumentTransfomer.Version2}");
         });
         app.UseDeveloperExceptionPage();
         return app;

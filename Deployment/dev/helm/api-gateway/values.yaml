@@ -1,0 +1,94 @@
+nameOverride: ""
+fullnameOverride: gateway
+
+replicaCount: 1
+
+image:
+  repository: envoyproxy/envoy
+  tag: tools-dev
+  pullPolicy: IfNotPresent
+
+command:
+  - envoy
+  - -c
+  - /etc/envoy/envoy.yaml
+
+serviceAccount:
+  create: false
+  automount: false
+  annotations: {}
+  name: ""
+
+containerPorts:
+  https: 443
+  admin: 9901
+  
+service:
+  type: ClusterIP
+  httpsPort: 443
+  adminPort: 9901
+
+gateway:
+  host: leduynhan1201.learn-dot-net.dev
+  externalPort: 60000
+
+config:
+  data: {}
+  
+backend:
+  serviceName: backend
+  servicePort: 9999
+  healthCheckPath: /health/info
+  
+grafana:
+  serviceName: grafana
+  servicePort: 3000
+  healthCheckPath: /api/health
+
+envoy:
+  clusterName: gateway
+  connectTimeout: 5s
+  dnsLookupFamily: V4_ONLY
+  healthCheckPath: /health/info
+  configMapName: gateway-config
+  connectionLimit: 10000
+
+tls:
+  create: false
+  existingSecret: gateway-certs
+  certFileName: gateway.cert.pem
+  keyFileName: gateway.key.pem
+  certificate: ""
+  privateKey: ""
+
+ingress:
+  enabled: false
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: leduynhan1201.learn-dot-net.dev
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage:
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+    
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
