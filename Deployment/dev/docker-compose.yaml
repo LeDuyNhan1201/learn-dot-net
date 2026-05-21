@@ -51,7 +51,7 @@ services:
       - observability-network
     command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
     volumes:
-      - ./envoy/gateway.yaml:/etc/envoy/envoy.yaml:ro
+      - ${SERVICES_DIR}/envoy/gateway.yaml:/etc/envoy/envoy.yaml:ro
       - ./certs/gateway:/etc/envoy/certificates:ro
 
   # --------- Observability ---------
@@ -63,7 +63,7 @@ services:
     networks:
       - observability-network
     volumes:
-      - ./loki/loki.yaml:/etc/loki/loki.yaml:ro
+      - ${SERVICES_DIR}/loki/loki.yaml:/etc/loki/loki.yaml:ro
       - ${LOKI_DATA_DIR}:/loki
 #    healthcheck:
 #      test: ["CMD", "/usr/bin/loki", "-version"]
@@ -80,7 +80,7 @@ services:
     networks:
       - observability-network
     volumes:
-      - ./tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+      - ${SERVICES_DIR}/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
       - ${TEMPO_DATA_DIR}:/var/tempo
     depends_on:
       prometheus:
@@ -103,7 +103,7 @@ services:
       - dev-network
       - observability-network
     volumes:
-      - ./otel/otel.yml:/etc/otelcol-contrib/otel.yml:ro
+      - ${SERVICES_DIR}/otel/otel.yml:/etc/otelcol-contrib/otel.yml:ro
     depends_on:
       loki:
         condition: service_started
@@ -131,7 +131,7 @@ services:
     networks:
       - observability-network
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ${SERVICES_DIR}/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ${PROMETHEUS_DATA_DIR}:/prometheus
 #    healthcheck:
 #      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:9090/-/healthy"]
@@ -147,9 +147,9 @@ services:
     networks:
       - observability-network
     volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./grafana/dashboards:/etc/grafana/dashboards:ro
-      - ./certs/ca/ca.crt:/usr/local/share/ca-certificates/ca.crt:ro
+      - ${SERVICES_DIR}/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ${SERVICES_DIR}/grafana/dashboards:/etc/grafana/dashboards:ro
+      - ${SERVICES_DIR}/certs/ca/ca.crt:/usr/local/share/ca-certificates/ca.crt:ro
       - ${GRAFANA_DATA_DIR}:/var/lib/grafana
     depends_on:
       prometheus:
@@ -168,12 +168,11 @@ services:
       GF_AUTH_ANONYMOUS_ENABLED: "false"
       GF_ANALYTICS_REPORTING_ENABLED: "false"
       GF_METRICS_ENABLED: "true"
-      
+      GF_LOG_MODE: console
 #      GF_INSTALL_PLUGINS: ""
 #      GF_PLUGINS_PREINSTALL_DISABLED: "true"
 #      GF_ANALYTICS_CHECK_FOR_UPDATES: "false"
 #      GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: "false"
-      GF_LOG_MODE: console
 #    healthcheck:
 #      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/health"]
 #      interval: 30s

@@ -1,39 +1,14 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
-set -e
+ENV_NAME="${1:?Missing environment}"
 
-ENV_NAME="$1"
+ROOT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$ROOT_DIR/$ENV_NAME/scripts"
 
-if [ -z "$ENV_NAME" ]; then
-  echo "Usage: source ./prepare.sh <env>"
-  exit 1
-fi
+chmod +x "$SCRIPT_DIR"/*.sh
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-TARGET_DIR="$ROOT_DIR/$ENV_NAME/scripts"
+export PATH="$SCRIPT_DIR:$PATH"
 
-if [ ! -d "$TARGET_DIR" ]; then
-  echo "Directory not found: $TARGET_DIR"
-  exit 1
-fi
-
-chmod +x "$TARGET_DIR"/*.sh
-
-for filepath in "$TARGET_DIR"/*.sh; do
-  [ -f "$filepath" ] || continue
-
-  file="$(basename "$filepath")"
-  cmd="${file%.sh}"
-
-  eval "
-  $cmd() {
-    \"$filepath\" \"\$@\"
-  }
-  "
-
-  echo "Registered command: $cmd"
-done
-
-echo ""
-echo "Done."
-echo "Use commands directly now."
+echo "PATH updated:"
+echo "$SCRIPT_DIR"

@@ -45,6 +45,8 @@ create_env_file() {
 
     CERT_SECRET
     DATA_DIR
+    SERVICES_DIR
+    
     GRAFANA_DATA_DIR
     LOKI_DATA_DIR
     TEMPO_DATA_DIR

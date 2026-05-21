@@ -23,9 +23,11 @@ services:
     networks:
       - local-network
       - local-observability-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
     volumes:
-      - ./envoy/gateway.yaml:/etc/envoy/envoy.yaml:ro
+      - ${SERVICES_DIR}/envoy/gateway.local.yaml:/etc/envoy/envoy.yaml:ro
       - ./certs/gateway:/etc/envoy/certificates:ro
 
   # --------- Observability ---------
@@ -37,7 +39,7 @@ services:
     networks:
       - local-observability-network
     volumes:
-      - ./loki/loki.yaml:/etc/loki/loki.yaml:ro
+      - ${SERVICES_DIR}/loki/loki.yaml:/etc/loki/loki.yaml:ro
       - ${LOKI_DATA_DIR}:/loki
 
   tempo:
@@ -48,7 +50,7 @@ services:
     networks:
       - local-observability-network
     volumes:
-      - ./tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+      - ${SERVICES_DIR}/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
       - ${TEMPO_DATA_DIR}:/var/tempo
     depends_on:
       prometheus:
@@ -60,12 +62,12 @@ services:
     container_name: otel-collector
     command: ["--config=/etc/otelcol-contrib/otel.yml"]
     ports:
-      - "${OTEL_COLLECTOR_HEALTH_PORT}:13133"
+      - "${OTEL_COLLECTOR_OTLP_GRPC_PORT}:4317"
     networks:
       - local-network
       - local-observability-network
     volumes:
-      - ./otel/otel.yml:/etc/otelcol-contrib/otel.yml:ro
+      - ${SERVICES_DIR}/otel/otel.yml:/etc/otelcol-contrib/otel.yml:ro
     depends_on:
       loki:
         condition: service_started
@@ -87,7 +89,7 @@ services:
     networks:
       - local-observability-network
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ${SERVICES_DIR}/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ${PROMETHEUS_DATA_DIR}:/prometheus
 
   grafana:
@@ -97,9 +99,9 @@ services:
     networks:
       - local-observability-network
     volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./grafana/dashboards:/etc/grafana/dashboards:ro
-      - ./certs/ca/ca.crt:/usr/local/share/ca-certificates/ca.crt:ro
+      - ${SERVICES_DIR}/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ${SERVICES_DIR}/grafana/dashboards:/etc/grafana/dashboards:ro
+      - ${SERVICES_DIR}/certs/ca/ca.crt:/usr/local/share/ca-certificates/ca.crt:ro
       - ${GRAFANA_DATA_DIR}:/var/lib/grafana
     depends_on:
       prometheus:

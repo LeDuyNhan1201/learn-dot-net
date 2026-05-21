@@ -18,7 +18,7 @@ ENV_FILE="${HELPER_DIR}/env_config.sh"
 source "${ENV_FILE}"
 
 # Down Docker Compose services and remove volumes
-docker compose -f "${ENV_DIR}/docker-compose.yml" down -v
+docker compose -f "${ENV_DIR}/docker-compose.local.yaml" down -v
 
 IMAGE_PREFIX="${NAMESPACE}/${REPOSITORY_NAME}"
 

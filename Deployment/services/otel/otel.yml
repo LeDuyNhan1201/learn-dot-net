@@ -110,5 +110,3 @@ service:
                 without_units: true
     logs:
       level: INFO
-
-file_format: yaml
