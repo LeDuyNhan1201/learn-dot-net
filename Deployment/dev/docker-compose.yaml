@@ -149,7 +149,7 @@ services:
     volumes:
       - ${SERVICES_DIR}/grafana/provisioning:/etc/grafana/provisioning:ro
       - ${SERVICES_DIR}/grafana/dashboards:/etc/grafana/dashboards:ro
-      - ${SERVICES_DIR}/certs/ca/ca.crt:/usr/local/share/ca-certificates/ca.crt:ro
+      - ./certs/ca/ca.crt:/usr/local/share/ca-certificates/ca.crt:ro
       - ${GRAFANA_DATA_DIR}:/var/lib/grafana
     depends_on:
       prometheus:
