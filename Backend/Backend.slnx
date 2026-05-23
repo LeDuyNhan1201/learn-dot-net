@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/BuildingBlocks/">
+    <Project Path="BuildingBlocks.API/BuildingBlocks.API.csproj" />
+  </Folder>
   <Folder Name="/Solution Items/">
   </Folder>
   <Project Path="API/API.csproj" />
