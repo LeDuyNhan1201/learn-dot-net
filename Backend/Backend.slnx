@@ -1,6 +1,10 @@
 <Solution>
   <Folder Name="/BuildingBlocks/">
     <Project Path="BuildingBlocks.API/BuildingBlocks.API.csproj" />
+    <Project Path="BuildingBlocks.Application/BuildingBlocks.Application.csproj" />
+    <Project Path="BuildingBlocks.Domain/BuildingBlocks.Domain.csproj" />
+    <Project Path="BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj" />
+    <Project Path="BuildingBlocks.Shared/BuildingBlocks.Shared.csproj" />
   </Folder>
   <Folder Name="/Solution Items/">
   </Folder>

@@ -1,5 +1,5 @@
 namespace API;
 
-public class Messages
+public sealed class Messages
 {
 }

@@ -18,14 +18,18 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\BuildingBlocks.API\BuildingBlocks.API.csproj" />
       <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Resources\Messages.vi-VN.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>messages.vi.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
+      <Content Update="appsettings*.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
       <EmbeddedResource Update="Resources\Messages.en-US.resx">
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>Messages.vi-VN.Designer.cs</LastGenOutput>
@@ -34,13 +38,10 @@
         <Generator>ResXFileCodeGenerator</Generator>
         <LastGenOutput>Messages.vi-VN.Designer.cs</LastGenOutput>
       </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Update="appsettings*.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-      </Content>
+      <EmbeddedResource Update="Resources\Messages.vi-VN.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>messages.vi.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
     </ItemGroup>
 
 </Project>

@@ -9,6 +9,11 @@ WORKDIR /src
 # Copy solution + csproj files first for cache optimization
 COPY --link Backend.slnx ./
 
+COPY --link BuildingBlocks.API/*.csproj BuildingBlocks.API/
+COPY --link BuildingBlocks.Application/*.csproj BuildingBlocks.Application/
+COPY --link BuildingBlocks.Domain/*.csproj BuildingBlocks.Domain/
+COPY --link BuildingBlocks.Infrastructure/*.csproj BuildingBlocks.Infrastructure/
+
 COPY --link API/*.csproj API/
 COPY --link Application/*.csproj Application/
 COPY --link Domain/*.csproj Domain/
