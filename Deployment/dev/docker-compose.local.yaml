@@ -15,7 +15,7 @@ x-observability-service: &observability-service
 services:
   # --------- Envoy ---------
   gateway:
-    image: envoyproxy/envoy:${ENVOY_TAG:-latest}
+    image: ${ENVOY_REPO_NAME}/envoy:${ENVOY_TAG:-latest}
     container_name: gateway
     ports:
       - "${GATEWAY_PORT}:443"
@@ -33,7 +33,7 @@ services:
   # --------- Observability ---------
   loki:
     <<: *observability-service
-    image: grafana/loki:${LOKI_TAG}
+    image: ${LOKI_REPO_NAME}/loki:${LOKI_TAG}
     container_name: loki
     command: ["-config.file=/etc/loki/loki.yaml"]
     networks:
@@ -44,7 +44,7 @@ services:
 
   tempo:
     <<: *observability-service
-    image: grafana/tempo:${TEMPO_TAG}
+    image: ${TEMPO_REPO_NAME}/tempo:${TEMPO_TAG}
     container_name: tempo
     command: ["-config.file=/etc/tempo/tempo.yaml"]
     networks:
@@ -58,7 +58,7 @@ services:
 
   otel-collector:
     <<: *observability-service
-    image: otel/opentelemetry-collector-contrib:${OTEL_COLLECTOR_TAG}
+    image: ${OTEL_REPO_NAME}/opentelemetry-collector-contrib:${OTEL_TAG}
     container_name: otel-collector
     command: ["--config=/etc/otelcol-contrib/otel.yml"]
     ports:
@@ -76,7 +76,7 @@ services:
 
   prometheus:
     <<: *observability-service
-    image: prom/prometheus:${PROMETHEUS_TAG}
+    image: ${PROMETHEUS_REPO_NAME}/prometheus:${PROMETHEUS_TAG}
     container_name: prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
@@ -94,7 +94,7 @@ services:
 
   grafana:
     <<: *observability-service
-    image: grafana/grafana:${GRAFANA_TAG}
+    image: ${}/grafana:${GRAFANA_TAG}
     container_name: grafana
     networks:
       - local-observability-network

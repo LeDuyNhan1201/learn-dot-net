@@ -18,7 +18,7 @@ services:
     container_name: backend
     networks:
       - dev-network
-      - observability-network
+      - dev-observability-network
     depends_on:
       otel-collector:
         condition: service_started
@@ -41,14 +41,14 @@ services:
 
   # --------- Envoy ---------
   gateway:
-    image: envoyproxy/envoy:${ENVOY_TAG:-latest}
+    image: ${ENVOY_REPO_NAME}/envoy:${ENVOY_TAG:-latest}
     container_name: gateway
     ports:
       - "${GATEWAY_PORT}:443"
       - "${GATEWAY_ADMIN_PORT}:9001"
     networks:
       - dev-network
-      - observability-network
+      - dev-observability-network
     command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
     volumes:
       - ${SERVICES_DIR}/envoy/gateway.yaml:/etc/envoy/envoy.yaml:ro
@@ -57,11 +57,13 @@ services:
   # --------- Observability ---------
   loki:
     <<: *observability-service
-    image: grafana/loki:${LOKI_TAG}
+    image: ${LOKI_REPO_NAME}/loki:${LOKI_TAG}
     container_name: loki
     command: ["-config.file=/etc/loki/loki.yaml"]
+#    ports:
+#      - "${LOKI_PORT}:3100"
     networks:
-      - observability-network
+      - dev-observability-network
     volumes:
       - ${SERVICES_DIR}/loki/loki.yaml:/etc/loki/loki.yaml:ro
       - ${LOKI_DATA_DIR}:/loki
@@ -74,11 +76,13 @@ services:
 
   tempo:
     <<: *observability-service
-    image: grafana/tempo:${TEMPO_TAG}
+    image: ${TEMPO_REPO_NAME}/tempo:${TEMPO_TAG}
     container_name: tempo
     command: ["-config.file=/etc/tempo/tempo.yaml"]
+#    ports:
+#      - "${TEMPO_PORT}:3200"
     networks:
-      - observability-network
+      - dev-observability-network
     volumes:
       - ${SERVICES_DIR}/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
       - ${TEMPO_DATA_DIR}:/var/tempo
@@ -94,14 +98,16 @@ services:
 
   otel-collector:
     <<: *observability-service
-    image: otel/opentelemetry-collector-contrib:${OTEL_COLLECTOR_TAG}
+    image: ${OTEL_REPO_NAME}/opentelemetry-collector-contrib:${OTEL_TAG}
     container_name: otel-collector
     command: ["--config=/etc/otelcol-contrib/otel.yml"]
-    ports:
-      - "${OTEL_COLLECTOR_HEALTH_PORT}:13133"
+#    ports:
+#      - "${OTEL_COLLECTOR_OTLP_GRPC_PORT}:4317"
+#      - "${OTEL_COLLECTOR_OTLP_HTTP_PORT}:4318"
+#      - "${OTEL_COLLECTOR_HEALTH_PORT}:13133"
     networks:
       - dev-network
-      - observability-network
+      - dev-observability-network
     volumes:
       - ${SERVICES_DIR}/otel/otel.yml:/etc/otelcol-contrib/otel.yml:ro
     depends_on:
@@ -118,7 +124,7 @@ services:
 
   prometheus:
     <<: *observability-service
-    image: prom/prometheus:${PROMETHEUS_TAG}
+    image: ${PROMETHEUS_REPO_NAME}/prometheus:${PROMETHEUS_TAG}
     container_name: prometheus
     command:
       - --config.file=/etc/prometheus/prometheus.yml
@@ -128,8 +134,10 @@ services:
       - --web.enable-lifecycle
       - --web.enable-remote-write-receiver
       - --enable-feature=exemplar-storage
+#    ports:
+#      - "${PROMETHEUS_PORT}:9090"
     networks:
-      - observability-network
+      - dev-observability-network
     volumes:
       - ${SERVICES_DIR}/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ${PROMETHEUS_DATA_DIR}:/prometheus
@@ -142,10 +150,12 @@ services:
 
   grafana:
     <<: *observability-service
-    image: grafana/grafana:${GRAFANA_TAG}
+    image: ${}/grafana:${GRAFANA_TAG}
     container_name: grafana
+#    ports:
+#      - "${GRAFANA_PORT}:3000"
     networks:
-      - observability-network
+      - dev-observability-network
     volumes:
       - ${SERVICES_DIR}/grafana/provisioning:/etc/grafana/provisioning:ro
       - ${SERVICES_DIR}/grafana/dashboards:/etc/grafana/dashboards:ro
@@ -183,5 +193,5 @@ services:
 networks:
   dev-network:
     driver: bridge
-  observability-network:
+  dev-observability-network:
     driver: bridge

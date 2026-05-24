@@ -67,7 +67,7 @@ Important variables:
 | `LOKI_TAG` | `3.7.1` | Loki image tag |
 | `TEMPO_TAG` | `2.10.5` | Tempo image tag |
 | `PROMETHEUS_TAG` | `3.11.3` | Prometheus image tag |
-| `OTEL_COLLECTOR_TAG` | `0.152.0` | OpenTelemetry Collector contrib image tag |
+| `OTEL_TAG` | `0.152.0` | OpenTelemetry Collector contrib image tag |
 | `GRAFANA_PORT` | `3000` | Grafana host port |
 | `PROMETHEUS_PORT` | `9090` | Prometheus host port |
 | `LOKI_PORT` | `3100` | Loki host port |
