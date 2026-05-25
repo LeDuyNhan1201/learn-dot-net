@@ -123,7 +123,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    ports:
+#    ports:
 #      - "${KEYCLOAK_PORT}:8080" # HTTP
 #      - "${KEYCLOAK_MANAGEMENT_PORT}:9990" # Management port
 #      - "${KEYCLOAK_JGROUPS_PORT}:7800" # JGroups
