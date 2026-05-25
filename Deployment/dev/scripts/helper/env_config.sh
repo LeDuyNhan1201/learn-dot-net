@@ -8,12 +8,17 @@ export LOKI_REPO_NAME="grafana"
 export TEMPO_REPO_NAME="grafana" 
 export PROMETHEUS_REPO_NAME="prom"
 export OTEL_REPO_NAME="otel"
+export KEYCLOAK_REPO_NAME="quay.io/keycloak"
+export POSTGRES_REPO_NAME=""
+
 export ENVOY_TAG="tools-dev" # https://hub.docker.com/r/envoyproxy/envoy/tags
 export GRAFANA_TAG="main-distroless-slim" # https://hub.docker.com/r/grafana/grafana/tags
 export LOKI_TAG="3.7.2" # https://hub.docker.com/r/grafana/loki/tags
 export TEMPO_TAG="2.9.2" # https://hub.docker.com/r/grafana/tempo/tags
 export PROMETHEUS_TAG="main-distroless" # https://hub.docker.com/r/prom/prometheus/tags
 export OTEL_TAG="nightly" # https://hub.docker.com/r/otel/opentelemetry-collector-contrib/tags
+export KEYCLOAK_TAG="26.6" # https://quay.io/repository/keycloak/keycloak?tab=tags
+export POSTGRES_TAG="14.23" # https://hub.docker.com/_/postgres/tags
 
 # For hardened images, use the following repository names and tags:
 #export ENVOY_REPO_NAME="dhi" 
@@ -52,6 +57,7 @@ export GRAFANA_DATA_DIR="${GRAFANA_DATA_DIR:-${DATA_DIR}/grafana}"
 export LOKI_DATA_DIR="${LOKI_DATA_DIR:-${DATA_DIR}/loki}"
 export TEMPO_DATA_DIR="${TEMPO_DATA_DIR:-${DATA_DIR}/tempo}"
 export PROMETHEUS_DATA_DIR="${PROMETHEUS_DATA_DIR:-${DATA_DIR}/prometheus}"
+export POSTGRES_DATA_DIR="${POSTGRES_DATA_DIR:-${DATA_DIR}/postgres}"
 
 export GATEWAY_CERT_SECRET_NAME="gateway-certs"
 export GATEWAY_CERT_FILE_NAME="gateway.cert.pem"
@@ -59,7 +65,16 @@ export GATEWAY_KEY_FILE_NAME="gateway.key.pem"
 export GATEWAY_HTTPS_PORT=443
 export GATEWAY_ADMIN_PORT=9901
 
-export GRAFANA_PORT=3000
+export POSTGRES_PORT=5438
+export POSTGRES_USER="leduynhan1201"
+export POSTGRES_PASSWORD='@N120103#'
+
+export KEYCLOAK_PORT=8081
+export KEYCLOAK_JGROUPS_PORT=7801
+export KC_BOOTSTRAP_ADMIN_USERNAME="leduynhan1201"
+export KC_BOOTSTRAP_ADMIN_PASSWORD='@N120103#'
+
+export GRAFANA_PORT=3001
 export GRAFANA_ADMIN_USER="${GRAFANA_ADMIN_USER:-admin}"
 export GRAFANA_ADMIN_PASSWORD="${GRAFANA_ADMIN_PASSWORD:-admin}"
 

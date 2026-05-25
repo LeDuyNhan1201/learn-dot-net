@@ -45,4 +45,8 @@ generate_tls_certs
 
 build_backend_image "${BACKEND_DIR}"
 
+build_postgres_image "${SERVICES_DIR}/postgres"
+
+build_keycloak_image "${SERVICES_DIR}/keycloak"
+
 echo "Initialize completed successfully."

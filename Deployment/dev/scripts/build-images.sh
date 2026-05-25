@@ -9,7 +9,7 @@ MODE="dev"
 export MODE
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 ENV_DIR="$(cd "${SCRIPT_DIR}/.." >/dev/null 2>&1 && pwd)"
-BACKEND_DIR="$(cd "${SCRIPT_DIR}/../../.." >/dev/null 2>&1 && pwd)"
+BACKEND_DIR="$(cd "${SCRIPT_DIR}/../../../Backend" >/dev/null 2>&1 && pwd)"
 HELPER_DIR="${SCRIPT_DIR}/helper"
 export ENV_DIR
 
@@ -32,6 +32,10 @@ source "${GENERATOR_FILE}"
 # Docker Images Build
 # -------------------------------
 
-build_backend_image "${BACKEND_DIR}"
+#build_backend_image "${BACKEND_DIR}"
 
-echo "Build image completed successfully."
+build_postgres_image "${SERVICES_DIR}/postgres"
+
+build_keycloak_image "${SERVICES_DIR}/keycloak"
+
+echo "Build images completed successfully."

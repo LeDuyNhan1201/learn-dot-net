@@ -10,6 +10,7 @@ create_data_folders() {
   create_dir true "$LOKI_DATA_DIR"
   create_dir true "$TEMPO_DATA_DIR"
   create_dir true "$PROMETHEUS_DATA_DIR"
+  create_dir true "$POSTGRES_DATA_DIR"
   
   # TODO: Add more data folders as needed
 }
@@ -42,6 +43,8 @@ create_env_file() {
     TEMPO_TAG
     PROMETHEUS_TAG
     OTEL_TAG
+    POSTGRES_TAG
+    KEYCLOAK_TAG
 
     CERT_SECRET
     DATA_DIR
@@ -51,12 +54,22 @@ create_env_file() {
     LOKI_DATA_DIR
     TEMPO_DATA_DIR
     PROMETHEUS_DATA_DIR
+    POSTGRES_DATA_DIR
 
     GATEWAY_CERT_SECRET_NAME
     GATEWAY_CERT_FILE_NAME
     GATEWAY_KEY_FILE_NAME
     GATEWAY_HTTPS_PORT
     GATEWAY_ADMIN_PORT
+    
+    POSTGRES_PORT
+    POSTGRES_USER
+    POSTGRES_PASSWORD
+    
+    KEYCLOAK_PORT
+    KEYCLOAK_JGROUPS_PORT
+    KC_BOOTSTRAP_ADMIN_USERNAME
+    KC_BOOTSTRAP_ADMIN_PASSWORD
 
     GRAFANA_PORT
     GRAFANA_ADMIN_USER
@@ -352,6 +365,8 @@ EOF
 
 generate_tls_certs() {
   generate_cert_with_keystore_and_truststore "gateway" "gateway" "${APP_HOSTNAME}"
+  generate_cert_with_keystore_and_truststore "postgres" "postgres"
+  generate_cert_with_keystore_and_truststore "keycloak" "keycloak"
 }
 
 # ===== Example usage =====
@@ -401,6 +416,14 @@ backend_image_name() {
   echo "${NAMESPACE}/${REPOSITORY_NAME}/backend:${BACKEND_TAG}"
 }
 
+keycloak_image_name() {
+  echo "${NAMESPACE}/${REPOSITORY_NAME}/keycloak:${KEYCLOAK_TAG}"
+}
+
+postgres_image_name() {
+  echo "${NAMESPACE}/${REPOSITORY_NAME}/postgres:${POSTGRES_TAG}"
+}
+
 build_backend_image() {
   local backend_dir=${1:?backend_dir is required}
   local image_name
@@ -411,7 +434,37 @@ build_backend_image() {
   docker rmi "$image_name" || true
   docker build --no-cache \
     --build-arg BACKEND_TAG="${BACKEND_TAG}" \
-    -f "${backend_dir}/API/Docker/Native/Dockerfile" \
+    -f "${backend_dir}/Restaurant/Restaurant.API/Docker/Native/Dockerfile" \
     -t "$image_name" \
     "${backend_dir}"
+}
+
+build_keycloak_image() {
+  local keycloak_dir=${1:?keycloak_dir is required}
+  local image_name
+  image_name="$(keycloak_image_name)"
+
+  require_command docker
+
+  docker rmi "$image_name" || true
+  docker build --no-cache \
+    --build-arg KEYCLOAK_TAG="${KEYCLOAK_TAG}" \
+    -f "${keycloak_dir}/Dockerfile" \
+    -t "$image_name" \
+    "${keycloak_dir}"
+}
+
+build_postgres_image() {
+  local postgres_dir=${1:?postgres_dir is required}
+  local image_name
+  image_name="$(postgres_image_name)"
+
+  require_command docker
+
+  docker rmi "$image_name" || true
+  docker build --no-cache \
+    --build-arg POSTGRES_TAG="${POSTGRES_TAG}" \
+    -f "${postgres_dir}/Dockerfile" \
+    -t "$image_name" \
+    "${postgres_dir}"
 }

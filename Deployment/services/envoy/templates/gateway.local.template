@@ -100,7 +100,25 @@ static_resources:
                             - header:
                                 key: x-forwarded-port
                                 value: "${GATEWAY_PORT}"
+                                
+                        # =========================
+                        # Keycloak Cluster
+                        # =========================
+                        - match:
+                            prefix: "/auth"
+                            
+                          route:
+                            cluster: keycloak_cluster
+                            timeout: 0s
 
+                          request_headers_to_add:
+                            - header:
+                                key: x-forwarded-proto
+                                value: https
+                            - header:
+                                key: x-forwarded-port
+                                value: "${GATEWAY_PORT}"
+                                
                         # =========================
                         # Default fallback
                         # =========================
@@ -118,6 +136,40 @@ static_resources:
                       "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
 
   clusters:
+    # ======================================
+    # Keycloak Cluster
+    # ======================================
+    - name: keycloak_cluster
+
+      connect_timeout: 5s
+      type: LOGICAL_DNS
+      lb_policy: ROUND_ROBIN
+      http2_protocol_options: {}
+      dns_lookup_family: V4_ONLY
+
+      load_assignment:
+        cluster_name: keycloak_cluster
+
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: keycloak0
+                      port_value: 8080
+
+      health_checks:
+        - timeout: 3s
+          interval: 10s
+          unhealthy_threshold: 3
+          healthy_threshold: 2
+      
+          http_health_check:
+            path: /health/ready
+            expected_statuses:
+              - start: 200
+                end: 300
+                
     # ======================================
     # Backend Cluster
     # ======================================

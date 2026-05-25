@@ -38,5 +38,7 @@ sudo rm -f "${ENV_DIR}/.env"
 # -------------------------------
 
 docker rmi "${IMAGE_PREFIX}/backend:${BACKEND_TAG}" || true
+docker rmi "${IMAGE_PREFIX}/postgres:${POSTGRES_TAG}" || true
+docker rmi "${IMAGE_PREFIX}/keycloak:${KEYCLOAK_TAG}" || true
 
 echo "Cleanup all completed successfully."

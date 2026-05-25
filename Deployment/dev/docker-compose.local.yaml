@@ -12,6 +12,37 @@ x-observability-service: &observability-service
     - no-new-privileges:true
   logging: *observability-logging
 
+x-keycloak-env: &keycloak-env
+  # --- Keycloak Configuration ---
+  KC_METRICS_ENABLED: true
+  KC_HEALTH_ENABLED: true
+  KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+  KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+  KC_LOG_LEVEL: "info,org.keycloak.connections.infinispan.DefaultInfinispanConnectionProviderFactory:debug"
+  KC_CACHE_STACK: "jdbc-ping"
+  KC_SPI_STICKY_SESSION_ENCODER__INFINISPAN__SHOULD_ATTACH_ROUTE: true
+  # --- HTTP & Host Configuratiown ---
+  KC_HOSTNAME: "https://${APP_HOSTNAME}:${GATEWAY_PORT}/auth"
+  KC_HTTP_RELATIVE_PATH: "/auth"
+  KC_HOSTNAME_STRICT: "false"
+  KC_HTTP_ENABLED: "true"
+  KC_PROXY_HEADERS: "xforwarded"
+  KC_PROXY: "edge"
+  # --- Database Configuration ---
+  KC_DB: postgres
+  KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak?sslmode=verify-full&sslrootcert=/opt/keycloak/conf/root.crt&sslcert=/opt/keycloak/conf/server.crt&sslkey=/opt/keycloak/conf/server.key
+  KC_DB_USERNAME: ${POSTGRES_USER}
+  KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+x-keycloak-command: &keycloak-command
+  command: [
+    "start",
+    "--import-realm",
+    "--optimized",
+    "--verbose", # may not need in production
+    "--cache=ispn"
+  ]
+
 services:
   # --------- Envoy ---------
   gateway:
@@ -29,6 +60,60 @@ services:
     volumes:
       - ${SERVICES_DIR}/envoy/gateway.local.yaml:/etc/envoy/envoy.yaml:ro
       - ./certs/gateway:/etc/envoy/certificates:ro
+    
+  # --------- Postgres ---------
+  postgres:
+    image: ${NAMESPACE}/${REPOSITORY_NAME}/postgres:${POSTGRES_TAG}
+    container_name: postgres
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    networks:
+      - local-network
+    command: >
+      postgres
+      -c max_connections=500
+      -c config_file=/etc/postgres/postgres.conf
+      -c hba_file=/etc/postgres/pg_hba.conf
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: always
+    volumes:
+      - ${SERVICES_DIR}/postgres/config/postgres.conf:/etc/postgres/postgres.conf:ro
+      - ${SERVICES_DIR}/postgres/config/pg_hba.conf:/etc/postgres/pg_hba.conf:ro
+      - ${SERVICES_DIR}/postgres/init-db:/docker-entrypoint-initdb.d:ro
+      - ${POSTGRES_DATA_DIR}/pgdata:/var/lib/postgresql
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/18/docker
+
+  # --------- Keycloak cluster ---------
+  keycloak0:
+    image: ${NAMESPACE}/${REPOSITORY_NAME}/keycloak:${KEYCLOAK_TAG}
+    container_name: keycloak0
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - local-network
+    <<: *keycloak-command
+    healthcheck:
+      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080; echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost:8080\r\nConnection: close\r\n\r\n' >&3; cat <&3 | grep -q '\"status\": \"UP\"' && exit 0 || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 3
+    restart: always # unless-stopped
+    volumes:
+      - ${SERVICES_DIR}/keycloak/import:/opt/keycloak/data/import
+      - ${SERVICES_DIR}/keycloak/export:/opt/keycloak/data/export
+    environment:
+      <<: *keycloak-env
+      KC_SPI_CACHE_EMBEDDED__DEFAULT__MACHINE_NAME: node0
 
   # --------- Observability ---------
   loki:
@@ -94,7 +179,7 @@ services:
 
   grafana:
     <<: *observability-service
-    image: ${}/grafana:${GRAFANA_TAG}
+    image: ${GRAFANA_REPO_NAME}/grafana:${GRAFANA_TAG}
     container_name: grafana
     networks:
       - local-observability-network
