@@ -67,6 +67,7 @@ create_env_file() {
     POSTGRES_PASSWORD
     
     KEYCLOAK_PORT
+    KEYCLOAK_MANAGEMENT_PORT
     KEYCLOAK_JGROUPS_PORT
     KC_BOOTSTRAP_ADMIN_USERNAME
     KC_BOOTSTRAP_ADMIN_PASSWORD
@@ -116,8 +117,8 @@ create_files_from_templates() {
   require_command envsubst
 
   local templates=(
-    "${ENV_DIR}/services/envoy/templates/gateway.template:${ENV_DIR}/services/envoy/gateway.yaml"
-    "${ENV_DIR}/services/envoy/templates/gateway.local.template:${ENV_DIR}/services/envoy/gateway.local.yaml"
+    "${SERVICES_DIR}/envoy/templates/gateway.template:${SERVICES_DIR}/envoy/gateway.yaml"
+    "${SERVICES_DIR}/envoy/templates/gateway.local.template:${SERVICES_DIR}/envoy/gateway.local.yaml"
 
     # TODO: Add more templates as needed, pattern is "source:destination"
   )
@@ -440,7 +441,7 @@ build_backend_image() {
 }
 
 build_keycloak_image() {
-  local keycloak_dir=${1:?keycloak_dir is required}
+  local env_dir=${1:?env_dir is required}
   local image_name
   image_name="$(keycloak_image_name)"
 
@@ -449,13 +450,13 @@ build_keycloak_image() {
   docker rmi "$image_name" || true
   docker build --no-cache \
     --build-arg KEYCLOAK_TAG="${KEYCLOAK_TAG}" \
-    -f "${keycloak_dir}/Dockerfile" \
+    -f "${env_dir}/docker/keycloak/Dockerfile" \
     -t "$image_name" \
-    "${keycloak_dir}"
+    "${env_dir}"
 }
 
 build_postgres_image() {
-  local postgres_dir=${1:?postgres_dir is required}
+  local env_dir=${1:?env_dir is required}
   local image_name
   image_name="$(postgres_image_name)"
 
@@ -464,7 +465,7 @@ build_postgres_image() {
   docker rmi "$image_name" || true
   docker build --no-cache \
     --build-arg POSTGRES_TAG="${POSTGRES_TAG}" \
-    -f "${postgres_dir}/Dockerfile" \
+    -f "${env_dir}/docker/postgres/Dockerfile" \
     -t "$image_name" \
-    "${postgres_dir}"
+    "${env_dir}"
 }

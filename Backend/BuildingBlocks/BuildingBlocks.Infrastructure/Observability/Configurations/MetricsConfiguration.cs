@@ -31,7 +31,7 @@ public static class MetricsConfiguration
             case "OTLP":
                 builder.AddOtlpExporter(otlp =>
                 {
-                    otlp.Endpoint = new Uri(options.Otlp.Endpoint);
+                    otlp.Endpoint = new Uri(options.Otlp!.Endpoint);
                     otlp.Protocol = OtlpExportProtocol.Grpc;
                 });
                 break;

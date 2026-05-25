@@ -25,7 +25,7 @@ GENERATOR_FILE="${HELPER_DIR}/generator.sh"
 source "${ENV_FILE}"
 # shellcheck source=scripts/helper/utils.sh
 source "${UTILS_FILE}"
-# shellcheck source=scripts/helper/functions.sh
+# shellcheck source=scripts/helper/generator.sh
 source "${GENERATOR_FILE}"
 
 # -------------------------------
@@ -45,8 +45,8 @@ generate_tls_certs
 
 build_backend_image "${BACKEND_DIR}"
 
-build_postgres_image "${SERVICES_DIR}/postgres"
+build_postgres_image "${ENV_DIR}"
 
-build_keycloak_image "${SERVICES_DIR}/keycloak"
+build_keycloak_image "${ENV_DIR}"
 
 echo "Initialize completed successfully."

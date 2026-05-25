@@ -14,6 +14,7 @@ x-observability-service: &observability-service
 
 x-keycloak-env: &keycloak-env
   # --- Keycloak Configuration ---
+  KC_HTTP_MANAGEMENT_PORT: 9990
   KC_METRICS_ENABLED: true
   KC_HEALTH_ENABLED: true
   KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
@@ -85,7 +86,7 @@ services:
       - ${SERVICES_DIR}/postgres/config/postgres.conf:/etc/postgres/postgres.conf:ro
       - ${SERVICES_DIR}/postgres/config/pg_hba.conf:/etc/postgres/pg_hba.conf:ro
       - ${SERVICES_DIR}/postgres/init-db:/docker-entrypoint-initdb.d:ro
-      - ${POSTGRES_DATA_DIR}/pgdata:/var/lib/postgresql
+      - ${POSTGRES_DATA_DIR}:/var/lib/postgresql
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -102,7 +103,7 @@ services:
       - local-network
     <<: *keycloak-command
     healthcheck:
-      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080; echo -e 'GET /health/ready HTTP/1.1\r\nHost: localhost:8080\r\nConnection: close\r\n\r\n' >&3; cat <&3 | grep -q '\"status\": \"UP\"' && exit 0 || exit 1" ]
+      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9990; echo -e 'GET /auth/health/ready HTTP/1.1\r\nHost: localhost:9990\r\nConnection: close\r\n\r\n' >&3; cat <&3 | grep -q '\"status\": \"UP\"' && exit 0 || exit 1" ]
       interval: 30s
       timeout: 10s
       start_period: 30s

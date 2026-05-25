@@ -9,19 +9,20 @@ WORKDIR /src
 # Copy solution + csproj files first for cache optimization
 COPY --link Backend.slnx ./
 
-COPY --link BuildingBlocks/BuildingBlocks.API/*.csproj BuildingBlocks.API/
-COPY --link BuildingBlocks/BuildingBlocks.Application/*.csproj BuildingBlocks.Application/
-COPY --link BuildingBlocks/BuildingBlocks.Domain/*.csproj BuildingBlocks.Domain/
-COPY --link BuildingBlocks/BuildingBlocks.Infrastructure/*.csproj BuildingBlocks.Infrastructure/
+COPY --link BuildingBlocks/BuildingBlocks.API/*.csproj BuildingBlocks/BuildingBlocks.API/
+COPY --link BuildingBlocks/BuildingBlocks.Application/*.csproj BuildingBlocks/BuildingBlocks.Application/
+COPY --link BuildingBlocks/BuildingBlocks.Domain/*.csproj BuildingBlocks/BuildingBlocks.Domain/
+COPY --link BuildingBlocks/BuildingBlocks.Infrastructure/*.csproj BuildingBlocks/BuildingBlocks.Infrastructure/
+COPY --link BuildingBlocks/BuildingBlocks.Shared/*.csproj BuildingBlocks/BuildingBlocks.Shared/
 
-COPY --link Restaurant/Restaurant.API/*.csproj Restaurant.API/
-COPY --link Restaurant/Restaurant.Application/*.csproj Restaurant.Application/
-COPY --link Restaurant/Restaurant.Domain/*.csproj Restaurant.Domain/
-COPY --link Restaurant/Restaurant.Infrastructure/*.csproj Restaurant.Infrastructure/
+COPY --link Restaurant/Restaurant.API/*.csproj Restaurant/Restaurant.API/
+COPY --link Restaurant/Restaurant.Application/*.csproj Restaurant/Restaurant.Application/
+COPY --link Restaurant/Restaurant.Domain/*.csproj Restaurant/Restaurant.Domain/
+COPY --link Restaurant/Restaurant.Infrastructure/*.csproj Restaurant/Restaurant.Infrastructure/
 
 # Restore
 RUN --mount=type=cache,target=/root/.nuget/packages \
-    dotnet restore Restaurant.API/Restaurant.API.csproj -r "$RUNTIME_IDENTIFIER"
+    dotnet restore Restaurant/Restaurant.API/Restaurant.API.csproj -r "$RUNTIME_IDENTIFIER"
 
 # Copy full source
 COPY --link . .
@@ -59,4 +60,4 @@ COPY --link --from=build /app/publish .
 
 EXPOSE 60001
 
-ENTRYPOINT [".Restaurant/Restaurant.API"]
+ENTRYPOINT ["./Restaurant.API"]

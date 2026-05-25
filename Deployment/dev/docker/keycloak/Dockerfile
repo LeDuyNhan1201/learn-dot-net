@@ -12,9 +12,9 @@ ENV KC_FEATURES=http-optimized-serializers
 WORKDIR /opt/keycloak
 
 # Copy certificates
-COPY --chown=keycloak:keycloak secrets/certs/ca/ca.crt conf/root.crt
-COPY --chown=keycloak:keycloak secrets/certs/keycloak/keycloak.cert.pem conf/server.crt
-COPY --chown=keycloak:keycloak secrets/certs/keycloak/keycloak.key.pem conf/server.key
+COPY --chown=keycloak:keycloak certs/ca/ca.crt conf/root.crt
+COPY --chown=keycloak:keycloak certs/keycloak/keycloak.cert.pem conf/server.crt
+COPY --chown=keycloak:keycloak certs/keycloak/keycloak.key.pem conf/server.key
 
 RUN chmod 600 conf/server.key
 

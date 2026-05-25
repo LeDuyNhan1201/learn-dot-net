@@ -208,7 +208,6 @@ static_resources:
       connect_timeout: 5s
       type: LOGICAL_DNS
       lb_policy: ROUND_ROBIN
-      http2_protocol_options: {}
       dns_lookup_family: V4_ONLY
 
       load_assignment:
