@@ -90,6 +90,18 @@ export OTEL_COLLECTOR_OTLP_GRPC_PORT=4317
 export OTEL_COLLECTOR_OTLP_HTTP_PORT=4318
 export OTEL_COLLECTOR_HEALTH_PORT=13133
 
+export APP_IDP_URL=https://${APP_HOSTNAME}:${GATEWAY_PORT}/auth
+export APP_IDP_REALM=learn-dot-net
+export APP_IDP_TOKEN_ENDPOINT=${APP_IDP_URL}realms/${APP_IDP_REALM}/protocol/openid-connect/token
+export APP_IDP_JWKS_ENDPOINT=${APP_IDP_URL}realms/${APP_IDP_REALM}/protocol/openid-connect/certs
+export APP_IDP_EXPECTED_ISSUER=${APP_IDP_URL}realms/${APP_IDP_REALM}
+export APP_IDP_AUTH_ENDPOINT=${APP_IDP_URL}realms/${APP_IDP_REALM}/protocol/openid-connect/auth
+export APP_IDP_AUTH_DEVICE_ENDPOINT=${APP_IDP_URL}realms/${APP_IDP_REALM}/protocol/openid-connect/auth/device
+export APP_IDP_SUB_CLAIM_NAME=sub
+export APP_IDP_SCOPE_CLAIM_NAME=scope
+export APP_IDP_GROUP_CLAIM_NAME=groups
+export APP_IDP_EXPECTED_AUDIENCE=account
+
 export OBSERVABILITY_UID="${OBSERVABILITY_UID:-$(id -u 2>/dev/null || printf '1000')}"
 export OBSERVABILITY_GID="${OBSERVABILITY_GID:-$(id -g 2>/dev/null || printf '1000')}"
 

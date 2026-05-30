@@ -2,9 +2,10 @@ using BuildingBlocks.API.Serialization;
 using BuildingBlocks.API.Serialization.Converter;
 using BuildingBlocks.Application.Interfaces;
 using BuildingBlocks.Application.Options;
+using BuildingBlocks.Infrastructure.Authentication.Extensions;
 using BuildingBlocks.Infrastructure.Observability;
-using BuildingBlocks.Infrastructure.OpenApi;
 using BuildingBlocks.Infrastructure.OpenApi.Extensions;
+using Keycloak.AuthServices.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -71,6 +72,11 @@ public static class DependencyExtensions
             .AddOptions<ApiDocsOptions>()
             .BindConfiguration(ApiDocsOptions.SectionName)
             .ValidateOnStart();
+        
+        services
+            .AddOptions<KeycloakAuthenticationOptions>()
+            .BindConfiguration(KeycloakAuthenticationOptions.Section)
+            .ValidateOnStart();
 
         foreach (var module in modules)
         {
@@ -86,8 +92,9 @@ public static class DependencyExtensions
         params IInfrastructureModule[] modules)
     {
         services
-            .AddObservability(configuration)
-            .AddScalarOpenApi();
+            // .AddObservability(configuration)
+            .AddScalarOpenApi()
+            .AddAppAuthentication(configuration);
 
         foreach (var module in modules)
         {

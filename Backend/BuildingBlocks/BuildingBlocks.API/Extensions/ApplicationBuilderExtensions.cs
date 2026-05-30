@@ -1,4 +1,5 @@
 using BuildingBlocks.API.Interfaces;
+using BuildingBlocks.API.Middlewares;
 using BuildingBlocks.Infrastructure.Observability;
 using BuildingBlocks.Infrastructure.OpenApi.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -29,6 +30,11 @@ public static class ApplicationBuilderExtensions
         }
 
         app.UseScalarUi(app.Configuration);
+        
+        app
+            .UseAuthentication()
+            .UseMiddleware<IdentityContextMiddleware>()
+            .UseAuthorization();
 
         return app;
     }

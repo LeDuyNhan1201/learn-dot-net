@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace BuildingBlocks.Infrastructure.Observability;
+namespace BuildingBlocks.Infrastructure.Observability.Meters;
 
 public sealed class Telemetry : IDisposable
 {

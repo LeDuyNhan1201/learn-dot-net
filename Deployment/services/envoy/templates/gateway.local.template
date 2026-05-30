@@ -87,7 +87,7 @@ static_resources:
                         # Backend API
                         # =========================
                         - match:
-                            prefix: "/api"
+                            prefix: "/restaurant/api"
 
                           route:
                             cluster: backend
@@ -165,7 +165,7 @@ static_resources:
           healthy_threshold: 2
       
           http_health_check:
-            path: /health/ready
+            path: /restaurant/api/v1/health/ready
             expected_statuses:
               - start: 200
                 end: 300

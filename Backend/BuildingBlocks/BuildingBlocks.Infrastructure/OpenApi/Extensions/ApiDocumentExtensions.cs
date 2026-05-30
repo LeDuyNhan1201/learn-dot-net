@@ -1,5 +1,7 @@
 using BuildingBlocks.Application.Options;
 using BuildingBlocks.Infrastructure.OpenApi.Operations;
+using Keycloak.AuthServices.Authentication;
+using Keycloak.AuthServices.Common;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
@@ -7,7 +9,11 @@ namespace BuildingBlocks.Infrastructure.OpenApi.Extensions;
 
 public static class ApiDocumentExtensions
 {
-    public static OpenApiDocument InitBaseDocument(this OpenApiDocument document, ApiDocsOptions options, string version)
+    public static OpenApiDocument InitBaseDocument(
+        this OpenApiDocument document, 
+        ApiDocsOptions apiDocsOptions, 
+        KeycloakAuthenticationOptions authOptions,
+        string version)
     {
         OpenApiPaths filteredPaths = [];
         document.Paths
@@ -27,14 +33,14 @@ public static class ApiDocumentExtensions
 
         document.Info = new OpenApiInfo
         {
-            Title = options.Title,
-            Version = options.Version,
-            Description = options.Description,
+            Title = apiDocsOptions.Title,
+            Version = apiDocsOptions.Version,
+            Description = apiDocsOptions.Description,
             TermsOfService = new Uri("https://openapi.io/terms/"),
             Contact = new OpenApiContact
             {
-                Name = options.ContactName,
-                Email = options.ContactEmail
+                Name = apiDocsOptions.ContactName,
+                Email = apiDocsOptions.ContactEmail
             },
             License = new OpenApiLicense
             {
@@ -47,8 +53,8 @@ public static class ApiDocumentExtensions
         document.Servers.Clear();
         document.Servers.Add(new OpenApiServer
         {
-            Url = options.ServerUrl,
-            Description = options.Description
+            Url = apiDocsOptions.ServerUrl,
+            Description = apiDocsOptions.Description
         });
         if (defaultServerUrl != null) document.Servers.Add(defaultServerUrl);
 
@@ -63,6 +69,7 @@ public static class ApiDocumentExtensions
                 Description = "JWT Bearer token"
             };
 
+        ArgumentNullException.ThrowIfNull(authOptions.AuthServerUrl);
         document.Components.SecuritySchemes[SecuritySchemeType.OAuth2.GetDisplayName()] =
             new OpenApiSecurityScheme
             {
@@ -71,12 +78,15 @@ public static class ApiDocumentExtensions
                 {
                     AuthorizationCode = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = new Uri("https://example.com/auth"),
-                        TokenUrl = new Uri("https://example.com/token"),
+                        AuthorizationUrl = new Uri(authOptions.AuthServerUrl),
+                        TokenUrl = new Uri($"{authOptions.AuthServerUrl}{KeycloakConstants.TokenEndpointPath}"),
+                        RefreshUrl = new Uri($"{authOptions.AuthServerUrl}{KeycloakConstants.TokenEndpointPath}"),
                         Scopes = new Dictionary<string, string>
                         {
-                            { "read", "Read access" },
-                            { "write", "Write access" }
+                            { KeycloakConstants.ResourceAccessClaimType, "Resource access" },
+                            { "openid", "Open ID" },
+                            { "profile", "Profile access" },
+                            { "email", "Email access" }
                         }
                     }
                 }
@@ -86,7 +96,7 @@ public static class ApiDocumentExtensions
             new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.OpenIdConnect,
-                OpenIdConnectUrl = new Uri("https://your-keycloak.com/realms/your-realm/.well-known/openid-configuration")
+                OpenIdConnectUrl = new Uri($"{authOptions.AuthServerUrl}realms/{authOptions.Realm}/{KeycloakConstants.OpenIdConnectConfigurationPath}")
             };
 
         return document;

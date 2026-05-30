@@ -1,5 +1,6 @@
 using BuildingBlocks.Application.Options;
 using BuildingBlocks.Infrastructure.Observability.Configurations;
+using BuildingBlocks.Infrastructure.Observability.Meters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

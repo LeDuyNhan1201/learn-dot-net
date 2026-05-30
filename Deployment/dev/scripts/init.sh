@@ -43,7 +43,7 @@ generate_tls_certs
 # Docker Images Build
 # -------------------------------
 
-build_backend_image "${BACKEND_DIR}"
+#build_backend_image "${BACKEND_DIR}"
 
 build_postgres_image "${ENV_DIR}"
 

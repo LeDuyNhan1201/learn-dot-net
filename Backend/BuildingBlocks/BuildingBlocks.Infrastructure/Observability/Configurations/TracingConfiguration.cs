@@ -1,4 +1,5 @@
 using BuildingBlocks.Application.Options;
+using BuildingBlocks.Infrastructure.Observability.Meters;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Trace;
 
