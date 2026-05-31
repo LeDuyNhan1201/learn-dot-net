@@ -1,4 +1,4 @@
-﻿namespace BuildingBlocks.Application.Options;
+﻿namespace BuildingBlocks.Infrastructure.OpenApi.Options;
 
 public sealed class ApiDocsOptions
 {

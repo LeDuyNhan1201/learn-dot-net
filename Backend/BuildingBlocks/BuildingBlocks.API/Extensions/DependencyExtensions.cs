@@ -1,10 +1,8 @@
-using BuildingBlocks.API.Serialization;
-using BuildingBlocks.API.Serialization.Converter;
-using BuildingBlocks.Application.Interfaces;
-using BuildingBlocks.Application.Options;
 using BuildingBlocks.Infrastructure.Authentication.Extensions;
-using BuildingBlocks.Infrastructure.Observability;
+using BuildingBlocks.Infrastructure.Observability.Options;
 using BuildingBlocks.Infrastructure.OpenApi.Extensions;
+using BuildingBlocks.Infrastructure.OpenApi.Options;
+using BuildingBlocks.Shared.Options;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,50 +11,16 @@ namespace BuildingBlocks.API.Extensions;
 
 public static class DependencyExtensions
 {
-    public static IServiceCollection AddSerializations(
-        this IServiceCollection services,
-        Action<SerializationBuilder>? configure = null)
+    public static IServiceCollection AddBaseServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var builder = new SerializationBuilder();
-
-        configure?.Invoke(builder);
-
-        services.ConfigureHttpJsonOptions(options =>
-        {
-            options.SerializerOptions.TypeInfoResolverChain.Insert(0, CommonJsonSerializerContext.Default);
-
-            foreach (var resolver in builder.Resolvers)
-            {
-                options.SerializerOptions.TypeInfoResolverChain.Insert(0, resolver);
-            }
-
-            options.SerializerOptions.Converters.Add(new DateOnlyJsonConverter());
-
-            foreach (var converter in builder.Converters)
-            {
-                options.SerializerOptions.Converters.Add(converter);
-            }
-        });
-
-        return services;
-    }
-    
-    public static IServiceCollection AddApiServices(
-        this IServiceCollection services,
-        params IServiceModule[] modules)
-    {
-        foreach (var module in modules)
-        {
-            module.Register(services);
-        }
+        services
+            .AddBaseOptions()
+            .AddBaseInfrastructure(configuration);
 
         return services;
     }
 
-    public static IServiceCollection AddOptionsConfiguration(
-        this IServiceCollection services,
-        IConfiguration configuration,
-        params IOptionsModule[] modules)
+    private static IServiceCollection AddBaseOptions(this IServiceCollection services)
     {
         services
             .AddOptions<ServerOptions>()
@@ -72,36 +36,22 @@ public static class DependencyExtensions
             .AddOptions<ApiDocsOptions>()
             .BindConfiguration(ApiDocsOptions.SectionName)
             .ValidateOnStart();
-        
+
         services
             .AddOptions<KeycloakAuthenticationOptions>()
             .BindConfiguration(KeycloakAuthenticationOptions.Section)
             .ValidateOnStart();
 
-        foreach (var module in modules)
-        {
-            module.Register(services, configuration);
-        }
-
         return services;
     }
-    
-    public static IServiceCollection AddInfrastructure(
-        this IServiceCollection services,
-        IConfiguration configuration,
-        params IInfrastructureModule[] modules)
+
+    private static IServiceCollection AddBaseInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services
             // .AddObservability(configuration)
             .AddScalarOpenApi()
             .AddAppAuthentication(configuration);
 
-        foreach (var module in modules)
-        {
-            module.Register(services, configuration);
-        }
-
         return services;
     }
-    
 }

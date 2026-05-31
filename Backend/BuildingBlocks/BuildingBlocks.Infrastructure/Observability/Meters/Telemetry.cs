@@ -5,10 +5,9 @@ namespace BuildingBlocks.Infrastructure.Observability.Meters;
 
 public sealed class Telemetry : IDisposable
 {
-    private readonly Meter _meter;
-    
     internal const string ActivitySourceName = "LeDuyNhan1201.LearnDotNet";
     internal const string MeterName = "LeDuyNhan1201.LearnDotNet";
+    private readonly Meter _meter;
 
     public Telemetry()
     {
@@ -18,7 +17,7 @@ public sealed class Telemetry : IDisposable
     }
 
     private ActivitySource ActivitySource { get; }
-    
+
     public void Dispose()
     {
         ActivitySource.Dispose();

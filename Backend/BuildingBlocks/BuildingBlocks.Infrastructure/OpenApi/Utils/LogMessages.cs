@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace BuildingBlocks.Infrastructure.Core;
+namespace BuildingBlocks.Infrastructure.OpenApi.Utils;
 
 public static partial class LogMessages
 {

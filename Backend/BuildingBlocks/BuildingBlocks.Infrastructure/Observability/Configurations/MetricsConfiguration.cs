@@ -1,6 +1,6 @@
 using System.Diagnostics.Metrics;
-using BuildingBlocks.Application.Options;
 using BuildingBlocks.Infrastructure.Observability.Meters;
+using BuildingBlocks.Infrastructure.Observability.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 
@@ -12,7 +12,7 @@ public static class MetricsConfiguration
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(options);
-        
+
         builder
             .AddMeter(Telemetry.MeterName)
             .AddRuntimeInstrumentation()
@@ -22,11 +22,12 @@ public static class MetricsConfiguration
         switch (options.HistogramAggregation.ToUpperInvariant())
         {
             case "EXPONENTIAL":
-                builder.AddView(instrument => instrument.GetType().GetGenericTypeDefinition() == typeof(Histogram<>) 
-                    ? new Base2ExponentialBucketHistogramConfiguration() : null);
+                builder.AddView(instrument => instrument.GetType().GetGenericTypeDefinition() == typeof(Histogram<>)
+                    ? new Base2ExponentialBucketHistogramConfiguration()
+                    : null);
                 break;
         }
-        
+
         switch (options.UseMetricsExporter.ToUpperInvariant())
         {
             case "OTLP":
@@ -36,7 +37,7 @@ public static class MetricsConfiguration
                     otlp.Protocol = OtlpExportProtocol.Grpc;
                 });
                 break;
-            
+
             case "PROMETHEUS":
                 builder.AddPrometheusExporter();
                 break;

@@ -1,7 +1,7 @@
-using Application.Interfaces;
-using Domain.Entities;
+using Restaurant.Application.Services.Interfaces;
+using Restaurant.Domain.Entities;
 
-namespace Application.Services;
+namespace Restaurant.Application.Services;
 
 public sealed class TodoService : ITodoService
 {

@@ -1,6 +1,6 @@
-using Domain.Entities;
+using Restaurant.Domain.Entities;
 
-namespace Application.Interfaces;
+namespace Restaurant.Application.Services.Interfaces;
 
 public interface ITodoService
 {

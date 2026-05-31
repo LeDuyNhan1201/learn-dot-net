@@ -11,41 +11,41 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Content Include="Docker\Native\.dockerignore" />
-      <Content Update="appsettings.Local.json">
-        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-      </Content>
+        <Content Include="Docker\Native\.dockerignore"/>
+        <Content Update="appsettings.Local.json">
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Docker\Native\" />
+        <Folder Include="Docker\Native\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.API\BuildingBlocks.API.csproj" />
-      <ProjectReference Include="..\Restaurant.Infrastructure\Restaurant.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.API\BuildingBlocks.API.csproj"/>
+        <ProjectReference Include="..\Restaurant.Infrastructure\Restaurant.Infrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="appsettings*.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-      </Content>
+        <Content Update="appsettings*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="Resources\Messages.en-US.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Messages.vi-VN.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Resources\Messages.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Messages.vi-VN.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Resources\Messages.vi-VN.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>messages.vi.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
+        <EmbeddedResource Update="Resources\Messages.en-US.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Messages.vi-VN.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Resources\Messages.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Messages.vi-VN.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Resources\Messages.vi-VN.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>messages.vi.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
     </ItemGroup>
 
 </Project>

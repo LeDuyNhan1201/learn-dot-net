@@ -1,5 +1,6 @@
-using BuildingBlocks.Application.Options;
 using BuildingBlocks.Infrastructure.OpenApi.Extensions;
+using BuildingBlocks.Infrastructure.OpenApi.Options;
+using BuildingBlocks.Infrastructure.OpenApi.Utils;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Logging;
@@ -18,8 +19,8 @@ public class Version2DocumentTransformer(
     public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
     {
         document.InitBaseDocument(apiDocsOptions.Value, authOptions.Value, Version2);
-        foreach (var path in document.Paths) Core.LogMessages.OpenApiPath(logger, path.Key);
-        
+        foreach (var path in document.Paths) LogMessages.OpenApiPath(logger, path.Key);
+
         return Task.CompletedTask;
     }
 }

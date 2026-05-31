@@ -1,16 +1,14 @@
-using System.Text;
 using BuildingBlocks.Shared.DTOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BuildingBlocks.Infrastructure.Authentication.Extensions;
 
-public static class JwtBearerExtensions
+internal static class JwtBearerExtensions
 {
-    public static void ConfigureJwtBearer(this JwtBearerOptions options)
+    internal static void ConfigureJwtBearer(this JwtBearerOptions options)
     {
         // options.TokenValidationParameters = new TokenValidationParameters
         // {
@@ -45,10 +43,7 @@ public static class JwtBearerExtensions
             {
                 context.HandleResponse();
 
-                if (context.Response.HasStarted)
-                {
-                    return;
-                }
+                if (context.Response.HasStarted) return;
 
                 context.Response.StatusCode =
                     StatusCodes.Status401Unauthorized;
@@ -64,10 +59,7 @@ public static class JwtBearerExtensions
 
             OnForbidden = async context =>
             {
-                if (context.Response.HasStarted)
-                {
-                    return;
-                }
+                if (context.Response.HasStarted) return;
 
                 context.Response.StatusCode =
                     StatusCodes.Status403Forbidden;

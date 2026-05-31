@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Application.Options;
+﻿using BuildingBlocks.Infrastructure.OpenApi.Options;
 using BuildingBlocks.Infrastructure.OpenApi.Versions;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Common;
@@ -48,7 +48,7 @@ public static class OpenApiExtensions
 
         var apiDocsOptions = configuration.GetSection(ApiDocsOptions.SectionName).Get<ApiDocsOptions>()
                              ?? throw new InvalidOperationException("OpenAPI configuration is missing.");
-        
+
         var authOptions = configuration.GetSection(KeycloakAuthenticationOptions.Section).Get<KeycloakAuthenticationOptions>()
                           ?? throw new InvalidOperationException("Authentication configuration is missing.");
 
@@ -59,12 +59,9 @@ public static class OpenApiExtensions
         app.MapScalarApiReference("/docs", scalarOptions =>
         {
             scalarOptions.WithOpenApiRoutePattern(apiDocsRoute);
-            
-            foreach (var document in Documents)
-            {
-                scalarOptions.AddDocument(document.Version, $"{apiDocsOptions.Title} {document.Version}");
-            }
-            
+
+            foreach (var document in Documents) scalarOptions.AddDocument(document.Version, $"{apiDocsOptions.Title} {document.Version}");
+
             scalarOptions.WithTitle(apiDocsOptions.Title ?? "APIs Documentation");
 
             scalarOptions.AddAuthorizationCodeFlow(SecuritySchemeType.OAuth2.GetDisplayName(), flow =>
@@ -76,9 +73,9 @@ public static class OpenApiExtensions
                 flow.TokenUrl = $"{authOptions.AuthServerUrl}{KeycloakConstants.TokenEndpointPath}";
 
                 flow.RedirectUri = $"{apiDocsOptions.ServerUrl}/docs";
-                
+
                 flow.RefreshUrl = flow.TokenUrl;
-                
+
                 flow.SelectedScopes = ["openid", "profile", "email"];
 
                 flow.CredentialsLocation = CredentialsLocation.Header;

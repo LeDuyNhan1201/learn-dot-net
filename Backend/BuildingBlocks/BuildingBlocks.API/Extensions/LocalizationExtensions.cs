@@ -1,5 +1,4 @@
 using System.Globalization;
-using BuildingBlocks.Shared;
 using BuildingBlocks.Shared.Localization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
@@ -12,10 +11,7 @@ public static class LocalizationExtensions
 {
     public static IServiceCollection AddI18NLocalization(this IServiceCollection services)
     {
-        services.AddLocalization(options =>
-        {
-            options.ResourcesPath = "Resources";
-        });
+        services.AddLocalization(options => { options.ResourcesPath = "Resources"; });
 
         CultureInfo[] supportedCultures =
         [
@@ -30,7 +26,7 @@ public static class LocalizationExtensions
             options.SupportedUICultures = supportedCultures;
             options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
         });
-        
+
         services.AddScoped(typeof(CompositeLocalizer<>));
 
         return services;

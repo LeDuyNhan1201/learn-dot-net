@@ -1,5 +1,5 @@
-using BuildingBlocks.Application.Options;
 using BuildingBlocks.Infrastructure.OpenApi.Operations;
+using BuildingBlocks.Infrastructure.OpenApi.Options;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Common;
 using Microsoft.AspNetCore.OpenApi;
@@ -10,8 +10,8 @@ namespace BuildingBlocks.Infrastructure.OpenApi.Extensions;
 public static class ApiDocumentExtensions
 {
     public static OpenApiDocument InitBaseDocument(
-        this OpenApiDocument document, 
-        ApiDocsOptions apiDocsOptions, 
+        this OpenApiDocument document,
+        ApiDocsOptions apiDocsOptions,
         KeycloakAuthenticationOptions authOptions,
         string version)
     {
@@ -22,7 +22,7 @@ public static class ApiDocumentExtensions
             .ForEach(path => filteredPaths.Add(path.Key, path.Value));
 
         document.Paths = filteredPaths;
-        
+
         document.Components ??= new OpenApiComponents();
 
         document.Servers ??= new List<OpenApiServer>();
@@ -101,7 +101,7 @@ public static class ApiDocumentExtensions
 
         return document;
     }
-    
+
     public static OpenApiOptions AddCommonTransformers(this OpenApiOptions options)
     {
         return options

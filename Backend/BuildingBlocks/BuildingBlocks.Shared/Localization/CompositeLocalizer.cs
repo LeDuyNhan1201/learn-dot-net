@@ -14,10 +14,7 @@ public sealed class CompositeLocalizer<TLocal>(
     {
         var localValue = local[key];
 
-        if (!localValue.ResourceNotFound)
-        {
-            return localValue.Value;
-        }
+        if (!localValue.ResourceNotFound) return localValue.Value;
 
         return shared[key];
     }
@@ -28,10 +25,7 @@ public sealed class CompositeLocalizer<TLocal>(
     {
         var localValue = local[key, arguments];
 
-        if (!localValue.ResourceNotFound)
-        {
-            return localValue.Value;
-        }
+        if (!localValue.ResourceNotFound) return localValue.Value;
 
         return shared[key, arguments];
     }

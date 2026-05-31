@@ -1,4 +1,4 @@
-using BuildingBlocks.Application.Options;
+using BuildingBlocks.Infrastructure.Observability.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 
@@ -10,7 +10,7 @@ public static class LoggingConfiguration
     {
         ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(builder);
-        
+
         switch (options.UseLoggingExporter.ToUpperInvariant())
         {
             case "OTLP":
@@ -20,7 +20,7 @@ public static class LoggingConfiguration
                     otlp.Protocol = OtlpExportProtocol.Grpc;
                 });
                 break;
-            
+
             default:
                 builder.AddConsoleExporter();
                 break;

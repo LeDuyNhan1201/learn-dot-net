@@ -1,4 +1,4 @@
-namespace BuildingBlocks.Infrastructure.Authentication;
+namespace BuildingBlocks.Infrastructure.Authentication.Models;
 
 public sealed class IdentityContext
 {

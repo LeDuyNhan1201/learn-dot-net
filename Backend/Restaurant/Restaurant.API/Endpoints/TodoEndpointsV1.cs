@@ -1,15 +1,15 @@
-using Application.Interfaces;
 using BuildingBlocks.API.Interfaces;
 using BuildingBlocks.Infrastructure.OpenApi.Versions;
-using Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Restaurant.Application.Services.Interfaces;
+using Restaurant.Domain.Entities;
 
 namespace Restaurant.API.Endpoints;
 
 public class TodoEndpointsV1 : IEndpointModule
 {
     public string Version => Version1DocumentTransformer.Version1;
-    
+
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/todos").WithTags("Todo APIs");
@@ -24,7 +24,7 @@ public class TodoEndpointsV1 : IEndpointModule
                     ? TypedResults.Ok(todo)
                     : TypedResults.NotFound();
             });
-        
+
         group.MapPost("/upload", (IFormFile file) => Results.Ok()).RequireAuthorization();
     }
 }

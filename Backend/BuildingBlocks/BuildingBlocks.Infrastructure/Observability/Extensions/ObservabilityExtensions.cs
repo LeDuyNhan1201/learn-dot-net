@@ -1,12 +1,13 @@
-using BuildingBlocks.Application.Options;
 using BuildingBlocks.Infrastructure.Observability.Configurations;
 using BuildingBlocks.Infrastructure.Observability.Meters;
+using BuildingBlocks.Infrastructure.Observability.Options;
+using BuildingBlocks.Shared.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Resources;
 
-namespace BuildingBlocks.Infrastructure.Observability;
+namespace BuildingBlocks.Infrastructure.Observability.Extensions;
 
 public static class ObservabilityExtensions
 {
@@ -14,13 +15,13 @@ public static class ObservabilityExtensions
     {
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(services);
-        
-        var appOptions = configuration.GetSection(ServerOptions.SectionName).Get<ServerOptions>() 
-                      ?? throw new InvalidOperationException("Restaurant.Application configuration is missing.");
-        
-        var observeOptions = configuration.GetSection(ObservabilityOptions.SectionName).Get<ObservabilityOptions>() 
-                      ?? throw new InvalidOperationException("Observability configuration is missing.");
-        
+
+        var appOptions = configuration.GetSection(ServerOptions.SectionName).Get<ServerOptions>()
+                         ?? throw new InvalidOperationException("Restaurant.Application configuration is missing.");
+
+        var observeOptions = configuration.GetSection(ObservabilityOptions.SectionName).Get<ObservabilityOptions>()
+                             ?? throw new InvalidOperationException("Observability configuration is missing.");
+
         services.AddSingleton<Telemetry>();
 
         services
@@ -28,22 +29,13 @@ public static class ObservabilityExtensions
             .ConfigureResource(resource =>
             {
                 resource.AddService(
-                    serviceName: appOptions.Name ?? "Unknown",
+                    appOptions.Name ?? "Unknown",
                     serviceVersion: appOptions.Version,
                     serviceInstanceId: Environment.MachineName);
             })
-            .WithTracing(tracing =>
-            {
-                tracing.ConfigureTracing(observeOptions);
-            })
-            .WithMetrics(metrics =>
-            {
-                metrics.ConfigureMetrics(observeOptions);
-            })
-            .WithLogging(logging =>
-            {
-                logging.ConfigureLogging(observeOptions);
-            });
+            .WithTracing(tracing => { tracing.ConfigureTracing(observeOptions); })
+            .WithMetrics(metrics => { metrics.ConfigureMetrics(observeOptions); })
+            .WithLogging(logging => { logging.ConfigureLogging(observeOptions); });
 
         return services;
     }
@@ -52,10 +44,7 @@ public static class ObservabilityExtensions
     {
         var options = configuration.GetSection(ObservabilityOptions.SectionName).Get<ObservabilityOptions>()
                       ?? throw new InvalidOperationException("Observability configuration is missing.");
-        if ("prometheus".Equals(options.UseMetricsExporter, StringComparison.OrdinalIgnoreCase))
-        {
-            app.UseOpenTelemetryPrometheusScrapingEndpoint();
-        }
+        if ("prometheus".Equals(options.UseMetricsExporter, StringComparison.OrdinalIgnoreCase)) app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
         return app;
     }

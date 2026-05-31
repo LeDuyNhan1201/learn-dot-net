@@ -1,4 +1,4 @@
-namespace BuildingBlocks.Application.Options;
+namespace BuildingBlocks.Shared.Options;
 
 public sealed class ServerOptions
 {

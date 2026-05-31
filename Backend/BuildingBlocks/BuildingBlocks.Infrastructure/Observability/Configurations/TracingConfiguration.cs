@@ -1,5 +1,5 @@
-using BuildingBlocks.Application.Options;
 using BuildingBlocks.Infrastructure.Observability.Meters;
+using BuildingBlocks.Infrastructure.Observability.Options;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Trace;
 
@@ -11,13 +11,13 @@ public static class TracingConfiguration
     {
         ArgumentNullException.ThrowIfNull(builder);
         ArgumentNullException.ThrowIfNull(options);
-        
+
         builder
             .AddSource(Telemetry.ActivitySourceName)
             .SetSampler(new AlwaysOnSampler())
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation();
-            
+
         switch (options.UseTracingExporter.ToUpperInvariant())
         {
             case "OTLP":

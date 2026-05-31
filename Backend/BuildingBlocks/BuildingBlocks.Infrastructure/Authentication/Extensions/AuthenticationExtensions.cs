@@ -1,4 +1,4 @@
-using BuildingBlocks.API.Middlewares;
+using BuildingBlocks.Infrastructure.Authentication.Models;
 using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;

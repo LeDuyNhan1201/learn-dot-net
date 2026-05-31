@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
-using BuildingBlocks.Application.Options;
-using Domain.Entities;
+using BuildingBlocks.Shared.Options;
+using Restaurant.Domain.Entities;
 
 namespace Restaurant.API.Serialization;
 
@@ -9,7 +9,6 @@ namespace Restaurant.API.Serialization;
 [JsonSerializable(typeof(List<Todo>))]
 [JsonSerializable(typeof(IReadOnlyList<Todo>))]
 [JsonSerializable(typeof(Todo))]
-
 [JsonSerializable(typeof(ServerOptions))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext
 {

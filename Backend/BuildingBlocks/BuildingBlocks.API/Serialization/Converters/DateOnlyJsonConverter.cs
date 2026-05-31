@@ -1,7 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace BuildingBlocks.API.Serialization.Converter;
+namespace BuildingBlocks.API.Serialization.Converters;
 
 public sealed class DateOnlyJsonConverter : JsonConverter<DateOnly>
 {

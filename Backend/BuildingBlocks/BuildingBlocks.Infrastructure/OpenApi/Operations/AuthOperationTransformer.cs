@@ -13,7 +13,7 @@ public sealed class AuthOperationTransformer : IOpenApiOperationTransformer
             .EndpointMetadata
             .OfType<AuthorizeAttribute>()
             .Any();
-        
+
         if (!requiresAuth) return Task.CompletedTask;
 
         operation.Security ??= [];
@@ -22,9 +22,9 @@ public sealed class AuthOperationTransformer : IOpenApiOperationTransformer
         {
             [new OpenApiSecuritySchemeReference(SecuritySchemeType.Http.GetDisplayName(), context.Document)] = []
         });
-        
-        List<string> scopes = [ KeycloakConstants.ResourceAccessClaimType, "openid", "profile", "email" ];
-        
+
+        List<string> scopes = [KeycloakConstants.ResourceAccessClaimType, "openid", "profile", "email"];
+
         operation.Security.Add(new OpenApiSecurityRequirement
         {
             [new OpenApiSecuritySchemeReference(SecuritySchemeType.OAuth2.GetDisplayName(), context.Document)] = scopes
