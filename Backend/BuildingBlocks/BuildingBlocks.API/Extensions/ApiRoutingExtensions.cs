@@ -11,16 +11,14 @@ public static class ApiRoutingExtensions
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        app.UsePathBase(app.Configuration["Server:BasePath"]);
-
         var versions = modules.Select(x => x.Version).Distinct();
         foreach (var version in versions)
         {
             var group = app.MapGroup(version).WithTags(version);
             foreach (var module in modules.Where(x => x.Version == version)) module.MapEndpoints(group);
         }
-
-        app.UseScalarUi(app.Configuration);
+        
+        app.UseScalarUi();
 
         return app;
     }

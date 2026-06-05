@@ -1,4 +1,4 @@
-using BuildingBlocks.Infrastructure.Observability.Options;
+using Microsoft.Extensions.Configuration;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 
@@ -6,17 +6,19 @@ namespace BuildingBlocks.Infrastructure.Observability.Configurations;
 
 public static class LoggingConfiguration
 {
-    public static void ConfigureLogging(this LoggerProviderBuilder builder, ObservabilityOptions options)
+    public static void ConfigureLogging(this LoggerProviderBuilder builder, IConfiguration configuration)
     {
-        ArgumentNullException.ThrowIfNull(options);
         ArgumentNullException.ThrowIfNull(builder);
 
-        switch (options.UseLoggingExporter.ToUpperInvariant())
+        var useLoggingExporter = configuration["Observability:UseLoggingExporter"] ?? "console";
+        var grpcOtlpEndpoint = configuration["Observability:Otlp:Endpoint"] ?? "http://localhost:4317";
+        
+        switch (useLoggingExporter.ToUpperInvariant())
         {
             case "OTLP":
                 builder.AddOtlpExporter(otlp =>
                 {
-                    otlp.Endpoint = new Uri(options.Otlp.Endpoint);
+                    otlp.Endpoint = new Uri(grpcOtlpEndpoint);
                     otlp.Protocol = OtlpExportProtocol.Grpc;
                 });
                 break;

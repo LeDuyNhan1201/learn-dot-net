@@ -23,7 +23,7 @@ x-keycloak-env: &keycloak-env
   KC_CACHE_STACK: "jdbc-ping"
   KC_SPI_STICKY_SESSION_ENCODER__INFINISPAN__SHOULD_ATTACH_ROUTE: true
   # --- HTTP & Host Configuratiown ---
-  KC_HOSTNAME: "https://${APP_HOSTNAME}:${GATEWAY_PORT}/auth"
+  KC_HOSTNAME: "https://${APP_HOSTNAME}/auth"
   KC_HTTP_RELATIVE_PATH: "/auth"
   KC_HOSTNAME_STRICT: "false"
   KC_HTTP_ENABLED: "true"
@@ -40,7 +40,6 @@ x-keycloak-command: &keycloak-command
     "start",
     "--import-realm",
     "--optimized",
-    "--verbose", # may not need in production
     "--cache=ispn"
   ]
   
@@ -62,7 +61,18 @@ services:
       OpenApi__Title: "Restaurant REST APIs for Development"
       OpenApi__ApiDocs: "restaurant-api-docs-dev-dev"
       OpenApi__Description: "This is the APIs documentation for Restaurant in Development."
-      OpenApi__ServerUrl: "https://${APP_HOSTNAME}:${GATEWAY_PORT}/restaurant/api"
+      OpenApi__ServerUrl: "https://${APP_HOSTNAME}/restaurant/api"
+      OpenApi__Keycloak__Realm: "learn-dot-net-dev"
+      OpenApi__Keycloak__AuthServerUrl: "https://${APP_HOSTNAME}/auth"
+      OpenApi__Keycloak__ClientId: "restaurant-public"
+      
+      # --------- Keycloak ---------
+      Keycloak__Realm: "learn-dot-net-dev"
+      Keycloak__AuthServerUrl: "https://${APP_HOSTNAME}/auth"
+      Keycloak__Resource: "restaurant-public"
+      Keycloak_Audience: "account"
+      Keycloak__Credentials__Secret: ""
+      Keycloak__SslRequired: "external"
       
       # ---------- Observability ---------
       Observability__UseTracingExporter: "otlp"
@@ -76,11 +86,15 @@ services:
     image: ${ENVOY_REPO_NAME}/envoy:${ENVOY_TAG:-latest}
     container_name: gateway
     ports:
-      - "${GATEWAY_PORT}:443"
+      - "443:443"
       - "${GATEWAY_ADMIN_PORT}:9001"
     networks:
-      - dev-network
-      - dev-observability-network
+      dev-network:
+        aliases:
+          - "${APP_HOSTNAME}"
+      dev-observability-network:
+    extra_hosts:
+      - "${APP_HOSTNAME}:host-gateway"
     command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
     volumes:
       - ${SERVICES_DIR}/envoy/gateway.yaml:/etc/envoy/envoy.yaml:ro
@@ -259,7 +273,7 @@ services:
       tempo:
         condition: service_started
     environment:
-      GF_SERVER_ROOT_URL: https://${APP_HOSTNAME}:${GATEWAY_PORT}/observability
+      GF_SERVER_ROOT_URL: https://${APP_HOSTNAME}/observability
       GF_SERVER_SERVE_FROM_SUB_PATH: true
       GF_SERVER_HTTP_PORT: 3000
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}

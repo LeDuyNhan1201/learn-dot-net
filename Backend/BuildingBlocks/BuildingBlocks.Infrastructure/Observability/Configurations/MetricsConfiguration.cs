@@ -1,6 +1,6 @@
 using System.Diagnostics.Metrics;
 using BuildingBlocks.Infrastructure.Observability.Meters;
-using BuildingBlocks.Infrastructure.Observability.Options;
+using Microsoft.Extensions.Configuration;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Metrics;
 
@@ -8,18 +8,21 @@ namespace BuildingBlocks.Infrastructure.Observability.Configurations;
 
 public static class MetricsConfiguration
 {
-    public static void ConfigureMetrics(this MeterProviderBuilder builder, ObservabilityOptions options)
+    public static void ConfigureMetrics(this MeterProviderBuilder builder, IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(options);
 
         builder
             .AddMeter(Telemetry.MeterName)
             .AddRuntimeInstrumentation()
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation();
+        
+        var histogramAggregation =  configuration["Observability:HistogramAggregation"] ?? "Explicit";
+        var useMetricsExporter = configuration["Observability:UseMetricsExporter"] ?? "console";
+        var grpcOtlpEndpoint = configuration["Observability:Otlp:Endpoint"] ?? "http://localhost:4317";
 
-        switch (options.HistogramAggregation.ToUpperInvariant())
+        switch (histogramAggregation.ToUpperInvariant())
         {
             case "EXPONENTIAL":
                 builder.AddView(instrument => instrument.GetType().GetGenericTypeDefinition() == typeof(Histogram<>)
@@ -28,12 +31,12 @@ public static class MetricsConfiguration
                 break;
         }
 
-        switch (options.UseMetricsExporter.ToUpperInvariant())
+        switch (useMetricsExporter.ToUpperInvariant())
         {
             case "OTLP":
                 builder.AddOtlpExporter(otlp =>
                 {
-                    otlp.Endpoint = new Uri(options.Otlp!.Endpoint);
+                    otlp.Endpoint = new Uri(grpcOtlpEndpoint);
                     otlp.Protocol = OtlpExportProtocol.Grpc;
                 });
                 break;

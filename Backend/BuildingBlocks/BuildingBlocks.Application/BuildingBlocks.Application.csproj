@@ -11,13 +11,4 @@
         <ProjectReference Include="..\BuildingBlocks.Shared\BuildingBlocks.Shared.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Keycloak.AuthServices.Authentication" Version="3.0.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.8"/>
-    </ItemGroup>
-
 </Project>

@@ -1,11 +1,11 @@
 ﻿using BuildingBlocks.Infrastructure.OpenApi.Options;
+using BuildingBlocks.Infrastructure.OpenApi.Utils;
 using BuildingBlocks.Infrastructure.OpenApi.Versions;
 using Keycloak.AuthServices.Authentication;
-using Keycloak.AuthServices.Common;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
@@ -39,18 +39,15 @@ public static class OpenApiExtensions
         return services;
     }
 
-    public static IApplicationBuilder UseScalarUi(this WebApplication app, IConfiguration configuration)
+    public static IApplicationBuilder UseScalarUi(this WebApplication app)
     {
         ArgumentNullException.ThrowIfNull(app);
-        ArgumentNullException.ThrowIfNull(configuration);
 
         if (app.Environment.IsProduction()) return app;
 
-        var apiDocsOptions = configuration.GetSection(ApiDocsOptions.SectionName).Get<ApiDocsOptions>()
-                             ?? throw new InvalidOperationException("OpenAPI configuration is missing.");
-
-        var authOptions = configuration.GetSection(KeycloakAuthenticationOptions.Section).Get<KeycloakAuthenticationOptions>()
-                          ?? throw new InvalidOperationException("Authentication configuration is missing.");
+        var apiDocsOptions = app.Services.GetRequiredService<IOptions<ApiDocsOptions>>().Value;
+        var authorizationEndpoint = KeycloakEndpointUrls.GetAuthorizationEndpoint(apiDocsOptions.Keycloak).ToString();
+        var tokenEndpoint = KeycloakEndpointUrls.GetTokenEndpoint(apiDocsOptions.Keycloak).ToString();
 
         var apiDocsRoute = $"/{apiDocsOptions.ApiDocs}/{{documentName}}.json";
 
@@ -64,24 +61,24 @@ public static class OpenApiExtensions
 
             scalarOptions.WithTitle(apiDocsOptions.Title ?? "APIs Documentation");
 
-            scalarOptions.AddAuthorizationCodeFlow(SecuritySchemeType.OAuth2.GetDisplayName(), flow =>
-            {
-                flow.ClientId = authOptions.Resource;
-
-                flow.AuthorizationUrl = authOptions.AuthServerUrl;
-
-                flow.TokenUrl = $"{authOptions.AuthServerUrl}{KeycloakConstants.TokenEndpointPath}";
-
-                flow.RedirectUri = $"{apiDocsOptions.ServerUrl}/docs";
-
-                flow.RefreshUrl = flow.TokenUrl;
-
-                flow.SelectedScopes = ["openid", "profile", "email"];
-
-                flow.CredentialsLocation = CredentialsLocation.Header;
-
-                flow.Pkce = Pkce.Sha256;
-            });
+            // scalarOptions.AddAuthorizationCodeFlow(SecuritySchemeType.OAuth2.GetDisplayName(), flow =>
+            // {
+            //     flow.ClientId = apiDocsOptions.Keycloak.ClientId;
+            //
+            //     flow.AuthorizationUrl = authorizationEndpoint;
+            //
+            //     flow.TokenUrl = tokenEndpoint;
+            //
+            //     flow.RedirectUri = $"{apiDocsOptions.ServerUrl}/docs";
+            //
+            //     flow.RefreshUrl = flow.TokenUrl;
+            //
+            //     flow.SelectedScopes = ["openid", "profile", "email"];
+            //
+            //     flow.CredentialsLocation = CredentialsLocation.Header;
+            //
+            //     flow.Pkce = Pkce.Sha256;
+            // });
         });
 
         app.UseDeveloperExceptionPage();

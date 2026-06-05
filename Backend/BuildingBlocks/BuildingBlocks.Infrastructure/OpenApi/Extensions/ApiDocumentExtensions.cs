@@ -1,7 +1,6 @@
 using BuildingBlocks.Infrastructure.OpenApi.Operations;
 using BuildingBlocks.Infrastructure.OpenApi.Options;
-using Keycloak.AuthServices.Authentication;
-using Keycloak.AuthServices.Common;
+using BuildingBlocks.Infrastructure.OpenApi.Utils;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
@@ -12,7 +11,6 @@ public static class ApiDocumentExtensions
     public static OpenApiDocument InitBaseDocument(
         this OpenApiDocument document,
         ApiDocsOptions apiDocsOptions,
-        KeycloakAuthenticationOptions authOptions,
         string version)
     {
         OpenApiPaths filteredPaths = [];
@@ -69,34 +67,36 @@ public static class ApiDocumentExtensions
                 Description = "JWT Bearer token"
             };
 
-        ArgumentNullException.ThrowIfNull(authOptions.AuthServerUrl);
-        document.Components.SecuritySchemes[SecuritySchemeType.OAuth2.GetDisplayName()] =
-            new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows
-                {
-                    AuthorizationCode = new OpenApiOAuthFlow
-                    {
-                        AuthorizationUrl = new Uri(authOptions.AuthServerUrl),
-                        TokenUrl = new Uri($"{authOptions.AuthServerUrl}{KeycloakConstants.TokenEndpointPath}"),
-                        RefreshUrl = new Uri($"{authOptions.AuthServerUrl}{KeycloakConstants.TokenEndpointPath}"),
-                        Scopes = new Dictionary<string, string>
-                        {
-                            { KeycloakConstants.ResourceAccessClaimType, "Resource access" },
-                            { "openid", "Open ID" },
-                            { "profile", "Profile access" },
-                            { "email", "Email access" }
-                        }
-                    }
-                }
-            };
+        var authorizationEndpoint = KeycloakEndpointUrls.GetAuthorizationEndpoint(apiDocsOptions.Keycloak);
+        var tokenEndpoint = KeycloakEndpointUrls.GetTokenEndpoint(apiDocsOptions.Keycloak);
+        var openIdConnectEndpoint = KeycloakEndpointUrls.GetOpenIdConfigurationEndpoint(apiDocsOptions.Keycloak);
+
+        // document.Components.SecuritySchemes[SecuritySchemeType.OAuth2.GetDisplayName()] =
+        //     new OpenApiSecurityScheme
+        //     {
+        //         Type = SecuritySchemeType.OAuth2,
+        //         Flows = new OpenApiOAuthFlows
+        //         {
+        //             AuthorizationCode = new OpenApiOAuthFlow
+        //             {
+        //                 AuthorizationUrl = authorizationEndpoint,
+        //                 TokenUrl = tokenEndpoint,
+        //                 RefreshUrl = tokenEndpoint,
+        //                 Scopes = new Dictionary<string, string>
+        //                 {
+        //                     { "openid", "Open ID" },
+        //                     { "profile", "Profile access" },
+        //                     { "email", "Email access" }
+        //                 }
+        //             }
+        //         }
+        //     };
 
         document.Components.SecuritySchemes[SecuritySchemeType.OpenIdConnect.GetDisplayName()] =
             new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.OpenIdConnect,
-                OpenIdConnectUrl = new Uri($"{authOptions.AuthServerUrl}realms/{authOptions.Realm}/{KeycloakConstants.OpenIdConnectConfigurationPath}")
+                OpenIdConnectUrl = openIdConnectEndpoint
             };
 
         return document;

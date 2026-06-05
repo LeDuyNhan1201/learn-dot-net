@@ -97,3 +97,7 @@ replay_pid*
 **/.env
 
 PROMPT.md
+
+*.crt
+*.key
+*.pem

@@ -25,6 +25,9 @@ public class TodoEndpointsV1 : IEndpointModule
                     : TypedResults.NotFound();
             });
 
-        group.MapPost("/upload", (IFormFile file) => Results.Ok()).RequireAuthorization();
+        group
+            .MapPost("/upload", (IFormFile file) => Results.Ok())
+            .DisableAntiforgery()
+            .RequireAuthorization();
     }
 }

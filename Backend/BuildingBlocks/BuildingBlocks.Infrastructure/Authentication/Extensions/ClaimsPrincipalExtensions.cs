@@ -5,19 +5,29 @@ namespace BuildingBlocks.Infrastructure.Authentication.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {
+    private const string SubjectClaimType = "sub";
+    private const string EmailClaimType = "email";
+
     public static string GetUserId(this ClaimsPrincipal principal)
     {
-        return principal.FindFirst("sub")?.Value ?? throw new Exception("Missing sub claim");
+        ArgumentNullException.ThrowIfNull(principal);
+
+        return principal.FindFirst(SubjectClaimType)?.Value
+               ?? throw new InvalidOperationException("Missing sub claim.");
     }
 
     public static string GetUsername(this ClaimsPrincipal principal)
     {
+        ArgumentNullException.ThrowIfNull(principal);
+
         return principal.FindFirst(KeycloakConstants.NameClaimType)?.Value
-               ?? throw new Exception("Missing preferred_username claim");
+               ?? throw new InvalidOperationException($"Missing {KeycloakConstants.NameClaimType} claim.");
     }
 
     public static string? GetEmail(this ClaimsPrincipal principal)
     {
-        return principal.FindFirst("email")?.Value;
+        ArgumentNullException.ThrowIfNull(principal);
+
+        return principal.FindFirst(EmailClaimType)?.Value;
     }
 }

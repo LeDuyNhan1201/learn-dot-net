@@ -11,14 +11,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="Docker\Native\.dockerignore"/>
         <Content Update="appsettings.Local.json">
             <CopyToPublishDirectory>Always</CopyToPublishDirectory>
         </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Docker\Native\"/>
     </ItemGroup>
 
     <ItemGroup>

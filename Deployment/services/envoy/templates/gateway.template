@@ -59,7 +59,6 @@ static_resources:
 
                       domains:
                         - "${APP_HOSTNAME}"
-                        - "${APP_HOSTNAME}:${GATEWAY_PORT}"
 
                       routes:
                         # =========================
@@ -81,7 +80,7 @@ static_resources:
                                 value: https
                             - header:
                                 key: x-forwarded-port
-                                value: "${GATEWAY_PORT}"
+                                value: "443"
 
                         # =========================
                         # Backend API
@@ -99,7 +98,7 @@ static_resources:
                                 value: https
                             - header:
                                 key: x-forwarded-port
-                                value: "${GATEWAY_PORT}"
+                                value: "443"
 
                         # =========================
                         # Keycloak Cluster
@@ -117,7 +116,7 @@ static_resources:
                                 value: https
                             - header:
                                 key: x-forwarded-port
-                                value: "${GATEWAY_PORT}"
+                                value: "443"
                                 
                         # =========================
                         # Default fallback

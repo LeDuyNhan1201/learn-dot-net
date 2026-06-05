@@ -1,5 +1,5 @@
 using BuildingBlocks.Infrastructure.Observability.Meters;
-using BuildingBlocks.Infrastructure.Observability.Options;
+using Microsoft.Extensions.Configuration;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Trace;
 
@@ -7,23 +7,25 @@ namespace BuildingBlocks.Infrastructure.Observability.Configurations;
 
 public static class TracingConfiguration
 {
-    public static void ConfigureTracing(this TracerProviderBuilder builder, ObservabilityOptions options)
+    public static void ConfigureTracing(this TracerProviderBuilder builder, IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(builder);
-        ArgumentNullException.ThrowIfNull(options);
 
         builder
             .AddSource(Telemetry.ActivitySourceName)
             .SetSampler(new AlwaysOnSampler())
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation();
+        
+        var useTracingExporter = configuration["Observability:UseTracingExporter"] ?? "console";
+        var grpcOtlpEndpoint = configuration["Observability:Otlp:Endpoint"] ?? "http://localhost:4317";
 
-        switch (options.UseTracingExporter.ToUpperInvariant())
+        switch (useTracingExporter.ToUpperInvariant())
         {
             case "OTLP":
                 builder.AddOtlpExporter(otlp =>
                 {
-                    otlp.Endpoint = new Uri(options.Otlp.Endpoint);
+                    otlp.Endpoint = new Uri(grpcOtlpEndpoint);
                     otlp.Protocol = OtlpExportProtocol.Grpc;
                 });
                 break;

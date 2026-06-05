@@ -48,6 +48,7 @@ create_env_file() {
 
     CERT_SECRET
     DATA_DIR
+    CERTS_DIR
     SERVICES_DIR
     
     GRAFANA_DATA_DIR
@@ -443,11 +444,13 @@ build_backend_image() {
   image_name="$(backend_image_name)"
 
   require_command docker
+  
+  cp "${CERTS_DIR}/ca/ca.crt" "${backend_dir}/rootCA.crt"
 
   docker rmi "$image_name" || true
   docker build --no-cache \
     --build-arg BACKEND_TAG="${BACKEND_TAG}" \
-    -f "${backend_dir}/Restaurant/Restaurant.API/Docker/Native/Dockerfile" \
+    -f "${backend_dir}/Restaurant/Restaurant.API/Docker/Dockerfile" \
     -t "$image_name" \
     "${backend_dir}"
 }

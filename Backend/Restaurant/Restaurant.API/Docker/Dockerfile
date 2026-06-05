@@ -49,8 +49,16 @@ WORKDIR /app
 
 LABEL org.opencontainers.image.version="${BACKEND_TAG}"
 
-# Required for localization/globalization
-RUN apk add --no-cache icu-libs
+# Install required packages
+RUN apk add --no-cache \
+    icu-libs \
+    ca-certificates
+
+# Copy self-sign root CA
+COPY rootCA.crt /usr/local/share/ca-certificates/rootCA.crt
+
+# Update trust store
+RUN update-ca-certificates
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
 

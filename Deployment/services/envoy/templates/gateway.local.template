@@ -165,7 +165,7 @@ static_resources:
           healthy_threshold: 2
       
           http_health_check:
-            path: /restaurant/api/v1/health/ready
+            path: /health/ready
             expected_statuses:
               - start: 200
                 end: 300
@@ -198,7 +198,7 @@ static_resources:
           healthy_threshold: 2
 
           http_health_check:
-            path: /health/info
+            path: /restaurant/api/v1/health/info
 
     # ======================================
     # Grafana Cluster

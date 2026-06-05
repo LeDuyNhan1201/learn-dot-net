@@ -1,4 +1,6 @@
+using BuildingBlocks.Infrastructure.Authentication.Serialization;
 using BuildingBlocks.Shared.DTOs;
+using Keycloak.AuthServices.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,31 +12,36 @@ internal static class JwtBearerExtensions
 {
     internal static void ConfigureJwtBearer(this JwtBearerOptions options)
     {
-        // options.TokenValidationParameters = new TokenValidationParameters
-        // {
-        //     ValidateIssuer = true,
-        //     ValidateAudience = true,
-        //     ValidateLifetime = true,
-        //     ValidateIssuerSigningKey = true,
-        //     ValidIssuer = jwtOptions.Issuer,
-        //     ValidAudiences = jwtOptions.Audiences,
-        // };
-        //
+        options.TokenValidationParameters.NameClaimType = KeycloakConstants.NameClaimType;
+        options.TokenValidationParameters.RoleClaimType = KeycloakConstants.RoleClaimType;
         options.MapInboundClaims = false;
 
         options.Events = new JwtBearerEvents
         {
+            OnMessageReceived = context =>
+            {
+                var logger = context
+                    .HttpContext.RequestServices
+                    .GetRequiredService<ILoggerFactory>()
+                    .CreateLogger("OnMessageReceived");
+
+                logger.LogInformation(
+                    "Authority: {Authority}, MetadataAddress: {MetadataAddress}, RequireHttpsMetadata: {RequireHttpsMetadata}",
+                    options.Authority,
+                    options.MetadataAddress, 
+                    options.RequireHttpsMetadata);
+                
+                return Task.CompletedTask;
+            },
+            
             OnAuthenticationFailed = context =>
             {
-                var logger =
-                    context.HttpContext.RequestServices
-                        .GetRequiredService<
-                            ILoggerFactory>()
-                        .CreateLogger("JwtBearer");
+                var logger = context
+                    .HttpContext.RequestServices
+                    .GetRequiredService<ILoggerFactory>()
+                    .CreateLogger("OnAuthenticationFailed");
 
-                logger.LogWarning(
-                    context.Exception,
-                    "JWT authentication failed");
+                logger.LogWarning(context.Exception, "JWT authentication failed");
 
                 return Task.CompletedTask;
             },
@@ -45,33 +52,41 @@ internal static class JwtBearerExtensions
 
                 if (context.Response.HasStarted) return;
 
-                context.Response.StatusCode =
-                    StatusCodes.Status401Unauthorized;
-
-                context.Response.ContentType =
-                    "application/json";
-
-                await context.Response.WriteAsJsonAsync(
+                await context.Response.WriteAuthenticationErrorAsync(
+                    StatusCodes.Status401Unauthorized,
                     new ErrorResponse(
                         "TOKEN_INVALID",
-                        "Authentication required"));
+                        "Authentication required"),
+                    context.HttpContext.RequestAborted);
             },
 
             OnForbidden = async context =>
             {
                 if (context.Response.HasStarted) return;
 
-                context.Response.StatusCode =
-                    StatusCodes.Status403Forbidden;
-
-                context.Response.ContentType =
-                    "application/json";
-
-                await context.Response.WriteAsJsonAsync(
+                await context.Response.WriteAuthenticationErrorAsync(
+                    StatusCodes.Status403Forbidden,
                     new ErrorResponse(
                         "FORBIDDEN",
-                        "You do not have permission"));
+                        "You do not have permission"),
+                    context.HttpContext.RequestAborted);
             }
         };
+    }
+
+    private static Task WriteAuthenticationErrorAsync(
+        this HttpResponse response,
+        int statusCode,
+        ErrorResponse error,
+        CancellationToken cancellationToken)
+    {
+        response.StatusCode = statusCode;
+        response.ContentType = "application/json";
+
+        return response.WriteAsJsonAsync(
+            error,
+            AuthenticationJsonSerializerContext.Default.ErrorResponse,
+            "application/json",
+            cancellationToken);
     }
 }
