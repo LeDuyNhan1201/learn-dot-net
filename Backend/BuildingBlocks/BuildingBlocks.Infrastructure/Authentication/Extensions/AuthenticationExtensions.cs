@@ -10,7 +10,7 @@ namespace BuildingBlocks.Infrastructure.Authentication.Extensions;
 
 public static class AuthenticationExtensions
 {
-    public static IServiceCollection AddAppAuthentication(this IHostApplicationBuilder builder)
+    public static IServiceCollection AddAuthenticationWithAuthorization(this IHostApplicationBuilder builder)
     {
         ArgumentNullException.ThrowIfNull(builder.Services);
         ArgumentNullException.ThrowIfNull(builder.Configuration);
@@ -22,23 +22,17 @@ public static class AuthenticationExtensions
                 options =>
                 {
                     if (builder.Environment.IsEnvironment("Local"))
-                    {
                         builder.Configuration.BindKeycloakOptions(options);
-                    } 
                     else
-                    {
                         options.BindKeycloakOptionsForAot(builder.Configuration);
-                    }
                 },
                 options =>
                 {
                     if (builder.Environment.IsEnvironment("Local"))
-                    {
                         options.BackchannelHttpHandler = new HttpClientHandler
                         {
                             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                         };
-                    }
                     options.ConfigureJwtBearer();
                 });
 

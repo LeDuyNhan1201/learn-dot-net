@@ -12,7 +12,7 @@ public static class LoggingConfiguration
 
         var useLoggingExporter = configuration["Observability:UseLoggingExporter"] ?? "console";
         var grpcOtlpEndpoint = configuration["Observability:Otlp:Endpoint"] ?? "http://localhost:4317";
-        
+
         switch (useLoggingExporter.ToUpperInvariant())
         {
             case "OTLP":

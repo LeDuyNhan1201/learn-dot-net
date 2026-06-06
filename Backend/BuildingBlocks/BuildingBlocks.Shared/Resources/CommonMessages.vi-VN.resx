@@ -21,4 +21,39 @@
     <data name="Hello" xml:space="preserve">
         <value>Xin chào {0}</value>
     </data>
+    <data name="Error.Validation" xml:space="preserve">
+      <value>Dữ liệu không hợp lệ</value>
+    </data>
+
+    <data name="Error.Validation.Required" xml:space="preserve">
+      <value>{0} là bắt buộc.</value>
+    </data>
+
+    <data name="Error.Validation.Valid" xml:space="preserve">
+      <value>{0} không hợp lệ.</value>
+    </data>
+
+    <data name="Error.Validation.Email" xml:space="preserve">
+      <value>{0} không đúng định dạng email.</value>
+    </data>
+
+    <data name="Error.Validation.Min" xml:space="preserve">
+      <value>{0} phải có ít nhất {1} ký tự.</value>
+    </data>
+
+    <data name="Error.Validation.Max" xml:space="preserve">
+      <value>{0} không được vượt quá {1} ký tự.</value>
+    </data>
+
+    <data name="Error.Validation.Range" xml:space="preserve">
+      <value>{0} phải nằm trong khoảng từ {1} đến {2}.</value>
+    </data>
+
+    <data name="Field.Email" xml:space="preserve">
+      <value>Email</value>
+    </data>
+
+    <data name="Field.Password" xml:space="preserve">
+      <value>Mật khẩu</value>
+    </data>
 </root>

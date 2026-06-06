@@ -10,9 +10,9 @@ public sealed class ApiDocsOptions
     public string? ServerUrl { get; set; }
     public string? ContactName { get; set; }
     public string? ContactEmail { get; set; }
-    
+
     public KeycloakOptions Keycloak { get; set; } = new();
-    
+
     public sealed class KeycloakOptions
     {
         public string? Realm { get; set; }

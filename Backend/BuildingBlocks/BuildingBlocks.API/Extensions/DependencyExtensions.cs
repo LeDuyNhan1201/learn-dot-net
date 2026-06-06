@@ -10,7 +10,6 @@ public static class DependencyExtensions
 {
     public static IServiceCollection AddBaseServices(this IServiceCollection services, IConfiguration configuration)
     {
-
         return services;
     }
 

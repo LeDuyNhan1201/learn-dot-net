@@ -23,23 +23,23 @@ internal static class JwtBearerExtensions
                 var logger = context
                     .HttpContext.RequestServices
                     .GetRequiredService<ILoggerFactory>()
-                    .CreateLogger("OnMessageReceived");
+                    .CreateLogger($"{nameof(JwtBearerExtensions)}.OnMessageReceived");
 
-                logger.LogInformation(
+                logger.LogDebug(
                     "Authority: {Authority}, MetadataAddress: {MetadataAddress}, RequireHttpsMetadata: {RequireHttpsMetadata}",
                     options.Authority,
-                    options.MetadataAddress, 
+                    options.MetadataAddress,
                     options.RequireHttpsMetadata);
-                
+
                 return Task.CompletedTask;
             },
-            
+
             OnAuthenticationFailed = context =>
             {
                 var logger = context
                     .HttpContext.RequestServices
                     .GetRequiredService<ILoggerFactory>()
-                    .CreateLogger("OnAuthenticationFailed");
+                    .CreateLogger($"{nameof(JwtBearerExtensions)}.OnAuthenticationFailed");
 
                 logger.LogWarning(context.Exception, "JWT authentication failed");
 
@@ -54,7 +54,7 @@ internal static class JwtBearerExtensions
 
                 await context.Response.WriteAuthenticationErrorAsync(
                     StatusCodes.Status401Unauthorized,
-                    new ErrorResponse(
+                    new BaseResponse<object>(
                         "TOKEN_INVALID",
                         "Authentication required"),
                     context.HttpContext.RequestAborted);
@@ -66,7 +66,7 @@ internal static class JwtBearerExtensions
 
                 await context.Response.WriteAuthenticationErrorAsync(
                     StatusCodes.Status403Forbidden,
-                    new ErrorResponse(
+                    new BaseResponse<object>(
                         "FORBIDDEN",
                         "You do not have permission"),
                     context.HttpContext.RequestAborted);
@@ -77,15 +77,15 @@ internal static class JwtBearerExtensions
     private static Task WriteAuthenticationErrorAsync(
         this HttpResponse response,
         int statusCode,
-        ErrorResponse error,
+        BaseResponse<object> baseResponse,
         CancellationToken cancellationToken)
     {
         response.StatusCode = statusCode;
         response.ContentType = "application/json";
 
         return response.WriteAsJsonAsync(
-            error,
-            AuthenticationJsonSerializerContext.Default.ErrorResponse,
+            baseResponse,
+            AuthenticationJsonSerializerContext.Default.BaseResponseObject,
             "application/json",
             cancellationToken);
     }

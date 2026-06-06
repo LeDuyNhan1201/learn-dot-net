@@ -16,7 +16,7 @@ public static class TracingConfiguration
             .SetSampler(new AlwaysOnSampler())
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation();
-        
+
         var useTracingExporter = configuration["Observability:UseTracingExporter"] ?? "console";
         var grpcOtlpEndpoint = configuration["Observability:Otlp:Endpoint"] ?? "http://localhost:4317";
 

@@ -1,12 +1,10 @@
 ﻿using BuildingBlocks.Infrastructure.OpenApi.Options;
 using BuildingBlocks.Infrastructure.OpenApi.Utils;
 using BuildingBlocks.Infrastructure.OpenApi.Versions;
-using Keycloak.AuthServices.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using Microsoft.OpenApi;
 using Scalar.AspNetCore;
 
 namespace BuildingBlocks.Infrastructure.OpenApi.Extensions;
@@ -81,7 +79,8 @@ public static class OpenApiExtensions
             // });
         });
 
-        app.UseDeveloperExceptionPage();
+        // app.UseDeveloperExceptionPage();
+
 
         return app;
     }

@@ -17,8 +17,8 @@ public static class MetricsConfiguration
             .AddRuntimeInstrumentation()
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation();
-        
-        var histogramAggregation =  configuration["Observability:HistogramAggregation"] ?? "Explicit";
+
+        var histogramAggregation = configuration["Observability:HistogramAggregation"] ?? "Explicit";
         var useMetricsExporter = configuration["Observability:UseMetricsExporter"] ?? "console";
         var grpcOtlpEndpoint = configuration["Observability:Otlp:Endpoint"] ?? "http://localhost:4317";
 

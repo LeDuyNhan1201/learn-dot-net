@@ -8,11 +8,13 @@ using BuildingBlocks.API.Serialization.Resolvers;
 using BuildingBlocks.Infrastructure.Authentication.Extensions;
 using BuildingBlocks.Infrastructure.Observability.Extensions;
 using BuildingBlocks.Infrastructure.OpenApi.Extensions;
+using FluentValidation;
 using Microsoft.IdentityModel.Logging;
 using Restaurant.API.Endpoints;
 using Restaurant.API.Serialization;
 using Restaurant.Application.Services;
 using Restaurant.Application.Services.Interfaces;
+using Restaurant.Application.Validation.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,10 +22,13 @@ IdentityModelEventSource.ShowPII = true;
 
 builder.Services.AddBaseOptions();
 builder.Services.AddI18NLocalization();
-builder.Services.AddObservability(builder.Configuration);
+
+if (!builder.Environment.IsEnvironment("Local")) builder.Services.AddObservability(builder.Configuration);
 builder.Services.AddScalarOpenApi();
 
-builder.AddAppAuthentication();
+builder.Services.AddValidatorsFromAssemblyContaining<MenuItemValidator>();
+
+builder.AddAuthenticationWithAuthorization();
 
 builder.Services.AddScoped<ITodoService, TodoService>();
 
@@ -50,12 +55,13 @@ IEndpointModule[] restEndpoints =
 [
     new HealthEndpointsV1(),
     new HealthEndpointsV2(),
-    new TodoEndpointsV1()
+    new TodoEndpointsV1(),
+    new MenuItemEndpointsV1()
 ];
 
 app.UsePathBase(app.Configuration["Server:BasePath"]);
 app.UseAppLocalization();
-app .UseMetricsExporter(app.Configuration);
+app.UseMetricsExporter(app.Configuration);
 
 app.UseAuthentication();
 app.UseAuthorization();

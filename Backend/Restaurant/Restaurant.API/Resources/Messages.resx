@@ -21,4 +21,13 @@
     <data name="Create" xml:space="preserve">
         <value>Create {0}</value>
     </data>
+    <data name="Field.MenuItemName" xml:space="preserve">
+        <value>Food name</value>
+    </data>
+    <data name="Field.MenuItemDescription" xml:space="preserve">
+        <value>Food description</value>
+    </data>
+    <data name="Field.MenuItemPrice" xml:space="preserve">
+        <value>Food price</value>
+    </data>
 </root>

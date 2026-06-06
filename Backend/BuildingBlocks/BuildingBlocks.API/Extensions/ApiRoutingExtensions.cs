@@ -17,7 +17,7 @@ public static class ApiRoutingExtensions
             var group = app.MapGroup(version).WithTags(version);
             foreach (var module in modules.Where(x => x.Version == version)) module.MapEndpoints(group);
         }
-        
+
         app.UseScalarUi();
 
         return app;

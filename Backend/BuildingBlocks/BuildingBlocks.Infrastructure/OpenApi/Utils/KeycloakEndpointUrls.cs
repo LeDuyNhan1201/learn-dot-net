@@ -26,15 +26,9 @@ internal static class KeycloakEndpointUrls
     {
         ArgumentNullException.ThrowIfNull(options);
 
-        if (string.IsNullOrWhiteSpace(options.AuthServerUrl))
-        {
-            throw new InvalidOperationException("Keycloak AuthServerUrl is required.");
-        }
+        if (string.IsNullOrWhiteSpace(options.AuthServerUrl)) throw new InvalidOperationException("Keycloak AuthServerUrl is required.");
 
-        if (string.IsNullOrWhiteSpace(options.Realm))
-        {
-            throw new InvalidOperationException("Keycloak Realm is required.");
-        }
+        if (string.IsNullOrWhiteSpace(options.Realm)) throw new InvalidOperationException("Keycloak Realm is required.");
 
         var realmBaseUrl = $"{options.AuthServerUrl.TrimEnd('/')}/realms/{Uri.EscapeDataString(options.Realm)}/";
 

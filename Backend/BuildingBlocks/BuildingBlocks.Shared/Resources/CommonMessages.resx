@@ -21,4 +21,42 @@
     <data name="Hello" xml:space="preserve">
         <value>Hello {0}</value>
     </data>
+    <data name="Error.Validation" xml:space="preserve">
+      <value>Validation failed</value>
+    </data>
+
+    <data name="Error.Validation.Required" xml:space="preserve">
+      <value>{0} is required.</value>
+    </data>
+
+    <data name="Error.Validation.Valid" xml:space="preserve">
+      <value>{0} is invalid.</value>
+    </data>
+
+    <data name="Error.Validation.Email" xml:space="preserve">
+      <value>{0} is not a valid email address.</value>
+    </data>
+
+    <data name="Error.Validation.Min" xml:space="preserve">
+      <value>{0} must contain at least {1} characters.</value>
+    </data>
+
+    <data name="Error.Validation.Max" xml:space="preserve">
+      <value>{0} must not exceed {1} characters.</value>
+    </data>
+
+    <data name="Error.Validation.Range" xml:space="preserve">
+      <value>{0} must be between {1} and {2}.</value>
+    </data>
+
+    <data name="Field.Email" xml:space="preserve">
+      <value>Email</value>
+    </data>
+
+    <data name="Field.Password" xml:space="preserve">
+      <value>Password</value>
+    </data>
+    <data name="Error.Validation.MaxLength" xml:space="preserve">
+        <value/>
+    </data>
 </root>

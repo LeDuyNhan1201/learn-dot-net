@@ -21,7 +21,7 @@ public static class ObservabilityExtensions
             .ConfigureResource(resource =>
             {
                 resource.AddService(
-                    serviceName: configuration["Server:Name"] ?? "Unknown",
+                    configuration["Server:Name"] ?? "Unknown",
                     serviceVersion: configuration["Server:Version"] ?? "0.0.0",
                     serviceInstanceId: Environment.MachineName);
             })
@@ -35,9 +35,7 @@ public static class ObservabilityExtensions
     public static IApplicationBuilder UseMetricsExporter(this IApplicationBuilder app, IConfiguration configuration)
     {
         if ("prometheus".Equals(configuration["Observability:UseMetricsExporter"] ?? "console", StringComparison.OrdinalIgnoreCase))
-        {
             app.UseOpenTelemetryPrometheusScrapingEndpoint();
-        }
 
         return app;
     }

@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace BuildingBlocks.API.Serialization.Resolvers;
 
-[JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase, WriteIndented = false)]
+[JsonSourceGenerationOptions(
+    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+    WriteIndented = false)]
 [JsonSerializable(typeof(IFormFile))]
 [JsonSerializable(typeof(ServerOptions))]
-[JsonSerializable(typeof(ErrorResponse))]
+[JsonSerializable(typeof(BaseResponse<IDictionary<string, string[]>>))]
 public partial class CommonJsonSerializerContext : JsonSerializerContext;
