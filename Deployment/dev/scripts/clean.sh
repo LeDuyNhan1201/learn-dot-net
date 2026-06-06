@@ -18,8 +18,8 @@ ENV_FILE="${HELPER_DIR}/env_config.sh"
 source "${ENV_FILE}"
 
 # Down Docker Compose services and remove volumes
-#docker compose -f "${ENV_DIR}/docker-compose.yaml" down -v
-docker compose -f "${ENV_DIR}/docker-compose.local.yaml" down gateway keycloak0 postgres -v
+docker compose -f "${ENV_DIR}/docker-compose.yaml" down -v
+#docker compose -f "${ENV_DIR}/docker-compose.local.yaml" down gateway keycloak0 postgres -v
 
 # -------------------------------
 # Cleanup Files

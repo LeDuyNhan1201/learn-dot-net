@@ -1,5 +1,3 @@
 namespace Restaurant.API;
 
-public sealed class Messages
-{
-}
+public sealed class Messages;

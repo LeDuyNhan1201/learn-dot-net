@@ -12,11 +12,12 @@ using FluentValidation;
 using Microsoft.IdentityModel.Logging;
 using Restaurant.API.Endpoints;
 using Restaurant.API.Serialization;
+using Restaurant.Application.DTOs;
 using Restaurant.Application.Services;
 using Restaurant.Application.Services.Interfaces;
 using Restaurant.Application.Validation.Validators;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateSlimBuilder(args);
 
 IdentityModelEventSource.ShowPII = true;
 
@@ -26,7 +27,15 @@ builder.Services.AddI18NLocalization();
 if (!builder.Environment.IsEnvironment("Local")) builder.Services.AddObservability(builder.Configuration);
 builder.Services.AddScalarOpenApi();
 
-builder.Services.AddValidatorsFromAssemblyContaining<MenuItemValidator>();
+if (builder.Environment.IsEnvironment("Local"))
+{
+    builder.Services.AddValidatorsFromAssemblyContaining<MenuItemValidator>();
+}
+else
+{
+    builder.Services.AddScoped<IValidator<MenuItemDto>, MenuItemValidator>();
+    builder.Services.AddScoped<MenuItemValidator>();
+}
 
 builder.AddAuthenticationWithAuthorization();
 

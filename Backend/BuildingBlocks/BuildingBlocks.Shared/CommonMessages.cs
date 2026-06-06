@@ -1,5 +1,3 @@
 namespace BuildingBlocks.Shared;
 
-public sealed class CommonMessages
-{
-}
+public sealed class CommonMessages;
