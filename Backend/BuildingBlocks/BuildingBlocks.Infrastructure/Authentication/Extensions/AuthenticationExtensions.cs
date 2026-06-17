@@ -10,25 +10,28 @@ namespace BuildingBlocks.Infrastructure.Authentication.Extensions;
 
 public static class AuthenticationExtensions
 {
-    public static IServiceCollection AddAuthenticationWithAuthorization(this IHostApplicationBuilder builder)
+    public static IServiceCollection AddAuthenticationWithAuthorization(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        IHostEnvironment environment)
     {
-        ArgumentNullException.ThrowIfNull(builder.Services);
-        ArgumentNullException.ThrowIfNull(builder.Configuration);
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
 
-        builder.Services.AddScoped<CurrentIdentity>();
-        builder.Services
+        services.AddScoped<CurrentIdentity>();
+        services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddKeycloakWebApi(
                 options =>
                 {
-                    if (builder.Environment.IsEnvironment("Local"))
-                        builder.Configuration.BindKeycloakOptions(options);
+                    if (environment.IsEnvironment("Local"))
+                        configuration.BindKeycloakOptions(options);
                     else
-                        options.BindKeycloakOptionsForAot(builder.Configuration);
+                        options.BindKeycloakOptionsForAot(configuration);
                 },
                 options =>
                 {
-                    if (builder.Environment.IsEnvironment("Local"))
+                    if (environment.IsEnvironment("Local"))
                         options.BackchannelHttpHandler = new HttpClientHandler
                         {
                             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
@@ -36,9 +39,9 @@ public static class AuthenticationExtensions
                     options.ConfigureJwtBearer();
                 });
 
-        builder.Services.AddAuthorizationBuilder();
+        services.AddAuthorizationBuilder();
 
-        return builder.Services;
+        return services;
     }
 
     private static void BindKeycloakOptionsForAot(this KeycloakAuthenticationOptions options, IConfiguration configuration)

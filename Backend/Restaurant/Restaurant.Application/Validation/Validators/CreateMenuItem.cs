@@ -1,13 +1,13 @@
-using BuildingBlocks.Application.Validation;
+using BuildingBlocks.Application.Validation.Extensions;
 using FluentValidation;
 using Restaurant.Application.DTOs;
 using Restaurant.Application.Validation.Extensions;
 
 namespace Restaurant.Application.Validation.Validators;
 
-public sealed class MenuItemValidator : AbstractValidator<MenuItemDto>
+public sealed class CreateMenuItem : AbstractValidator<IMenuItemDto.CreateRequest>
 {
-    public MenuItemValidator()
+    public CreateMenuItem()
     {
         RuleFor(x => x.MenuItemPrice)
             .Required()

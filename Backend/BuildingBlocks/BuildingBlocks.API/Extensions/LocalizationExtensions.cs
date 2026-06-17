@@ -27,7 +27,7 @@ public static class LocalizationExtensions
             options.RequestCultureProviders.Insert(0, new AcceptLanguageHeaderRequestCultureProvider());
         });
 
-        services.AddScoped(typeof(CompositeLocalizer<>));
+        services.AddSingleton(typeof(CompositeLocalizer<>));
 
         return services;
     }

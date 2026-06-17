@@ -56,4 +56,7 @@
     <data name="Field.Password" xml:space="preserve">
       <value>Password</value>
     </data>
+    <data name="Error.InternalServer" xml:space="preserve">
+        <value>Unexpected error</value>
+    </data>
 </root>

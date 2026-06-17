@@ -36,6 +36,8 @@ RUN --mount=type=cache,target=/root/.nuget/packages \
         -p:PublishAot=true \
         -p:UseAppHost=true \
         -p:InvariantGlobalization=false \
+        -p:SuppressTrimAnalysisWarnings=false \
+        -v diag \
         -o /app/publish \
     && rm -f /app/publish/*.dbg
 

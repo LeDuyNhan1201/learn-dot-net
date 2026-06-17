@@ -5,6 +5,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <IsAotCompatible>true</IsAotCompatible>
+        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
+        <NeutralLanguage>en-US</NeutralLanguage>
     </PropertyGroup>
 
     <ItemGroup>
@@ -24,5 +28,9 @@
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>messages.vi.Designer.cs</LastGenOutput>
         </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="12.1.1"/>
     </ItemGroup>
 </Project>

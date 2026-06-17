@@ -54,9 +54,11 @@ internal static class JwtBearerExtensions
 
                 await context.Response.WriteAuthenticationErrorAsync(
                     StatusCodes.Status401Unauthorized,
-                    new BaseResponse<object>(
-                        "TOKEN_INVALID",
-                        "Authentication required"),
+                    new BaseResponse<object>
+                    {
+                        Code = "TOKEN_INVALID",
+                        Message = "Authentication required"
+                    },
                     context.HttpContext.RequestAborted);
             },
 
@@ -66,9 +68,11 @@ internal static class JwtBearerExtensions
 
                 await context.Response.WriteAuthenticationErrorAsync(
                     StatusCodes.Status403Forbidden,
-                    new BaseResponse<object>(
-                        "FORBIDDEN",
-                        "You do not have permission"),
+                    new BaseResponse<object>
+                    {
+                        Code = "ACCESS_DENIED",
+                        Message = "You do not have permission to access this resource"
+                    },
                     context.HttpContext.RequestAborted);
             }
         };

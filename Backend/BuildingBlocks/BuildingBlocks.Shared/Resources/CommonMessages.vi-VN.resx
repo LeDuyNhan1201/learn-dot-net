@@ -56,4 +56,7 @@
     <data name="Field.Password" xml:space="preserve">
       <value>Mật khẩu</value>
     </data>
+    <data name="Error.InternalServer" xml:space="preserve">
+        <value>Lỗi không xác định</value>
+    </data>
 </root>
