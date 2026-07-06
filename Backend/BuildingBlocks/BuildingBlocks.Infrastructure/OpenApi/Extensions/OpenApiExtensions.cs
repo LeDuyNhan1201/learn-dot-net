@@ -78,10 +78,7 @@ public static class OpenApiExtensions
             //     flow.Pkce = Pkce.Sha256;
             // });
         });
-
-        // app.UseDeveloperExceptionPage();
-
-
+        
         return app;
     }
 }

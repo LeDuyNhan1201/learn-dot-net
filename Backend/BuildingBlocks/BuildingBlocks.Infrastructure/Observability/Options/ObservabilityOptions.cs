@@ -2,7 +2,7 @@ namespace BuildingBlocks.Infrastructure.Observability.Options;
 
 public sealed class ObservabilityOptions
 {
-    public const string SectionName = "Observability";
+    public const string Section = "Observability";
     public string UseTracingExporter { get; set; } = "Console";
     public string UseMetricsExporter { get; set; } = "Console";
     public string UseLoggingExporter { get; set; } = "Console";

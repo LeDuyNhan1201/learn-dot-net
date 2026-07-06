@@ -7,12 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Assertions\" />
-      <Folder Include="Builders\" />
-      <Folder Include="Fixtures\" />
-      <Folder Include="Integration\" />
-      <Folder Include="Time\" />
-      <Folder Include="Validation\" />
+        <Folder Include="Assertions\"/>
+        <Folder Include="Builders\"/>
+        <Folder Include="Fixtures\"/>
+        <Folder Include="Integration\"/>
+        <Folder Include="Time\"/>
+        <Folder Include="Validation\"/>
     </ItemGroup>
 
 </Project>

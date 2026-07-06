@@ -43,10 +43,8 @@ generate_tls_certs
 # Docker Images Build
 # -------------------------------
 
-#build_backend_image "${BACKEND_DIR}"
-
+build_backend_image "${BACKEND_DIR}"
 build_postgres_image "${ENV_DIR}"
-
 build_keycloak_image "${ENV_DIR}"
 
 echo "Initialize completed successfully."

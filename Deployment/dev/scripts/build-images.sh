@@ -34,8 +34,8 @@ source "${GENERATOR_FILE}"
 
 build_backend_image "${BACKEND_DIR}"
 
-#build_postgres_image "${ENV_DIR}"
-#
-#build_keycloak_image "${ENV_DIR}"
+build_postgres_image "${ENV_DIR}"
+
+build_keycloak_image "${ENV_DIR}"
 
 echo "Build images completed successfully."

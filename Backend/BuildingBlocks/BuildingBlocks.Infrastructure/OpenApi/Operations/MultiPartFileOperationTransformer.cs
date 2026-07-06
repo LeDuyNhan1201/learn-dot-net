@@ -33,7 +33,7 @@ public sealed class MultiPartFileOperationTransformer : IOpenApiOperationTransfo
         {
             Content = new Dictionary<string, OpenApiMediaType>
             {
-                [MediaTypeNames.Multipart.FormData] = new()
+                [MediaTypeNames.Multipart.FormData] = new OpenApiMediaType()
                 {
                     Schema = new OpenApiSchema
                     {

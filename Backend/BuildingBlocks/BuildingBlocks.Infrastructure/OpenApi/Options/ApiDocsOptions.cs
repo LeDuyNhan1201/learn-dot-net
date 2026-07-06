@@ -2,7 +2,7 @@
 
 public sealed class ApiDocsOptions
 {
-    public const string SectionName = "OpenApi";
+    public const string Section = "OpenApi";
     public string? Title { get; set; }
     public string? ApiDocs { get; set; }
     public string? Version { get; set; }

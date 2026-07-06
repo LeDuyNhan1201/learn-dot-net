@@ -1,12 +1,13 @@
-﻿# https://mcr.microsoft.com/en-us/artifact/mar/dotnet/sdk/tags
-FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine-aot AS build
+﻿# =========================
+# Build stage
+# =========================
+FROM mcr.microsoft.com/dotnet/sdk:10.0-alpine AS build
 
 ARG BUILD_CONFIGURATION=Release
-ARG RUNTIME_IDENTIFIER=linux-musl-x64
 
 WORKDIR /src
 
-# Copy solution + csproj files first for cache optimization
+# Copy solution + project files
 COPY --link Backend.slnx ./
 
 COPY --link BuildingBlocks/BuildingBlocks.API/*.csproj BuildingBlocks/BuildingBlocks.API/
@@ -22,28 +23,23 @@ COPY --link Restaurant/Restaurant.Infrastructure/*.csproj Restaurant/Restaurant.
 
 # Restore
 RUN --mount=type=cache,target=/root/.nuget/packages \
-    dotnet restore Restaurant/Restaurant.API/Restaurant.API.csproj -r "$RUNTIME_IDENTIFIER"
+    dotnet restore Restaurant/Restaurant.API/Restaurant.API.csproj
 
-# Copy full source
+# Copy source
 COPY --link . .
 
-# Publish Native AOT
+# Publish
 RUN --mount=type=cache,target=/root/.nuget/packages \
     --mount=type=cache,target=/src/Restaurant/Restaurant.API/bin \
     dotnet publish Restaurant/Restaurant.API/Restaurant.API.csproj \
         -c "$BUILD_CONFIGURATION" \
-        -r "$RUNTIME_IDENTIFIER" \
-        -p:PublishAot=true \
-        -p:UseAppHost=true \
-        -p:InvariantGlobalization=false \
-        -p:SuppressTrimAnalysisWarnings=false \
-        -v diag \
-        -o /app/publish \
-    && rm -f /app/publish/*.dbg
+        --no-restore \
+        -o /app/publish
 
-# Runtime image
-# https://mcr.microsoft.com/en-us/artifact/mar/dotnet/runtime-deps/tags
-FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-alpine
+# =========================
+# Runtime stage
+# =========================
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-alpine
 
 ARG BACKEND_TAG=latest
 
@@ -53,21 +49,21 @@ LABEL org.opencontainers.image.version="${BACKEND_TAG}"
 
 # Install required packages
 RUN apk add --no-cache \
+    openssl \
     icu-libs \
-    ca-certificates
+    ca-certificates \
+    krb5-libs
 
-# Copy self-sign root CA
+# Trust custom CA
 COPY rootCA.crt /usr/local/share/ca-certificates/rootCA.crt
 
-# Update trust store
 RUN update-ca-certificates
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
-
 ENV ASPNETCORE_URLS=http://+:60001
 
 COPY --link --from=build /app/publish .
 
 EXPOSE 60001
 
-ENTRYPOINT ["./Restaurant.API"]
+ENTRYPOINT ["dotnet", "Restaurant.API.dll"]

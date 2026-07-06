@@ -18,7 +18,7 @@ public static class ApiDocumentExtensions
             .Where(path => path.Key.StartsWith($"/{version}", StringComparison.OrdinalIgnoreCase))
             .ToList()
             .ForEach(path => filteredPaths.Add(path.Key, path.Value));
-        
+
         document.Paths = filteredPaths;
 
         document.Components ??= new OpenApiComponents();

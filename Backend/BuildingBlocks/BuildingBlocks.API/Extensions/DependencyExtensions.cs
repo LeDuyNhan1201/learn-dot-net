@@ -1,5 +1,6 @@
 using BuildingBlocks.Infrastructure.Observability.Options;
 using BuildingBlocks.Infrastructure.OpenApi.Options;
+using BuildingBlocks.Infrastructure.Persistence.Options;
 using BuildingBlocks.Shared.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,17 +18,22 @@ public static class DependencyExtensions
     {
         services
             .AddOptions<ServerOptions>()
-            .BindConfiguration(ServerOptions.SectionName)
+            .BindConfiguration(ServerOptions.Section)
             .ValidateOnStart();
 
         services
             .AddOptions<ObservabilityOptions>()
-            .BindConfiguration(ObservabilityOptions.SectionName)
+            .BindConfiguration(ObservabilityOptions.Section)
             .ValidateOnStart();
 
         services
             .AddOptions<ApiDocsOptions>()
-            .BindConfiguration(ApiDocsOptions.SectionName)
+            .BindConfiguration(ApiDocsOptions.Section)
+            .ValidateOnStart();
+
+        services
+            .AddOptions<PostgresOptions>()
+            .BindConfiguration(PostgresOptions.Section)
             .ValidateOnStart();
 
         return services;

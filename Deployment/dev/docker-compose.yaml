@@ -38,7 +38,6 @@ x-keycloak-env: &keycloak-env
 x-keycloak-command: &keycloak-command
   command: [
     "start",
-    "--import-realm",
     "--optimized",
     "--cache=ispn"
   ]
@@ -50,7 +49,10 @@ services:
     networks:
       - dev-network
       - dev-observability-network
+#    entrypoint: ["tail", "-f", "/dev/null"]
     depends_on:
+      postgres:
+        condition: service_healthy
       otel-collector:
         condition: service_started
     environment:
@@ -80,6 +82,18 @@ services:
       Observability__UseLoggingExporter: "otlp"
       Observability__HistogramAggregation: "exponential"
       Observability__Otlp__Endpoint: "http://otel-collector:4317"
+      
+      # ---------- Database ---------
+      Postgres__Host: "postgres"
+      Postgres__Port: 5432
+      Postgres__Database: "restaurant_dev"
+      Postgres__Username: ${POSTGRES_USER}
+      Postgres__Password: ${POSTGRES_PASSWORD}
+      Postgres__Ssl__Enabled: "true"
+      Postgres__Ssl__Mode: "VerifyCA"
+      Postgres__Ssl__RootCertificatePath: "/usr/local/share/ca-certificates/rootCA.crt"
+      Postgres__Ssl__CertificatePath: ""
+      Postgres__Ssl__PrivateKeyPath: ""
 
   # --------- Envoy ---------
   gateway:
@@ -96,6 +110,7 @@ services:
     extra_hosts:
       - "${APP_HOSTNAME}:host-gateway"
     command: ["envoy", "-c", "/etc/envoy/envoy.yaml"]
+#    entrypoint: ["tail", "-f", "/dev/null"]
     volumes:
       - ${SERVICES_DIR}/envoy/gateway.yaml:/etc/envoy/envoy.yaml:ro
       - ./certs/gateway:/etc/envoy/certificates:ro
@@ -144,6 +159,7 @@ services:
     networks:
       - dev-network
     <<: *keycloak-command
+#    entrypoint: ["tail", "-f", "/dev/null"]
     healthcheck:
       test: [ "CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9990; echo -e 'GET /auth/health/ready HTTP/1.1\r\nHost: localhost:9990\r\nConnection: close\r\n\r\n' >&3; cat <&3 | grep -q '\"status\": \"UP\"' && exit 0 || exit 1" ]
       interval: 30s

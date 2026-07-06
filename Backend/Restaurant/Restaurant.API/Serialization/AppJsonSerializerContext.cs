@@ -18,6 +18,4 @@ namespace Restaurant.API.Serialization;
 [JsonSerializable(typeof(IMenuItemDto.CreateRequest))]
 [JsonSerializable(typeof(TokenRequest))]
 [JsonSerializable(typeof(TokenResponse))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
-{
-}
+internal partial class AppJsonSerializerContext : JsonSerializerContext;

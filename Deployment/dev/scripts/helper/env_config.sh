@@ -18,7 +18,7 @@ export TEMPO_TAG="2.9.2" # https://hub.docker.com/r/grafana/tempo/tags
 export PROMETHEUS_TAG="main-distroless" # https://hub.docker.com/r/prom/prometheus/tags
 export OTEL_TAG="nightly" # https://hub.docker.com/r/otel/opentelemetry-collector-contrib/tags
 export KEYCLOAK_TAG="26.6" # https://quay.io/repository/keycloak/keycloak?tab=tags
-export POSTGRES_TAG="14.23" # https://hub.docker.com/_/postgres/tags
+export POSTGRES_TAG="15.18" # https://hub.docker.com/_/postgres/tags
 
 # For hardened images, use the following repository names and tags:
 #export ENVOY_REPO_NAME="dhi" 

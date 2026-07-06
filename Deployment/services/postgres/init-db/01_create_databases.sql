@@ -1,2 +1,8 @@
 CREATE DATABASE keycloak WITH OWNER = leduynhan1201 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8' TABLESPACE = pg_default CONNECTION
 LIMIT = -1;
+CREATE DATABASE restaurant_local WITH OWNER = leduynhan1201 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8' TABLESPACE = pg_default CONNECTION
+LIMIT = -1;
+CREATE DATABASE restaurant_dev WITH OWNER = leduynhan1201 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8' TABLESPACE = pg_default CONNECTION
+LIMIT = -1;
+CREATE DATABASE restaurant WITH OWNER = leduynhan1201 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8' TABLESPACE = pg_default CONNECTION
+LIMIT = -1;

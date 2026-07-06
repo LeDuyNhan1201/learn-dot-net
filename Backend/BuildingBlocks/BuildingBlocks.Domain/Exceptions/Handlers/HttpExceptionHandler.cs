@@ -1,5 +1,4 @@
 using System.Collections;
-using BuildingBlocks.Domain.Exceptions.Exceptions;
 using BuildingBlocks.Shared.DTOs;
 using BuildingBlocks.Shared.Errors.Models;
 using BuildingBlocks.Shared.Localization;
@@ -10,8 +9,8 @@ using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Domain.Exceptions.Handlers;
 
-public sealed class GlobalExceptionHandler<TMessage>(
-    ILogger<GlobalExceptionHandler<TMessage>> logger,
+public sealed class HttpExceptionHandler<TMessage>(
+    ILogger<HttpExceptionHandler<TMessage>> logger,
     IHostEnvironment environment,
     CompositeLocalizer<TMessage> localizer)
     : IExceptionHandler

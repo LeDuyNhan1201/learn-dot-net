@@ -15,6 +15,7 @@ WORKDIR /opt/keycloak
 COPY --chown=keycloak:keycloak certs/ca/ca.crt conf/root.crt
 COPY --chown=keycloak:keycloak certs/keycloak/keycloak.cert.pem conf/server.crt
 COPY --chown=keycloak:keycloak certs/keycloak/keycloak.key.pem conf/server.key
+COPY --chown=keycloak:keycloak certs/keycloak/keycloak.pk8 conf/server.pk8
 
 RUN chmod 600 conf/server.key
 

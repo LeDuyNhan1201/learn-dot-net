@@ -38,7 +38,6 @@ x-keycloak-env: &keycloak-env
 x-keycloak-command: &keycloak-command
   command: [
     "start",
-    "--import-realm",
     "--optimized",
     "--verbose", # may not need in production
     "--cache=ispn"
