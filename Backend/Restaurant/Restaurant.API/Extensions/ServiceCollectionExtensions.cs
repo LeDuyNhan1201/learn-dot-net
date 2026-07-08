@@ -2,6 +2,7 @@ using BuildingBlocks.API.Extensions;
 using BuildingBlocks.Domain.Exceptions.Handlers;
 using BuildingBlocks.Domain.Validation;
 using BuildingBlocks.Infrastructure.Authentication.Extensions;
+using BuildingBlocks.Infrastructure.Authentication.keycloakAdmin.Extensions;
 using BuildingBlocks.Infrastructure.Observability.Extensions;
 using BuildingBlocks.Infrastructure.OpenApi.Extensions;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
@@ -52,6 +53,8 @@ public static class ServiceCollectionExtensions
             cfg.RegisterServicesFromAssemblyContaining<IMenuItemCommand>();
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
+
+        services.AddKeycloakAdmin(configuration);
 
         services.AddAuthenticationWithAuthorization(configuration, environment);
 

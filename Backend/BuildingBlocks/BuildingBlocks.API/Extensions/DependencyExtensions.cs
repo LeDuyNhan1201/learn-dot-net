@@ -1,7 +1,9 @@
+using BuildingBlocks.Infrastructure.Authentication.keycloakAdmin.Options;
 using BuildingBlocks.Infrastructure.Observability.Options;
 using BuildingBlocks.Infrastructure.OpenApi.Options;
 using BuildingBlocks.Infrastructure.Persistence.Options;
 using BuildingBlocks.Shared.Options;
+using Keycloak.AuthServices.Sdk;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -31,6 +33,11 @@ public static class DependencyExtensions
             .BindConfiguration(ApiDocsOptions.Section)
             .ValidateOnStart();
 
+        services
+            .AddOptions<KeycloakAdminClientOptions>()
+            .BindConfiguration(KeycloakAdminOptions.Section)
+            .ValidateOnStart();
+        
         services
             .AddOptions<PostgresOptions>()
             .BindConfiguration(PostgresOptions.Section)
