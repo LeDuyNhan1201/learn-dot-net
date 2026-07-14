@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BuildingBlocks.Shared\BuildingBlocks.Shared.csproj"/>
+        <ProjectReference Include="..\BuildingBlocks.SharedKernel\BuildingBlocks.SharedKernel.csproj" />
     </ItemGroup>
 
     <ItemGroup>

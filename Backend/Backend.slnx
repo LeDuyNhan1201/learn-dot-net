@@ -3,9 +3,13 @@
         <Project Path="BuildingBlocks/BuildingBlocks.API/BuildingBlocks.API.csproj" />
         <Project Path="BuildingBlocks/BuildingBlocks.Application/BuildingBlocks.Application.csproj" />
         <Project Path="BuildingBlocks/BuildingBlocks.Domain/BuildingBlocks.Domain.csproj" />
+        <Project Path="BuildingBlocks/BuildingBlocks.Identity/BuildingBlocks.Identity.csproj" />
         <Project Path="BuildingBlocks/BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.Shared/BuildingBlocks.Shared.csproj" />
+        <Project Path="BuildingBlocks/BuildingBlocks.Observability/BuildingBlocks.Observability.csproj" />
+        <Project Path="BuildingBlocks/BuildingBlocks.OpenApi/BuildingBlocks.OpenApi.csproj" />
+        <Project Path="BuildingBlocks/BuildingBlocks.Persistence/BuildingBlocks.Persistence.csproj" />
         <Project Path="BuildingBlocks/BuildingBlocks.Testing/BuildingBlocks.Testing.csproj" />
+        <Project Path="BuildingBlocks\BuildingBlocks.SharedKernel\BuildingBlocks.SharedKernel.csproj" />
     </Folder>
     <Folder Name="/Modules/" />
     <Folder Name="/Modules/Restaurant/">

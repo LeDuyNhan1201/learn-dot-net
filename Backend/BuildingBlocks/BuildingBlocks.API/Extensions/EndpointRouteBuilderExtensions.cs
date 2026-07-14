@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace BuildingBlocks.API.Extensions;
 
-public static class ApiRoutingExtensions
+public static class EndpointRouteBuilderExtensions
 {
     public static WebApplication UseRestRouting(this WebApplication app, params IEndpointModule[] modules)
     {

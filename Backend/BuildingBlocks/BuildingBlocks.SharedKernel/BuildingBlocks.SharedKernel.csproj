@@ -8,6 +8,8 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
         <NeutralLanguage>en-US</NeutralLanguage>
+
+        <RootNamespace>BuildingBlocks.Shared</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

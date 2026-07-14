@@ -14,7 +14,7 @@ COPY --link BuildingBlocks/BuildingBlocks.API/*.csproj BuildingBlocks/BuildingBl
 COPY --link BuildingBlocks/BuildingBlocks.Application/*.csproj BuildingBlocks/BuildingBlocks.Application/
 COPY --link BuildingBlocks/BuildingBlocks.Domain/*.csproj BuildingBlocks/BuildingBlocks.Domain/
 COPY --link BuildingBlocks/BuildingBlocks.Infrastructure/*.csproj BuildingBlocks/BuildingBlocks.Infrastructure/
-COPY --link BuildingBlocks/BuildingBlocks.Shared/*.csproj BuildingBlocks/BuildingBlocks.Shared/
+COPY --link BuildingBlocks/BuildingBlocks.SharedKernel/*.csproj BuildingBlocks/BuildingBlocks.SharedKernel/
 
 COPY --link Modules/Restaurant/Restaurant.API/*.csproj Modules/Restaurant/Restaurant.API/
 COPY --link Modules/Restaurant/Restaurant.Application/*.csproj Modules/Restaurant/Restaurant.Application/
