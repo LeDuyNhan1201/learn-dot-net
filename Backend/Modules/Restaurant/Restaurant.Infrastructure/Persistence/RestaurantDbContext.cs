@@ -1,4 +1,5 @@
-using BuildingBlocks.Infrastructure.Persistence.DbContexts;
+using System;
+using BuildingBlocks.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Restaurant.Domain.Entities;
 

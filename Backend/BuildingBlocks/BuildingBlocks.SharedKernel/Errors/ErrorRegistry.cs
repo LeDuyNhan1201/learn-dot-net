@@ -1,6 +1,6 @@
-using BuildingBlocks.Shared.Errors.Models;
+using BuildingBlocks.SharedKernel.Errors.Models;
 
-namespace BuildingBlocks.Shared.Errors;
+namespace BuildingBlocks.SharedKernel.Errors;
 
 public static class ErrorRegistry
 {

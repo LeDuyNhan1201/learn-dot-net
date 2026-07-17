@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
-using BuildingBlocks.Shared.DTOs;
-using BuildingBlocks.Shared.Options;
+using BuildingBlocks.SharedKernel.DTOs;
+using BuildingBlocks.SharedKernel.Options;
 using Microsoft.AspNetCore.Http;
 
 namespace BuildingBlocks.API.Serialization.Resolvers;

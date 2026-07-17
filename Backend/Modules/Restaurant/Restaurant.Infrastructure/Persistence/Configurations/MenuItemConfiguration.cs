@@ -1,4 +1,5 @@
-using BuildingBlocks.Infrastructure.Persistence.Configurations;
+using System;
+using BuildingBlocks.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Restaurant.Domain.Entities;

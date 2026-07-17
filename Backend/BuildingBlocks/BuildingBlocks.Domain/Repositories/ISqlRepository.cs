@@ -34,4 +34,3 @@ public interface ISqlRepository<T> where T : AuditEntity
 
     void DeleteRange(IEnumerable<T> entities);
 }
-

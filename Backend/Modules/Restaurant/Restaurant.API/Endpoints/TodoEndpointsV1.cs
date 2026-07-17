@@ -1,5 +1,5 @@
 using BuildingBlocks.API.Interfaces;
-using BuildingBlocks.Infrastructure.OpenApi.Versions;
+using BuildingBlocks.OpenApi.Versions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Restaurant.Application.Services.Interfaces;
 using Restaurant.Domain.Entities;

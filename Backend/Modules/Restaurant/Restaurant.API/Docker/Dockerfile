@@ -13,7 +13,10 @@ COPY --link Backend.slnx ./
 COPY --link BuildingBlocks/BuildingBlocks.API/*.csproj BuildingBlocks/BuildingBlocks.API/
 COPY --link BuildingBlocks/BuildingBlocks.Application/*.csproj BuildingBlocks/BuildingBlocks.Application/
 COPY --link BuildingBlocks/BuildingBlocks.Domain/*.csproj BuildingBlocks/BuildingBlocks.Domain/
-COPY --link BuildingBlocks/BuildingBlocks.Infrastructure/*.csproj BuildingBlocks/BuildingBlocks.Infrastructure/
+COPY --link BuildingBlocks/BuildingBlocks.Identity/*.csproj BuildingBlocks/BuildingBlocks.Identity/
+COPY --link BuildingBlocks/BuildingBlocks.Observability/*.csproj BuildingBlocks/BuildingBlocks.Observability/
+COPY --link BuildingBlocks/BuildingBlocks.OpenApi/*.csproj BuildingBlocks/BuildingBlocks.OpenApi/
+COPY --link BuildingBlocks/BuildingBlocks.Persistence/*.csproj BuildingBlocks/BuildingBlocks.Persistence/
 COPY --link BuildingBlocks/BuildingBlocks.SharedKernel/*.csproj BuildingBlocks/BuildingBlocks.SharedKernel/
 
 COPY --link Modules/Restaurant/Restaurant.API/*.csproj Modules/Restaurant/Restaurant.API/

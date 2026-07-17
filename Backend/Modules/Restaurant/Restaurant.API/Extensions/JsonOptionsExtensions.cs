@@ -6,16 +6,8 @@ using Restaurant.API.Serialization;
 
 namespace Restaurant.API.Extensions;
 
-/// <summary>
-///     Extension methods for configuring JSON serialization options in the application.
-/// </summary>
 public static class JsonOptionsExtensions
 {
-    /// <summary>
-    ///     Configures JSON serialization options for the application, including custom converters and type info resolvers.
-    /// </summary>
-    /// <param name="services">The IServiceCollection to which the JSON options will be applied.</param>
-    /// <returns>The IServiceCollection with the configured JSON options.</returns>
     public static IServiceCollection ConfigureApplicationJson(this IServiceCollection services)
     {
         services.ConfigureHttpJsonOptions(options =>

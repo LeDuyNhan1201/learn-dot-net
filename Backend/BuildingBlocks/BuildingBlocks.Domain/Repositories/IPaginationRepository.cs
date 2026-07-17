@@ -1,6 +1,6 @@
 using Ardalis.Specification;
 using BuildingBlocks.Domain.Entities;
-using BuildingBlocks.Shared.DTOs;
+using BuildingBlocks.SharedKernel.DTOs;
 
 namespace BuildingBlocks.Domain.Repositories;
 

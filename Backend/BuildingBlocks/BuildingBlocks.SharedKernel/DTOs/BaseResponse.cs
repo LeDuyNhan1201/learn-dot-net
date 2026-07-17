@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace BuildingBlocks.Shared.DTOs;
+namespace BuildingBlocks.SharedKernel.DTOs;
 
 public sealed record BaseResponse<T>
 {

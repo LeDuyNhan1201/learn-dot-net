@@ -76,6 +76,13 @@ services:
       Keycloak__Credentials__Secret: ""
       Keycloak__SslRequired: "external"
       
+      # --------- KeycloakAdmin ---------
+      KeycloakAdmin__Realm: "learn-dot-net-dev"
+      KeycloakAdmin__AuthServerUrl: "https://${APP_HOSTNAME}/auth"
+      KeycloakAdmin__Resource: "restaurant-internal"
+      KeycloakAdmin__Credentials__Secret: "bYWApl4wuKqoRH7DvyB1MZmTvo59TBDi"
+      KeycloakAdmin__SslRequired: "external"
+      
       # ---------- Observability ---------
       Observability__UseTracingExporter: "otlp"
       Observability__UseMetricsExporter: "otlp"

@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using BuildingBlocks.Shared.Options;
+using BuildingBlocks.SharedKernel.Options;
 using Restaurant.API.Endpoints;
 using Restaurant.Application.DTOs;
 using Restaurant.Domain.Entities;

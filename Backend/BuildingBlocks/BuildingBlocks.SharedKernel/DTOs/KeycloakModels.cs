@@ -1,4 +1,4 @@
-namespace BuildingBlocks.Shared.DTOs;
+namespace BuildingBlocks.SharedKernel.DTOs;
 
 public static class KeycloakModels
 {

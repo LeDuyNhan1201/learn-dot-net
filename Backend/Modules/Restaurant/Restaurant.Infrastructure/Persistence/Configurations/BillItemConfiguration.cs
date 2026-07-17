@@ -1,4 +1,4 @@
-using BuildingBlocks.Infrastructure.Persistence.Configurations;
+using BuildingBlocks.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Restaurant.Domain.Entities;
@@ -15,7 +15,7 @@ public sealed class BillItemConfiguration : AuditEntityConfiguration<BillItem>
             x.MenuItemId
         });
     }
-    
+
     protected override void ConfigureEntity(EntityTypeBuilder<BillItem> builder)
     {
         builder.ToTable("bill_items", table =>

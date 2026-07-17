@@ -1,11 +1,12 @@
 using BuildingBlocks.API.Extensions;
 using BuildingBlocks.Domain.Exceptions.Handlers;
 using BuildingBlocks.Domain.Validation;
-using BuildingBlocks.Infrastructure.Authentication.Extensions;
-using BuildingBlocks.Infrastructure.Authentication.keycloakAdmin.Extensions;
-using BuildingBlocks.Infrastructure.Observability.Extensions;
-using BuildingBlocks.Infrastructure.OpenApi.Extensions;
-using BuildingBlocks.Infrastructure.Persistence.Extensions;
+using BuildingBlocks.Identity.Extensions;
+using BuildingBlocks.Identity.keycloakAdmin.Extensions;
+using BuildingBlocks.Observability.Extensions;
+using BuildingBlocks.OpenApi.Extensions;
+using BuildingBlocks.Persistence.Extensions;
+using BuildingBlocks.SharedKernel.Localization;
 using FluentValidation;
 using Microsoft.IdentityModel.Logging;
 using Restaurant.Application.Contracts;
@@ -16,16 +17,8 @@ using Restaurant.Infrastructure.Persistence;
 
 namespace Restaurant.API.Extensions;
 
-/// <summary>
-///     Extension methods for configuring services in the WebApplicationBuilder.
-/// </summary>
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    ///     Configures services for the WebApplicationBuilder.
-    /// </summary>
-    /// <param name="builder">The WebApplicationBuilder instance to configure services for.</param>
-    /// <returns>The configured WebApplicationBuilder instance.</returns>
     public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
     {
         var services = builder.Services;

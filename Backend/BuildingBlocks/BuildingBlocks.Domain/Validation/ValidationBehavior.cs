@@ -1,5 +1,5 @@
 using BuildingBlocks.Domain.Exceptions;
-using BuildingBlocks.Shared.Helpers;
+using BuildingBlocks.SharedKernel.Helpers;
 using FluentValidation;
 using MediatR;
 

@@ -1,4 +1,4 @@
-using BuildingBlocks.Shared.Errors.Models;
+using BuildingBlocks.SharedKernel.Errors.Models;
 
 namespace BuildingBlocks.Domain.Exceptions;
 

@@ -1,6 +1,6 @@
 using BuildingBlocks.API.Interfaces;
-using BuildingBlocks.Infrastructure.OpenApi.Versions;
-using BuildingBlocks.Shared.DTOs;
+using BuildingBlocks.OpenApi.Versions;
+using BuildingBlocks.SharedKernel.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Application.Contracts;

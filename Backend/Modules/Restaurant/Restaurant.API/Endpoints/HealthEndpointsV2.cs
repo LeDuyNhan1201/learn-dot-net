@@ -1,7 +1,7 @@
 using BuildingBlocks.API.Interfaces;
-using BuildingBlocks.Infrastructure.OpenApi.Versions;
-using BuildingBlocks.Shared.Localization;
-using BuildingBlocks.Shared.Options;
+using BuildingBlocks.OpenApi.Versions;
+using BuildingBlocks.SharedKernel.Localization;
+using BuildingBlocks.SharedKernel.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 

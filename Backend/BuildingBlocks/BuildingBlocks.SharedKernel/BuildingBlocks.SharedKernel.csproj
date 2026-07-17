@@ -4,12 +4,9 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
+        <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
         <NeutralLanguage>en-US</NeutralLanguage>
-
-        <RootNamespace>BuildingBlocks.Shared</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -34,6 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="MediatR" Version="14.0.0"/>
         <PackageReference Include="FluentValidation" Version="12.1.1"/>
     </ItemGroup>
 

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Localization;
 
-namespace BuildingBlocks.Shared.Localization;
+namespace BuildingBlocks.SharedKernel.Localization;
 
 public sealed class CompositeLocalizer<TLocal>(
     IStringLocalizer<CommonMessages> shared,

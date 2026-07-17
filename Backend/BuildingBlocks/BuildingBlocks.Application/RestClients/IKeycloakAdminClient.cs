@@ -1,4 +1,4 @@
-using BuildingBlocks.Shared.DTOs;
+using BuildingBlocks.SharedKernel.DTOs;
 using Keycloak.AuthServices.Sdk.Admin.Models;
 
 namespace BuildingBlocks.Application.RestClients;

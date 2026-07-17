@@ -450,7 +450,7 @@ build_backend_image() {
   docker rmi "$image_name" || true
   docker build --no-cache \
     --build-arg BACKEND_TAG="${BACKEND_TAG}" \
-    -f "${backend_dir}/Restaurant/Restaurant.API/Docker/Dockerfile" \
+    -f "${backend_dir}/Modules/Restaurant/Restaurant.API/Docker/Dockerfile" \
     -t "$image_name" \
     "${backend_dir}"
 }

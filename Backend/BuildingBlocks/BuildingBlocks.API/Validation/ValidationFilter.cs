@@ -1,7 +1,7 @@
-using BuildingBlocks.Shared.DTOs;
-using BuildingBlocks.Shared.Errors.Models;
-using BuildingBlocks.Shared.Helpers;
-using BuildingBlocks.Shared.Localization;
+using BuildingBlocks.SharedKernel.DTOs;
+using BuildingBlocks.SharedKernel.Errors.Models;
+using BuildingBlocks.SharedKernel.Helpers;
+using BuildingBlocks.SharedKernel.Localization;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

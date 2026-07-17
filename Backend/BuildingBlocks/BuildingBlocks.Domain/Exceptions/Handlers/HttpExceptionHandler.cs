@@ -1,7 +1,7 @@
 using System.Collections;
-using BuildingBlocks.Shared.DTOs;
-using BuildingBlocks.Shared.Errors.Models;
-using BuildingBlocks.Shared.Localization;
+using BuildingBlocks.SharedKernel.DTOs;
+using BuildingBlocks.SharedKernel.Errors.Models;
+using BuildingBlocks.SharedKernel.Localization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;

@@ -1,4 +1,4 @@
-namespace BuildingBlocks.Shared.Errors.Models;
+namespace BuildingBlocks.SharedKernel.Errors.Models;
 
 public static class ValidationErrors
 {

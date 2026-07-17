@@ -1,8 +1,8 @@
 using System.Text.Json;
-using BuildingBlocks.Shared.Errors.Models;
+using BuildingBlocks.SharedKernel.Errors.Models;
 using FluentValidation.Results;
 
-namespace BuildingBlocks.Shared.Helpers;
+namespace BuildingBlocks.SharedKernel.Helpers;
 
 public static class ValidationErrorBuilder
 {
