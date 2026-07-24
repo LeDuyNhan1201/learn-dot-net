@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Restaurant.Application.Contracts;
+namespace Restaurant.Domain.Contracts;
 
 public interface IMenuItemCommand
 {

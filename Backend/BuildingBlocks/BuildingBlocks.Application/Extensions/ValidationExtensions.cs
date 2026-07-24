@@ -1,7 +1,7 @@
 using BuildingBlocks.SharedKernel.Errors.Models;
 using FluentValidation;
 
-namespace BuildingBlocks.Application.Validation.Extensions;
+namespace BuildingBlocks.Application.Extensions;
 
 public static class ValidationExtensions
 {

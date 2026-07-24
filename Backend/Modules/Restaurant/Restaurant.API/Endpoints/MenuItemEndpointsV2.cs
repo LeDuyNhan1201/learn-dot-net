@@ -3,8 +3,8 @@ using BuildingBlocks.OpenApi.Versions;
 using BuildingBlocks.SharedKernel.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Restaurant.Application.Contracts;
 using Restaurant.Application.DTOs;
+using Restaurant.Domain.Contracts;
 
 namespace Restaurant.API.Endpoints;
 

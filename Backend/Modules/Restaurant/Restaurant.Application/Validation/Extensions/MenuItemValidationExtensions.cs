@@ -1,4 +1,4 @@
-using BuildingBlocks.Application.Validation.Extensions;
+using BuildingBlocks.Application.Extensions;
 using BuildingBlocks.SharedKernel.Errors.Models;
 using FluentValidation;
 using Restaurant.Application.Validation.Rules;

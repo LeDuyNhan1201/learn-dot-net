@@ -1,4 +1,4 @@
-using BuildingBlocks.Application.Validation.Extensions;
+using BuildingBlocks.Application.Extensions;
 using FluentValidation;
 using Restaurant.Application.DTOs;
 using Restaurant.Application.Validation.Extensions;

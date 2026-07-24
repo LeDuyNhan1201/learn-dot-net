@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BuildingBlocks.Domain.Entities;
+using Restaurant.Domain.Contracts;
 using Restaurant.Domain.Enumerations;
 
 namespace Restaurant.Domain.Entities;
@@ -31,4 +32,28 @@ public class MenuItem : AuditEntity<Guid>
     [Column("sub_category")] public MenuSubCategory SubCategory { get; set; }
 
     public virtual ICollection<BillItem> BillItems { get; set; } = [];
+    
+    public static MenuItem Create(IMenuItemCommand.Create command)
+    {
+        var entity = new MenuItem
+        {
+            Id = Guid.NewGuid(),
+            Name = command.MenuItemName!,
+            Description = command.MenuItemDescription!,
+            ImageUrl = command.ImageUrl,
+            Price = command.MenuItemPrice
+        };
+        
+        var domainEvent = new IMenuItemDomainEvent.Created{
+            Id = entity.Id.ToString(),
+            MenuItemName = entity.Name,
+            MenuItemDescription = entity.Description,
+            ImageUrl = entity.ImageUrl,
+            MenuItemPrice = entity.Price
+        };
+
+        entity.Raise(domainEvent);
+
+        return entity;
+    }
 }

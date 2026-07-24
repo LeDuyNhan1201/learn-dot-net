@@ -7,6 +7,7 @@
         <Project Path="BuildingBlocks/BuildingBlocks.Observability/BuildingBlocks.Observability.csproj"/>
         <Project Path="BuildingBlocks/BuildingBlocks.OpenApi/BuildingBlocks.OpenApi.csproj"/>
         <Project Path="BuildingBlocks/BuildingBlocks.Persistence/BuildingBlocks.Persistence.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj"/>
         <Project Path="BuildingBlocks/BuildingBlocks.Testing/BuildingBlocks.Testing.csproj"/>
         <Project Path="BuildingBlocks/BuildingBlocks.SharedKernel/BuildingBlocks.SharedKernel.csproj"/>
     </Folder>

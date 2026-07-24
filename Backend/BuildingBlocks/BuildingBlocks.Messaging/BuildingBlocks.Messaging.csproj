@@ -9,11 +9,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BuildingBlocks.Domain\BuildingBlocks.Domain.csproj"/>
+        <ProjectReference Include="..\BuildingBlocks.Application\BuildingBlocks.Application.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Keycloak.AuthServices.Sdk" Version="3.0.0"/>
+      <PackageReference Include="MassTransit.EntityFrameworkCore" Version="9.2.0-develop.157" />
+      <PackageReference Include="MassTransit.Kafka" Version="9.2.0-develop.157" />
     </ItemGroup>
 
 </Project>

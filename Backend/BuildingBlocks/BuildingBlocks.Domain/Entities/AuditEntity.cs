@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BuildingBlocks.Domain.Events;
 
 namespace BuildingBlocks.Domain.Entities;
 
-public abstract class AuditEntity : IAuditEntity
+public abstract class AuditEntity : AggregateRoot, IAuditEntity
 {
     [Column("created_by")] public string? CreatedBy { get; set; } = "system";
 

@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BuildingBlocks.Application\BuildingBlocks.Application.csproj"/>
+        <ProjectReference Include="..\BuildingBlocks.Messaging\BuildingBlocks.Messaging.csproj"/>
         <ProjectReference Include="..\BuildingBlocks.Identity\BuildingBlocks.Identity.csproj"/>
         <ProjectReference Include="..\BuildingBlocks.Observability\BuildingBlocks.Observability.csproj"/>
         <ProjectReference Include="..\BuildingBlocks.OpenApi\BuildingBlocks.OpenApi.csproj"/>

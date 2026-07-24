@@ -17,6 +17,12 @@ public class SqlRepository<T>(DbContext context) : IPaginationRepository<T>
         return await DbSet.FindAsync(keys);
     }
 
+    public virtual async Task<bool> ExistsAsync(Guid requestId,
+        CancellationToken cancellationToken = default)
+    {
+        return await DbSet.AnyAsync(cancellationToken);
+    }
+
     public virtual async Task<List<T>> ListAsync(
         ISpecification<T> specification,
         CancellationToken cancellationToken = default)

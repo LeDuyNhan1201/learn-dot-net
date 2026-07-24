@@ -1,8 +1,8 @@
-using BuildingBlocks.Application.Validation.Extensions;
+using BuildingBlocks.Application.Extensions;
 using FluentValidation;
-using Restaurant.Application.Contracts;
 using Restaurant.Application.DTOs;
 using Restaurant.Application.Validation.Extensions;
+using Restaurant.Domain.Contracts;
 
 namespace Restaurant.Application.Validation.Validators;
 

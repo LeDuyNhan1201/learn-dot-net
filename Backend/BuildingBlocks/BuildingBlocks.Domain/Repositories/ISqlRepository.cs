@@ -7,6 +7,9 @@ public interface ISqlRepository<T> where T : AuditEntity
 {
     Task<T?> GetByIdAsync(params object[] keys);
 
+    Task<bool> ExistsAsync(Guid requestId,
+        CancellationToken cancellationToken = default);
+
     Task<List<T>> ListAsync(ISpecification<T> specification,
         CancellationToken cancellationToken = default);
 

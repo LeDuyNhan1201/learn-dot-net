@@ -1,6 +1,6 @@
 using BuildingBlocks.API.Extensions;
+using BuildingBlocks.Application.Behaviors;
 using BuildingBlocks.Domain.Exceptions.Handlers;
-using BuildingBlocks.Domain.Validation;
 using BuildingBlocks.Identity.Extensions;
 using BuildingBlocks.Identity.keycloakAdmin.Extensions;
 using BuildingBlocks.Observability.Extensions;
@@ -9,10 +9,10 @@ using BuildingBlocks.Persistence.Extensions;
 using BuildingBlocks.SharedKernel.Localization;
 using FluentValidation;
 using Microsoft.IdentityModel.Logging;
-using Restaurant.Application.Contracts;
 using Restaurant.Application.Services;
 using Restaurant.Application.Services.Interfaces;
 using Restaurant.Application.Validation.Validators;
+using Restaurant.Domain.Contracts;
 using Restaurant.Infrastructure.Persistence;
 
 namespace Restaurant.API.Extensions;
@@ -45,6 +45,8 @@ public static class ServiceCollectionExtensions
         {
             cfg.RegisterServicesFromAssemblyContaining<IMenuItemCommand>();
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            cfg.AddOpenBehavior(typeof(LoggingBehavior<,>)); 
+            cfg.AddOpenBehavior(typeof(PerformanceBehavior<,>));
         });
 
         services.AddKeycloakAdmin(configuration);

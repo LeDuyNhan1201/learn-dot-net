@@ -11,7 +11,7 @@ namespace BuildingBlocks.API.Extensions;
 
 public static class DependencyExtensions
 {
-    public static IServiceCollection AddBaseServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddBehaviors(this IServiceCollection services, IConfiguration configuration)
     {
         return services;
     }

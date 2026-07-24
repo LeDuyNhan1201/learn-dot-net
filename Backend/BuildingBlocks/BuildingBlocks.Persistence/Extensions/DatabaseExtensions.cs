@@ -1,7 +1,9 @@
 using BuildingBlocks.Domain.ExecutionContext.Interfaces;
+using BuildingBlocks.Domain.Repositories.UnitOfWork;
 using BuildingBlocks.Persistence.ExecutionContext;
 using BuildingBlocks.Persistence.Interceptors;
 using BuildingBlocks.Persistence.Options;
+using BuildingBlocks.Persistence.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +38,8 @@ public static class DatabaseExtensions
         services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
 
         services.AddScoped<IExecutionContextInitializer, ExecutionContextInitializer>();
+        
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }

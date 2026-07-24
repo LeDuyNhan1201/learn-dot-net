@@ -3,7 +3,7 @@ using BuildingBlocks.SharedKernel.Helpers;
 using FluentValidation;
 using MediatR;
 
-namespace BuildingBlocks.Domain.Validation;
+namespace BuildingBlocks.Application.Behaviors;
 
 public sealed class ValidationBehavior<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> validators)
