@@ -5,22 +5,37 @@ namespace BuildingBlocks.Observability.Meters;
 
 public sealed class Telemetry : IDisposable
 {
-    internal const string ActivitySourceName = "LeDuyNhan1201.LearnDotNet";
-    internal const string MeterName = "LeDuyNhan1201.LearnDotNet";
-    private readonly Meter _meter;
+    public const string ActivitySourceName = "LeDuyNhan1201.LearnDotNet";
+    public const string MeterName = "LeDuyNhan1201.LearnDotNet";
 
     public Telemetry()
     {
         var version = typeof(Telemetry).Assembly.GetName().Version?.ToString();
-        _meter = new Meter(MeterName, version);
+
         ActivitySource = new ActivitySource(ActivitySourceName, version);
+
+        Meter = new Meter(MeterName, version);
+
+        ExceptionCounter =
+            Meter.CreateCounter<long>("exceptions");
     }
 
-    private ActivitySource ActivitySource { get; }
+    public ActivitySource ActivitySource { get; }
+
+    public Meter Meter { get; }
+
+    public Counter<long> ExceptionCounter { get; }
 
     public void Dispose()
     {
         ActivitySource.Dispose();
-        _meter.Dispose();
+        Meter.Dispose();
+    }
+
+    public Activity? StartActivity(
+        string name,
+        ActivityKind kind = ActivityKind.Internal)
+    {
+        return ActivitySource.StartActivity(name, kind);
     }
 }

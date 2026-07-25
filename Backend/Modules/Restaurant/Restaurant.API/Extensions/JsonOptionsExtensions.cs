@@ -12,8 +12,6 @@ public static class JsonOptionsExtensions
     {
         services.ConfigureHttpJsonOptions(options =>
         {
-            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-
             IList<IJsonTypeInfoResolver> resolvers =
             [
                 CommonJsonSerializerContext.Default,

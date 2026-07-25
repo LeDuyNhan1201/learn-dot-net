@@ -1,3 +1,4 @@
+using BuildingBlocks.Domain.DbContexts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,9 +8,9 @@ namespace BuildingBlocks.Messaging.Configurations;
 public static class InMemoryMassTransitConfiguration
 {
     public static IServiceCollection ConfigureInMemory<T>(
-        this IServiceCollection services, 
+        this IServiceCollection services,
         params Type[] consumerTypes)
-    where T : DbContext
+        where T : DbContext, IApplicationDbContext
     {
         services.AddMassTransit(busConfig =>
         {
@@ -21,16 +22,13 @@ public static class InMemoryMassTransitConfiguration
 
                 configurator.UseBusOutbox();
             });
-            
+
             foreach (var consumerType in consumerTypes)
                 busConfig.AddConsumer(consumerType);
 
-            busConfig.UsingInMemory((context, cfg) =>
-            {
-                cfg.ConfigureEndpoints(context);
-            });
+            busConfig.UsingInMemory((context, cfg) => { cfg.ConfigureEndpoints(context); });
         });
-        
+
         return services;
     }
 }

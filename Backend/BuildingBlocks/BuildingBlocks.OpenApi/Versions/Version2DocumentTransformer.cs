@@ -14,7 +14,8 @@ public class Version2DocumentTransformer(
 {
     public const string Version2 = "v2";
 
-    public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+    public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context,
+        CancellationToken cancellationToken)
     {
         document.InitBaseDocument(apiDocsOptions.Value, Version2);
         foreach (var path in document.Paths) LogMessages.OpenApiPath(logger, path.Key);

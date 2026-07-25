@@ -23,7 +23,8 @@ public sealed class PerformanceBehavior<TRequest, TResponse>(
         stopwatch.Stop();
 
         if (stopwatch.ElapsedMilliseconds > ThresholdMilliseconds)
-            logger.LogWarning("Long running request detected. Request={RequestName}, Duration={Duration}ms, Payload={@Payload}",
+            logger.LogWarning(
+                "Long running request detected. Request={RequestName}, Duration={Duration}ms, Payload={@Payload}",
                 typeof(TRequest).Name, stopwatch.ElapsedMilliseconds, request);
 
         return response;

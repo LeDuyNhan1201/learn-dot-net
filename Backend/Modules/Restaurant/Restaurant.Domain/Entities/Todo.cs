@@ -1,5 +1,3 @@
-using System;
-
 namespace Restaurant.Domain.Entities;
 
 public sealed class Todo

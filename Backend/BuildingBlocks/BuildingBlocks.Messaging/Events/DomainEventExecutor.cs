@@ -15,9 +15,7 @@ public sealed class DomainEventExecutor(IServiceProvider serviceProvider) : IDom
             var handlers = serviceProvider.GetServices(handlerType);
 
             foreach (var handler in handlers)
-            {
                 await ((dynamic)handler!).HandleAsync((dynamic)domainEvent, cancellationToken);
-            }
         }
     }
 }

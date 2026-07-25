@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.Persistence.DbContexts;
 
-public abstract class ApplicationDbContext<T>(DbContextOptions options) 
+public abstract class ApplicationDbContext<T>(DbContextOptions<T> options)
     : DbContext(options), IApplicationDbContext
     where T : DbContext
 {

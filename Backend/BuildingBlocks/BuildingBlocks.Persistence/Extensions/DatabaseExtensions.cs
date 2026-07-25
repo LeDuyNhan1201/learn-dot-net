@@ -16,12 +16,12 @@ namespace BuildingBlocks.Persistence.Extensions;
 
 public static class DatabaseExtensions
 {
-    public static IServiceCollection AddPostgresDatabase<T>(this IServiceCollection services) 
+    public static IServiceCollection AddPostgresDatabase<T>(this IServiceCollection services)
         where T : DbContext, IApplicationDbContext
     {
         services.AddScoped<AuditInterceptor>();
-        
-        services.AddScoped<IApplicationDbContext, T>();
+
+        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<T>());
 
         services.AddDbContext<T>((provider, options) =>
         {
@@ -42,7 +42,7 @@ public static class DatabaseExtensions
         services.AddSingleton<IExecutionContextAccessor, ExecutionContextAccessor>();
 
         services.AddScoped<IExecutionContextInitializer, ExecutionContextInitializer>();
-        
+
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

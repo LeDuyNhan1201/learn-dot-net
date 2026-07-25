@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
-namespace BuildingBlocks.OpenApi.Operations;
+namespace BuildingBlocks.OpenApi.Transformers;
 
 public sealed class LanguageOperationTransformer : IOpenApiOperationTransformer
 {
-    public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context, CancellationToken _)
+    public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context,
+        CancellationToken _)
     {
         operation.Parameters ??= [];
 

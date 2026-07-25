@@ -16,23 +16,23 @@ public static class MenuItemValidationExtensions
             .SetValidator(new MenuItemPriceValidator<T>())
             .WithError(ValidationErrors.Valid);
     }
-    
+
     public static IRuleBuilderOptions<T, MenuSubCategory> MenuItemPrice<T>(this IRuleBuilder<T, MenuSubCategory> rule)
     {
         return rule
             .SetValidator(new MenuSubCategoryValidator<T>())
             .WithError(ValidationErrors.Valid);
     }
-    
+
     public static IRuleBuilderOptions<T, MenuCategory> MenuItemPrice<T>(this IRuleBuilder<T, MenuCategory> rule)
     {
         return rule
             .SetValidator(new MenuCategoryValidator<T>())
             .WithError(ValidationErrors.Valid);
     }
-    
+
     public static IRuleBuilderOptions<T, T> ValidCategoryMapping<T>(this IRuleBuilder<T, T> ruleBuilder)
-        where T : IMenuItemCommand.Create
+        where T : CreateMenuItemCommand
     {
         return ruleBuilder
             .Must(x =>

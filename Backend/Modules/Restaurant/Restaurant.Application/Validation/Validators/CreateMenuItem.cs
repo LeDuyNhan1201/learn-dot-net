@@ -5,7 +5,7 @@ using Restaurant.Application.Validation.Extensions;
 
 namespace Restaurant.Application.Validation.Validators;
 
-public sealed class CreateMenuItem : AbstractValidator<IMenuItemDto.CreateRequest>
+public sealed class CreateMenuItem : AbstractValidator<CreateMenuItemRequest>
 {
     public CreateMenuItem()
     {

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Restaurant.Domain.Entities;
 
 namespace Restaurant.Application.Services.Interfaces;

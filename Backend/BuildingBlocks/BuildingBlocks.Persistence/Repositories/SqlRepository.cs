@@ -1,5 +1,6 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
+using BuildingBlocks.Domain.DbContexts;
 using BuildingBlocks.Domain.Entities;
 using BuildingBlocks.Domain.Repositories;
 using BuildingBlocks.SharedKernel.DTOs;
@@ -7,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.Persistence.Repositories;
 
-public class SqlRepository<T>(DbContext context) : IPaginationRepository<T>
-    where T : AuditEntity
+public abstract class SqlRepository<T>(IApplicationDbContext context)
+    : IPaginationRepository<T> where T : AuditEntity
 {
     protected DbSet<T> DbSet => context.Set<T>();
 

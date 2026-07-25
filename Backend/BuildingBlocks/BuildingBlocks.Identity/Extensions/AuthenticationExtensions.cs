@@ -34,7 +34,8 @@ public static class AuthenticationExtensions
                     if (environment.IsEnvironment("Local"))
                         options.BackchannelHttpHandler = new HttpClientHandler
                         {
-                            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                            ServerCertificateCustomValidationCallback =
+                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                         };
                     options.ConfigureJwtBearer();
                 });
@@ -44,7 +45,8 @@ public static class AuthenticationExtensions
         return services;
     }
 
-    private static void BindKeycloakOptionsForAot(this KeycloakAuthenticationOptions options, IConfiguration configuration)
+    private static void BindKeycloakOptionsForAot(this KeycloakAuthenticationOptions options,
+        IConfiguration configuration)
     {
         options.Realm = configuration["Keycloak:Realm"]!;
         options.AuthServerUrl = configuration["Keycloak:AuthServerUrl"]!;

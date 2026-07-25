@@ -1,4 +1,3 @@
-using System;
 using BuildingBlocks.Persistence.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

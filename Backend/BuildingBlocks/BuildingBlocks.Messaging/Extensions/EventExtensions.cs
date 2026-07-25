@@ -1,5 +1,6 @@
 using System.Reflection;
 using BuildingBlocks.Domain.Contracts;
+using BuildingBlocks.Domain.DbContexts;
 using BuildingBlocks.Messaging.Configurations;
 using BuildingBlocks.Messaging.Events;
 using BuildingBlocks.SharedKernel.Attributes;
@@ -14,11 +15,11 @@ public static class EventExtensions
     {
         return type.GetCustomAttribute<EventNameAttribute>()?.Name ?? type.Name;
     }
-    
+
     public static IServiceCollection AddMessaging<T>(
-        this IServiceCollection services, 
+        this IServiceCollection services,
         params Type[] consumerTypes)
-    where T : DbContext
+        where T : DbContext, IApplicationDbContext
     {
         services.ConfigureInMemory<T>(consumerTypes);
         services.AddScoped<IDomainEventExecutor, DomainEventExecutor>();

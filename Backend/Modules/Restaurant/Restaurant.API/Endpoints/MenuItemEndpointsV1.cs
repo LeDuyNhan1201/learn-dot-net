@@ -15,11 +15,11 @@ public class MenuItemEndpointsV1 : IEndpointModule
         var group = app.MapGroup("/menu-items").WithTags("Menu items APIs");
 
         group
-            .MapPost("", (IMenuItemDto.CreateRequest request) =>
+            .MapPost("", (CreateMenuItemRequest request) =>
             {
                 Debugger.Break();
                 return Results.Ok();
             })
-            .AddEndpointFilter<ValidationFilter<IMenuItemDto.CreateRequest, Messages>>();
+            .AddEndpointFilter<ValidationFilter<CreateMenuItemRequest, Messages>>();
     }
 }

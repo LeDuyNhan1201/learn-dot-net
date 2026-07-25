@@ -11,7 +11,11 @@ public static class ValidationErrorBuilder
         "ICreate",
         "IUpdate",
         "IDelete",
-        "I"
+        "I",
+
+        "Create",
+        "Update",
+        "Delete"
     ];
 
     private static readonly string[] Suffixes =
@@ -21,18 +25,39 @@ public static class ValidationErrorBuilder
         "Dto+DeleteRequest",
         "Command+Create",
         "Command+Update",
-        "Command+Delete"
+        "Command+Delete",
+
+        "Request",
+        "Command"
     ];
 
-    public static Dictionary<string, ValidationError[]> Build<T>(
-        T model,
-        IEnumerable<ValidationFailure> failures)
+    public static (
+        IReadOnlyDictionary<string, ValidationError[]> Errors,
+        IReadOnlyList<string> OtherErrors) Build<T>(
+            T model,
+            IEnumerable<ValidationFailure> failures)
     {
-        return failures
-            .GroupBy(failure => NormalizeFieldName(model, failure.PropertyName))
+        var validationErrors = failures
+            .Select(failure => new
+            {
+                Field = NormalizeFieldName(model, failure.PropertyName),
+                Failure = failure
+            })
+            .ToList();
+
+        var errors = validationErrors
+            .Where(x => !string.IsNullOrWhiteSpace(x.Field))
+            .GroupBy(x => x.Field)
             .ToDictionary(
-                grouping => grouping.Key,
-                grouping => grouping.Select(ToValidationError).ToArray());
+                g => g.Key,
+                g => g.Select(x => ToValidationError(x.Failure)).ToArray());
+
+        var otherErrors = validationErrors
+            .Where(x => string.IsNullOrWhiteSpace(x.Field))
+            .Select(x => x.Failure.ErrorMessage)
+            .ToArray();
+
+        return (errors, otherErrors);
     }
 
     private static ValidationError ToValidationError(ValidationFailure failure)

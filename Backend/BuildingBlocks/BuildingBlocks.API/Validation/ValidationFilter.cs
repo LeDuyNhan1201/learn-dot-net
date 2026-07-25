@@ -35,13 +35,14 @@ public sealed class ValidationFilter<T, TMessage>(
 
         var validationError = ValidationErrorBuilder.Build(model, result.Errors);
         return Results.BadRequest(
-            new BaseResponse<Dictionary<string, string[]>>
+            new CustomValidationResponse
             {
                 Code = ValidationErrors.PrefixCode,
                 Message = localizer[ValidationErrors.PrefixMessageKey],
-                Data = validationError.ToDictionary(
+                Errors = validationError.Errors.ToDictionary(
                     field => field.Key,
-                    field => field.Value.Select(Localize).ToArray())
+                    field => field.Value.Select(Localize).ToArray()),
+                OtherErrors = validationError.OtherErrors.Select(error => localizer[error]).ToArray()
             });
     }
 

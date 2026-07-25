@@ -12,7 +12,7 @@ using Restaurant.Infrastructure.Persistence;
 namespace Restaurant.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20260724093431_InitialCreate")]
+    [Migration("20260725061457_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

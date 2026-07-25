@@ -1,7 +1,6 @@
 using BuildingBlocks.SharedKernel.Errors.Models;
 using FluentValidation;
 using FluentValidation.Validators;
-using Restaurant.Domain.Errors;
 
 namespace Restaurant.Application.Validation.Rules;
 

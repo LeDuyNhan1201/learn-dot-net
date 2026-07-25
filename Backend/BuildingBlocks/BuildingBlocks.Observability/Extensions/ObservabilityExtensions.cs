@@ -1,4 +1,7 @@
+using BuildingBlocks.Application.Exceptions;
+using BuildingBlocks.Domain.Exceptions.Processors;
 using BuildingBlocks.Observability.Configurations;
+using BuildingBlocks.Observability.Exceptions;
 using BuildingBlocks.Observability.Meters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +12,19 @@ namespace BuildingBlocks.Observability.Extensions;
 
 public static class ObservabilityExtensions
 {
+    public static IServiceCollection AddExceptionObservability(this IServiceCollection services)
+    {
+        services.AddSingleton<Telemetry>();
+        services.AddSingleton(sp => sp.GetRequiredService<Telemetry>().ActivitySource);
+        services.AddSingleton(sp => sp.GetRequiredService<Telemetry>().Meter);
+
+        services.AddSingleton<IExceptionProcessor, ExceptionProcessor>();
+        services.AddSingleton<IExceptionMapper, ExceptionMapper>();
+        services.AddSingleton<IExceptionObserver, LoggingExceptionObserver>();
+        services.AddSingleton<IExceptionObserver, TelemetryExceptionObserver>();
+        return services;
+    }
+
     public static IServiceCollection AddObservability(this IServiceCollection services, IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(configuration);
@@ -34,7 +50,8 @@ public static class ObservabilityExtensions
 
     public static IApplicationBuilder UseMetricsExporter(this IApplicationBuilder app, IConfiguration configuration)
     {
-        if ("prometheus".Equals(configuration["Observability:UseMetricsExporter"] ?? "console", StringComparison.OrdinalIgnoreCase))
+        if ("prometheus".Equals(configuration["Observability:UseMetricsExporter"] ?? "console",
+                StringComparison.OrdinalIgnoreCase))
             app.UseOpenTelemetryPrometheusScrapingEndpoint();
 
         return app;

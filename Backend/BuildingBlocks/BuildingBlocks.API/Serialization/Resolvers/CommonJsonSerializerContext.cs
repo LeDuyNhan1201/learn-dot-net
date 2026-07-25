@@ -8,9 +8,11 @@ namespace BuildingBlocks.API.Serialization.Resolvers;
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    WriteIndented = false)]
+    WriteIndented = false,
+    UseStringEnumConverter = true)]
 [JsonSerializable(typeof(IFormFile))]
 [JsonSerializable(typeof(ServerOptions))]
+[JsonSerializable(typeof(CustomValidationResponse))]
 [JsonSerializable(typeof(BaseResponse<Guid>))]
 [JsonSerializable(typeof(BaseResponse<string>))]
 [JsonSerializable(typeof(Dictionary<string, string>))]

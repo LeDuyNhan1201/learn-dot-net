@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 namespace BuildingBlocks.Persistence.Repositories;
 
 public sealed class UnitOfWork(
-    IApplicationDbContext context, 
-    IDomainEventExecutor executor) 
+    IApplicationDbContext context,
+    IDomainEventExecutor executor)
     : IUnitOfWork
 {
     public async Task<int> SaveChangesAsync(

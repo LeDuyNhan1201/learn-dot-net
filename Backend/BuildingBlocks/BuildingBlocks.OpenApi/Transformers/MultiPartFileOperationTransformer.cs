@@ -4,11 +4,12 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
-namespace BuildingBlocks.OpenApi.Operations;
+namespace BuildingBlocks.OpenApi.Transformers;
 
 public sealed class MultiPartFileOperationTransformer : IOpenApiOperationTransformer
 {
-    public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context, CancellationToken _)
+    public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context,
+        CancellationToken _)
     {
         var formFileParams = context
             .Description

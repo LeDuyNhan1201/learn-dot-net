@@ -28,8 +28,8 @@ public sealed class ValidationBehavior<TRequest, TResponse>(
             .Where(failure => failure is not null)
             .ToList();
 
-        if (failures.Count != 0) throw new CustomValidationException(ValidationErrorBuilder.Build(request, failures));
+        if (failures.Count == 0) return await next(cancellationToken);
 
-        return await next(cancellationToken);
+        throw new CustomValidationException(ValidationErrorBuilder.Build(request, failures));
     }
 }

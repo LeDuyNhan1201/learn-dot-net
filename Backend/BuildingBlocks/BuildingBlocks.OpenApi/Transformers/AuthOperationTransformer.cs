@@ -2,11 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
-namespace BuildingBlocks.OpenApi.Operations;
+namespace BuildingBlocks.OpenApi.Transformers;
 
 public sealed class AuthOperationTransformer : IOpenApiOperationTransformer
 {
-    public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context, CancellationToken _)
+    public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context,
+        CancellationToken _)
     {
         var endpointMetadata = context.Description.ActionDescriptor.EndpointMetadata;
 
@@ -32,7 +33,8 @@ public sealed class AuthOperationTransformer : IOpenApiOperationTransformer
 
         operation.Security.Add(new OpenApiSecurityRequirement
         {
-            [new OpenApiSecuritySchemeReference(SecuritySchemeType.OpenIdConnect.GetDisplayName(), context.Document)] = scopes
+            [new OpenApiSecuritySchemeReference(SecuritySchemeType.OpenIdConnect.GetDisplayName(), context.Document)] =
+                scopes
         });
 
         return Task.CompletedTask;

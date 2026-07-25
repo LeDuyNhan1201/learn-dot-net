@@ -9,13 +9,14 @@ namespace Restaurant.API.Serialization;
 [JsonSourceGenerationOptions(
     PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    WriteIndented = false)]
+    WriteIndented = false,
+    UseStringEnumConverter = true)]
 [JsonSerializable(typeof(Todo[]))]
 [JsonSerializable(typeof(List<Todo>))]
 [JsonSerializable(typeof(IReadOnlyList<Todo>))]
 [JsonSerializable(typeof(Todo))]
 [JsonSerializable(typeof(ServerOptions))]
-[JsonSerializable(typeof(IMenuItemDto.CreateRequest))]
+[JsonSerializable(typeof(CreateMenuItemRequest))]
 [JsonSerializable(typeof(TokenRequest))]
 [JsonSerializable(typeof(TokenResponse))]
 internal partial class AppJsonSerializerContext : JsonSerializerContext;

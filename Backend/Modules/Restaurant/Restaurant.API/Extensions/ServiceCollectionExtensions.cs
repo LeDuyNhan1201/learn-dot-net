@@ -10,11 +10,15 @@ using BuildingBlocks.Persistence.Extensions;
 using BuildingBlocks.SharedKernel.Localization;
 using FluentValidation;
 using Microsoft.IdentityModel.Logging;
+using Restaurant.Application.CommandHandlers;
 using Restaurant.Application.Services;
 using Restaurant.Application.Services.Interfaces;
 using Restaurant.Application.Validation.Validators;
 using Restaurant.Domain.Contracts;
+using Restaurant.Domain.Repositories;
+using Restaurant.Infrastructure.OpenApi;
 using Restaurant.Infrastructure.Persistence;
+using Restaurant.Infrastructure.Persistence.Repositories;
 
 namespace Restaurant.API.Extensions;
 
@@ -33,18 +37,22 @@ public static class ServiceCollectionExtensions
             .AddMessaging<RestaurantDbContext>()
             .AddPostgresDatabase<RestaurantDbContext>()
             .AddI18NLocalization()
-            .AddScalarOpenApi();
+            .AddExceptionObservability()
+            .AddScalarOpenApi(options => { options.AddSchemaTransformer<SampleSchemaOperationTransformer>(); });
 
-        if (!environment.IsEnvironment("Local")) services.AddObservability(configuration);
+        services.AddObservability(configuration);
 
-        services.AddValidatorsFromAssemblyContaining<IMenuItemValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateMenuItemCommandValidator>();
         services.AddMediatR(cfg =>
         {
-            cfg.RegisterServicesFromAssemblyContaining<IMenuItemCommand>();
+            cfg.RegisterServicesFromAssemblyContaining<CreateMenuItemCommand>();
+            cfg.RegisterServicesFromAssemblyContaining<CreateMenuItemCommandHandler>();
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            cfg.AddOpenBehavior(typeof(LoggingBehavior<,>)); 
+            cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
             cfg.AddOpenBehavior(typeof(PerformanceBehavior<,>));
         });
+
+        services.AddScoped<IMenuItemRepository, MenuItemRepository>();
 
         services.AddKeycloakAdmin(configuration);
 

@@ -17,17 +17,19 @@ public class MenuItemEndpointsV2 : IEndpointModule
         var group = app.MapGroup("/menu-items").WithTags("Menu items APIs");
 
         group.MapPost("/", async (
-            IMenuItemDto.CreateRequest request,
+            CreateMenuItemRequest request,
             [FromServices] ISender sender,
             CancellationToken cancellationToken) =>
         {
             var command =
-                new IMenuItemCommand.Create
+                new CreateMenuItemCommand
                 {
                     MenuItemName = request.MenuItemName!,
                     MenuItemDescription = request.MenuItemDescription!,
                     ImageUrl = request.MenuItemImageUrl!,
-                    MenuItemPrice = request.MenuItemPrice
+                    MenuItemPrice = request.MenuItemPrice,
+                    Category = request.Category,
+                    SubCategory = request.SubCategory
                 };
 
             var id = await sender.Send(command, cancellationToken);

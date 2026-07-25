@@ -17,7 +17,8 @@ public sealed class HealthEndpointsV2 : IEndpointModule
 
         group.MapGet("/info", (IOptions<ServerOptions> options) => options.Value);
 
-        group.MapGet("/hello", (string name, [FromServices] CompositeLocalizer<Messages> localizer) => localizer["Create", name]);
+        group.MapGet("/hello",
+            (string name, [FromServices] CompositeLocalizer<Messages> localizer) => localizer["Create", name]);
 
         group.MapGet("/test-log", (ILogger<Program> logger) =>
         {

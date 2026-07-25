@@ -2,6 +2,7 @@
 using BuildingBlocks.OpenApi.Utils;
 using BuildingBlocks.OpenApi.Versions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -26,11 +27,19 @@ public static class OpenApiExtensions
                 .AddDocumentTransformer<Version2DocumentTransformer>())
     ];
 
-    public static IServiceCollection AddScalarOpenApi(this IServiceCollection services)
+    public static IServiceCollection AddScalarOpenApi(
+        this IServiceCollection services,
+        params Action<OpenApiOptions>[] moduleConfigurations)
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        foreach (var document in Documents) services.AddOpenApi(document.Version, options => document.Configure(options));
+        foreach (var document in Documents)
+            services.AddOpenApi(document.Version, options =>
+            {
+                document.Configure(options);
+
+                foreach (var configure in moduleConfigurations) configure(options);
+            });
 
         services.AddEndpointsApiExplorer();
 
@@ -55,7 +64,8 @@ public static class OpenApiExtensions
         {
             scalarOptions.WithOpenApiRoutePattern(apiDocsRoute);
 
-            foreach (var document in Documents) scalarOptions.AddDocument(document.Version, $"{apiDocsOptions.Title} {document.Version}");
+            foreach (var document in Documents)
+                scalarOptions.AddDocument(document.Version, $"{apiDocsOptions.Title} {document.Version}");
 
             scalarOptions.WithTitle(apiDocsOptions.Title ?? "APIs Documentation");
 

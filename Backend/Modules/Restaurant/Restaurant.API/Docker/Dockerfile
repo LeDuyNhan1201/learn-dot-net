@@ -14,6 +14,7 @@ COPY --link BuildingBlocks/BuildingBlocks.API/*.csproj BuildingBlocks/BuildingBl
 COPY --link BuildingBlocks/BuildingBlocks.Application/*.csproj BuildingBlocks/BuildingBlocks.Application/
 COPY --link BuildingBlocks/BuildingBlocks.Domain/*.csproj BuildingBlocks/BuildingBlocks.Domain/
 COPY --link BuildingBlocks/BuildingBlocks.Identity/*.csproj BuildingBlocks/BuildingBlocks.Identity/
+COPY --link BuildingBlocks/BuildingBlocks.Messaging/*.csproj BuildingBlocks/BuildingBlocks.Messaging/
 COPY --link BuildingBlocks/BuildingBlocks.Observability/*.csproj BuildingBlocks/BuildingBlocks.Observability/
 COPY --link BuildingBlocks/BuildingBlocks.OpenApi/*.csproj BuildingBlocks/BuildingBlocks.OpenApi/
 COPY --link BuildingBlocks/BuildingBlocks.Persistence/*.csproj BuildingBlocks/BuildingBlocks.Persistence/

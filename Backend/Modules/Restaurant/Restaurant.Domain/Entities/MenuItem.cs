@@ -26,8 +26,8 @@ public class MenuItem : AuditEntity<Guid>
     [Column("sub_category")] public MenuSubCategory SubCategory { get; set; }
 
     public virtual ICollection<BillItem> BillItems { get; set; } = [];
-    
-    public static MenuItem Create(IMenuItemCommand.Create command)
+
+    public static MenuItem Create(CreateMenuItemCommand command)
     {
         var entity = new MenuItem
         {
@@ -37,8 +37,9 @@ public class MenuItem : AuditEntity<Guid>
             ImageUrl = command.ImageUrl,
             Price = command.MenuItemPrice
         };
-        
-        var domainEvent = new IMenuItemDomainEvent.Created{
+
+        var domainEvent = new CreateMenuItemDomainEvent
+        {
             Id = entity.Id.ToString(),
             MenuItemName = entity.Name,
             MenuItemDescription = entity.Description,
