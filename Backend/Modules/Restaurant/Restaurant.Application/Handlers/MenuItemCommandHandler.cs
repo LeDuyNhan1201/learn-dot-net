@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using BuildingBlocks.Domain.Repositories.UnitOfWork;
 using MediatR;
 using Restaurant.Domain.Contracts;
@@ -12,7 +10,7 @@ public static class MenuItemCommandHandler
 {
     public sealed class Create(
         IMenuItemRepository repository,
-        IUnitOfWork unitOfWork) 
+        IUnitOfWork unitOfWork)
         : IRequestHandler<IMenuItemCommand.Create, string>
     {
         public async Task<string> Handle(

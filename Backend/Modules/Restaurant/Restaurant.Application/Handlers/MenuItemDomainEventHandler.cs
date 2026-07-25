@@ -1,5 +1,3 @@
-using System.Threading;
-using System.Threading.Tasks;
 using BuildingBlocks.Domain.Contracts;
 using MassTransit;
 using Restaurant.Domain.Contracts;

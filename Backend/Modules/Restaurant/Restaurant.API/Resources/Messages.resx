@@ -30,4 +30,16 @@
     <data name="Field.MenuItemPrice" xml:space="preserve">
         <value>Food price</value>
     </data>
+    <data name="Field.SubCategory" xml:space="preserve">
+        <value>Food sub category</value>
+    </data>
+    <data name="Field.Category" xml:space="preserve">
+        <value>Food category</value>
+    </data>
+    <data name="Field.ImageUrl" xml:space="preserve">
+        <value>Food image</value>
+    </data>
+    <data name="Error.MenuItem.InvalidCategoryMapping" xml:space="preserve">
+        <value>Food category and sub category don't match</value>
+    </data>
 </root>

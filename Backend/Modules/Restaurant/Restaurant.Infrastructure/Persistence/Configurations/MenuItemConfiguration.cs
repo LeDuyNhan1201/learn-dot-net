@@ -20,9 +20,6 @@ public sealed class MenuItemConfiguration : AuditEntityConfiguration<MenuItem, G
             .HasMaxLength(1000)
             .IsRequired();
 
-        builder.Property(x => x.AdditionalDetails)
-            .HasMaxLength(2000);
-
         builder.Property(x => x.ImageUrl)
             .HasMaxLength(500);
 

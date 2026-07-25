@@ -13,12 +13,12 @@ public sealed class CreateMenuItem : AbstractValidator<IMenuItemDto.CreateReques
             .Required()
             .MenuItemPrice();
 
-        RuleFor(x => x.MenuItemName)
+        RuleFor(x => x.MenuItemName!)
             .Required()
             .MinLength(3)
             .MaxLength(100);
 
-        RuleFor(x => x.MenuItemDescription)
+        RuleFor(x => x.MenuItemDescription!)
             .MinLength(20)
             .MaxLength(500)
             .When(x => !string.IsNullOrEmpty(x.MenuItemDescription));

@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BuildingBlocks.Domain.Entities;
@@ -16,10 +14,6 @@ public class MenuItem : AuditEntity<Guid>
     [MaxLength(1000)]
     [Column("description")]
     public string Description { get; set; } = null!;
-
-    [MaxLength(2000)]
-    [Column("additional_details")]
-    public string? AdditionalDetails { get; set; }
 
     [MaxLength(500)] [Column("image_url")] public string? ImageUrl { get; set; }
 

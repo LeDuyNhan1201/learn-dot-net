@@ -3,6 +3,7 @@ using BuildingBlocks.Application.Behaviors;
 using BuildingBlocks.Domain.Exceptions.Handlers;
 using BuildingBlocks.Identity.Extensions;
 using BuildingBlocks.Identity.keycloakAdmin.Extensions;
+using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.OpenApi.Extensions;
 using BuildingBlocks.Persistence.Extensions;
@@ -29,18 +30,14 @@ public static class ServiceCollectionExtensions
 
         services
             .AddBaseOptions()
+            .AddMessaging<RestaurantDbContext>()
             .AddPostgresDatabase<RestaurantDbContext>()
             .AddI18NLocalization()
             .AddScalarOpenApi();
 
         if (!environment.IsEnvironment("Local")) services.AddObservability(configuration);
-        // services.AddScoped<IMenuItemValidator.CreateRequest>();
-        // services.AddScoped<IValidator<IMenuItemDto.CreateRequest>, IMenuItemValidator.CreateRequest>();
+
         services.AddValidatorsFromAssemblyContaining<IMenuItemValidator>();
-
-        // services.AddScoped(typeof(ValidationFilter<,>));
-        // services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssemblyContaining<IMenuItemCommand>();

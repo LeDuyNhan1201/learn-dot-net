@@ -30,4 +30,16 @@
     <data name="Field.MenuItemPrice" xml:space="preserve">
         <value>Giá món ăn</value>
     </data>
+    <data name="Field.Category" xml:space="preserve">
+        <value>Danh mục món ăn</value>
+    </data>
+    <data name="Field.SubCategory" xml:space="preserve">
+        <value>Loại món ăn</value>
+    </data>
+    <data name="Field.ImageUrl" xml:space="preserve">
+        <value>Hình ảnh món ăn</value>
+    </data>
+    <data name="Error.MenuItem.InvalidCategoryMapping" xml:space="preserve">
+        <value>Danh mục và loại món ăn không khớp</value>
+    </data>
 </root>

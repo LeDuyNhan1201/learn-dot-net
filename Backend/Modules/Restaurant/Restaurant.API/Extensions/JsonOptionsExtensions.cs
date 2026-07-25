@@ -22,7 +22,8 @@ public static class JsonOptionsExtensions
 
             IList<JsonConverter> converters =
             [
-                new DateOnlyJsonConverter()
+                new DateOnlyJsonConverter(),
+                new JsonStringEnumConverter()
             ];
 
             options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;

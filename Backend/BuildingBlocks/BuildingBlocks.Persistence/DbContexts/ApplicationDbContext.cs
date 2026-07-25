@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Domain.DbContexts;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 namespace BuildingBlocks.Persistence.DbContexts;
@@ -10,6 +11,9 @@ public abstract class ApplicationDbContext<T>(DbContextOptions options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.AddInboxStateEntity();
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(T).Assembly);
     }
 }
