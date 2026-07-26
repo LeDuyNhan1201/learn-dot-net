@@ -18,6 +18,5 @@
         <Project Path="Modules\Restaurant\Restaurant.Domain\Restaurant.Domain.csproj"/>
         <Project Path="Modules\Restaurant\Restaurant.Infrastructure\Restaurant.Infrastructure.csproj"/>
     </Folder>
-    <Folder Name="/Solution Items/">
-    </Folder>
+    <Folder Name="/scripts/"/>
 </Solution>

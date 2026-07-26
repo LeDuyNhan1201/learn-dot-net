@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <UseSourceLink>true</UseSourceLink>
+          <SingleHit>false</SingleHit>
+          <IncludeTestAssembly>false</IncludeTestAssembly>
+          
+          <Exclude>
+            [*.Tests]*
+
+            [xunit.*]*
+
+            [FluentAssertions]*
+
+            [NSubstitute]*
+
+            [*]Migrations.*
+
+            [*]DTOs.*
+
+            [*]Contracts.*
+
+            [*]Generated.*
+
+            [*]JsonSerializerContext
+          </Exclude>
+          
+          <ExcludeByFile>
+            **/*.g.cs
+
+            **/*.Designer.cs
+
+            **/Migrations/*.cs
+
+            **/*JsonSerializerContext.cs
+          </ExcludeByFile>
+          
+          <ExcludeByAttribute>
+            GeneratedCodeAttribute
+
+            CompilerGeneratedAttribute
+
+            ExcludeFromCodeCoverageAttribute
+          </ExcludeByAttribute>
+          
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
