@@ -1,5 +1,6 @@
 using BuildingBlocks.API.Extensions;
 using BuildingBlocks.Application.Behaviors;
+using BuildingBlocks.Domain.Contracts;
 using BuildingBlocks.Domain.Exceptions.Handlers;
 using BuildingBlocks.Identity.Extensions;
 using BuildingBlocks.Identity.keycloakAdmin.Extensions;
@@ -11,6 +12,7 @@ using BuildingBlocks.SharedKernel.Localization;
 using FluentValidation;
 using Microsoft.IdentityModel.Logging;
 using Restaurant.Application.CommandHandlers;
+using Restaurant.Application.DomainEventHandlers;
 using Restaurant.Application.Services;
 using Restaurant.Application.Services.Interfaces;
 using Restaurant.Application.Validation.Validators;
@@ -42,7 +44,10 @@ public static class ServiceCollectionExtensions
 
         services.AddObservability(configuration);
 
+        services.AddScoped<IDomainEventHandler<MenuItemCreatedDomainEvent>, CreateMenuItemDomainEventHandler>();
+        
         services.AddValidatorsFromAssemblyContaining<CreateMenuItemCommandValidator>();
+        
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssemblyContaining<CreateMenuItemCommand>();

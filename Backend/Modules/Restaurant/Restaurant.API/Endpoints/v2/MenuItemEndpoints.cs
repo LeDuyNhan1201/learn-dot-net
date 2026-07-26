@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Restaurant.Application.DTOs;
 using Restaurant.Domain.Contracts;
 
-namespace Restaurant.API.Endpoints;
+namespace Restaurant.API.Endpoints.v2;
 
-public class MenuItemEndpointsV2 : IEndpointModule
+public class MenuItemEndpoints : IEndpointModule
 {
     public string Version => Version2DocumentTransformer.Version2;
 

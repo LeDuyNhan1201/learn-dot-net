@@ -2,6 +2,5 @@ namespace BuildingBlocks.Domain.Contracts;
 
 public interface IDomainEventExecutor
 {
-    Task ExecuteAsync(IEnumerable<IDomainEvent> events,
-        CancellationToken cancellationToken);
+    Task ExecuteAsync(IEnumerable<IDomainEvent> events, CancellationToken cancellationToken);
 }

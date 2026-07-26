@@ -1,8 +1,6 @@
 namespace BuildingBlocks.Domain.Contracts;
 
-public interface IDomainEventHandler<in TDomainEvent>
-    where TDomainEvent : IDomainEvent
+public interface IDomainEventHandler<in TDomainEvent> where TDomainEvent : IDomainEvent
 {
-    Task HandleAsync(TDomainEvent domainEvent,
-        CancellationToken cancellationToken);
+    Task HandleAsync(TDomainEvent domainEvent, CancellationToken cancellationToken);
 }

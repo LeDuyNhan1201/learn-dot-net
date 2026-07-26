@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Restaurant.Application.Services.Interfaces;
 using Restaurant.Domain.Entities;
 
-namespace Restaurant.API.Endpoints;
+namespace Restaurant.API.Endpoints.v1;
 
-public class TodoEndpointsV1 : IEndpointModule
+public class TodoEndpoints : IEndpointModule
 {
     public string Version => Version1DocumentTransformer.Version1;
 

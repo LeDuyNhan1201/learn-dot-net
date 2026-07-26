@@ -11,6 +11,8 @@
           
           <Exclude>
             [*.Tests]*
+            
+            [*.Test]*
 
             [xunit.*]*
 

@@ -5,11 +5,11 @@ using BuildingBlocks.SharedKernel.Options;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace Restaurant.API.Endpoints;
+namespace Restaurant.API.Endpoints.v1;
 
-public sealed class HealthEndpointsV2 : IEndpointModule
+public sealed class HealthEndpoints : IEndpointModule
 {
-    public string Version => Version2DocumentTransformer.Version2;
+    public string Version => Version1DocumentTransformer.Version1;
 
     public void MapEndpoints(IEndpointRouteBuilder app)
     {
@@ -18,12 +18,6 @@ public sealed class HealthEndpointsV2 : IEndpointModule
         group.MapGet("/info", (IOptions<ServerOptions> options) => options.Value);
 
         group.MapGet("/hello",
-            (string name, [FromServices] CompositeLocalizer<Messages> localizer) => localizer["Create", name]);
-
-        group.MapGet("/test-log", (ILogger<Program> logger) =>
-        {
-            logger.LogInformation("HELLO FROM OTEL LOGGING");
-            return "OK";
-        });
+            (string name, [FromServices] CompositeLocalizer<Messages> localizer) => localizer["Hello", name]);
     }
 }

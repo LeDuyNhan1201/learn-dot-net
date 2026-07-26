@@ -38,7 +38,7 @@ public class MenuItem : AuditEntity<Guid>
             Price = command.MenuItemPrice
         };
 
-        var domainEvent = new CreateMenuItemDomainEvent
+        var domainEvent = new MenuItemCreatedDomainEvent
         {
             Id = entity.Id.ToString(),
             MenuItemName = entity.Name,

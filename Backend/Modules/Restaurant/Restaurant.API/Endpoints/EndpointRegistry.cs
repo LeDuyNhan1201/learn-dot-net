@@ -6,10 +6,11 @@ public static class EndpointRegistry
 {
     public static readonly IEndpointModule[] All =
     [
-        new HealthEndpointsV1(),
-        new HealthEndpointsV2(),
-        new TodoEndpointsV1(),
-        new MenuItemEndpointsV1(),
-        new MenuItemEndpointsV2()
+        new v1.HealthEndpoints(),
+        new v1.TodoEndpoints(),
+        new v1.MenuItemEndpoints(),
+        
+        new v2.HealthEndpoints(),
+        new v2.MenuItemEndpoints()
     ];
 }
