@@ -4,7 +4,7 @@ using Restaurant.Domain.Contracts;
 using Restaurant.Domain.Entities;
 using Restaurant.Domain.Repositories;
 
-namespace Restaurant.Application.CommandHandlers;
+namespace Restaurant.Application.Handlers.Command;
 
 public sealed class CreateMenuItemCommandHandler(
     IMenuItemRepository repository,

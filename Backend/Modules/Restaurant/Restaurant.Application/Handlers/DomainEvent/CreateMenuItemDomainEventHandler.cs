@@ -2,7 +2,7 @@ using BuildingBlocks.Domain.Contracts;
 using MassTransit;
 using Restaurant.Domain.Contracts;
 
-namespace Restaurant.Application.DomainEventHandlers;
+namespace Restaurant.Application.Handlers.DomainEvent;
 
 public sealed class CreateMenuItemDomainEventHandler(IPublishEndpoint publishEndpoint)
     : IDomainEventHandler<MenuItemCreatedDomainEvent>
