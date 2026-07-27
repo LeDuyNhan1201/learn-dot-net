@@ -1,28 +1,28 @@
 <Solution>
     <Folder Name="/BuildingBlocks/">
-        <Project Path="BuildingBlocks/BuildingBlocks.API/BuildingBlocks.API.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.Application/BuildingBlocks.Application.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.Domain/BuildingBlocks.Domain.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.Identity/BuildingBlocks.Identity.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.Observability/BuildingBlocks.Observability.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.OpenApi/BuildingBlocks.OpenApi.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.Persistence/BuildingBlocks.Persistence.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.Testing/BuildingBlocks.Testing.csproj" />
-        <Project Path="BuildingBlocks/BuildingBlocks.SharedKernel/BuildingBlocks.SharedKernel.csproj" />
+        <Project Path="BuildingBlocks/BuildingBlocks.API/BuildingBlocks.API.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.Application/BuildingBlocks.Application.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.Domain/BuildingBlocks.Domain.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.Identity/BuildingBlocks.Identity.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.Observability/BuildingBlocks.Observability.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.OpenApi/BuildingBlocks.OpenApi.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.Persistence/BuildingBlocks.Persistence.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.Testing/BuildingBlocks.Testing.csproj"/>
+        <Project Path="BuildingBlocks/BuildingBlocks.SharedKernel/BuildingBlocks.SharedKernel.csproj"/>
     </Folder>
-    <Folder Name="/Modules/" />
-    <Folder Name="/Test/" />
+    <Folder Name="/Modules/"/>
+    <Folder Name="/Test/"/>
     <Folder Name="/Modules/Restaurant/">
-        <Project Path="Modules\Restaurant\Restaurant.API\Restaurant.API.csproj" />
-        <Project Path="Modules\Restaurant\Restaurant.Application\Restaurant.Application.csproj" />
-        <Project Path="Modules\Restaurant\Restaurant.Domain\Restaurant.Domain.csproj" />
-        <Project Path="Modules\Restaurant\Restaurant.Infrastructure\Restaurant.Infrastructure.csproj" />
+        <Project Path="Modules\Restaurant\Restaurant.API\Restaurant.API.csproj"/>
+        <Project Path="Modules\Restaurant\Restaurant.Application\Restaurant.Application.csproj"/>
+        <Project Path="Modules\Restaurant\Restaurant.Domain\Restaurant.Domain.csproj"/>
+        <Project Path="Modules\Restaurant\Restaurant.Infrastructure\Restaurant.Infrastructure.csproj"/>
     </Folder>
     <Folder Name="/Test/Restaurant/">
-        <Project Path="Test/Restaurant/Restaurant.IntegrationTest/Restaurant.IntegrationTest.csproj" />
-        <Project Path="Test/Restaurant/Restaurant.Testing/Restaurant.Testing.csproj" />
-        <Project Path="Test/Restaurant/Restaurant.UnitTest/Restaurant.UnitTest.csproj" />
+        <Project Path="Test/Restaurant/Restaurant.IntegrationTest/Restaurant.IntegrationTest.csproj"/>
+        <Project Path="Test/Restaurant/Restaurant.Testing/Restaurant.Testing.csproj"/>
+        <Project Path="Test/Restaurant/Restaurant.UnitTest/Restaurant.UnitTest.csproj"/>
     </Folder>
-    <Folder Name="/scripts/" />
+    <Folder Name="/scripts/"/>
 </Solution>

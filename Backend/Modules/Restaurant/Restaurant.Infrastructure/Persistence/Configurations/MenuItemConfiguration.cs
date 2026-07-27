@@ -45,7 +45,7 @@ public sealed class MenuItemConfiguration : AuditEntityConfiguration<MenuItem, G
 
         builder.HasMany(x => x.BillItems)
             .WithOne(x => x.MenuItem)
-            .HasForeignKey(x => x.BillId)
+            .HasForeignKey(x => x.MenuItemId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

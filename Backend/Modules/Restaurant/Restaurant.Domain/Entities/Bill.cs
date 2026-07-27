@@ -16,7 +16,7 @@ public class Bill : AuditEntity<Guid>
 
     [Column("ordered_time")] public DateTime OrderedTime { get; set; }
 
-    [Column("total_amount")] public BillStatus Status { get; set; }
+    [Column("status")] public BillStatus Status { get; set; }
 
     [Column("total_price")] public decimal TotalPrice { get; set; }
 

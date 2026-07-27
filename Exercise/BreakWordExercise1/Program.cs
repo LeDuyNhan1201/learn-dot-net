@@ -42,6 +42,10 @@ class Program
 
         // 5000th -> 5000 th
         result = Regex.Replace(result, @"(\d)([A-Za-z])", "$1 $2");
+        
+        // ILoveYou -> I Love You
+        result = Regex.Replace(result, @"([A-Z])([A-Z])", "$1 $2");
+        
         return result.Trim();
     }
 }

@@ -23,7 +23,8 @@ if [[ "${MODE}" == "dev" ]]; then
     docker compose -f "${ENV_DIR}/docker-compose.yaml" down -v
 elif [[ "${MODE}" == "local" ]]; then
     echo "Stopping Docker Compose services for local mode..."
-    docker compose -f "${ENV_DIR}/docker-compose.local.yaml" down gateway keycloak0 postgres -v
+    docker compose -f "${ENV_DIR}/docker-compose.local.yaml" up -d --force-recreate
+#    docker compose -f "${ENV_DIR}/docker-compose.local.yaml" down gateway keycloak0 postgres -v
 else
     echo "Invalid mode specified. Use 'dev' or 'local'."
     exit 1

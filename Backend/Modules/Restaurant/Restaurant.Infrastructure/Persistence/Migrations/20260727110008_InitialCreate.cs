@@ -20,7 +20,7 @@ namespace Restaurant.Infrastructure.Persistence.Migrations
                     bill_number = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     bill_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ordered_time = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    total_amount = table.Column<int>(type: "integer", nullable: false),
+                    status = table.Column<int>(type: "integer", nullable: false),
                     total_price = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     created_by = table.Column<string>(type: "text", nullable: true),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
@@ -129,8 +129,8 @@ namespace Restaurant.Infrastructure.Persistence.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_bill_items_menu_items_bill_id",
-                        column: x => x.bill_id,
+                        name: "FK_bill_items_menu_items_menu_item_id",
+                        column: x => x.menu_item_id,
                         principalTable: "menu_items",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -179,9 +179,19 @@ namespace Restaurant.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_bill_items_bill_id",
+                table: "bill_items",
+                column: "bill_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_bill_items_is_deleted",
                 table: "bill_items",
                 column: "is_deleted");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_bill_items_menu_item_id",
+                table: "bill_items",
+                column: "menu_item_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_bills_bill_number",

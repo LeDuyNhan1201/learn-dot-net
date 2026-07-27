@@ -18,10 +18,10 @@ public static class MenuItemFactory
     public static CreateMenuItemRequest InvalidPriceRequest()
     {
         const decimal invalidPrice = -10;
-        
+
         var request = ValidCreateRequest;
         request.MenuItemPrice = invalidPrice;
-        
+
         return request;
     }
 }

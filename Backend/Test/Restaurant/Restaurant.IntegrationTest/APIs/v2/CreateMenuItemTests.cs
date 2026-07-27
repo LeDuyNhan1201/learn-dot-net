@@ -19,7 +19,7 @@ public class CreateMenuItemTests(PostgreSqlFixture postgres) : MenuItemHttpEndpo
         // Arrange
         var request = ValidRequest;
         var response = await PostAsync(MenuItemUri, request);
-        
+
         // Assert response
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
@@ -28,7 +28,7 @@ public class CreateMenuItemTests(PostgreSqlFixture postgres) : MenuItemHttpEndpo
         var db = scope.ServiceProvider.GetRequiredService<RestaurantDbContext>();
         db.MenuItems.Should().Contain(menuItem => menuItem.Name == "Chicken");
     }
-    
+
     [Fact]
     public async Task Should_Return_400_When_Price_Invalid()
     {
@@ -38,8 +38,8 @@ public class CreateMenuItemTests(PostgreSqlFixture postgres) : MenuItemHttpEndpo
 
         // Assert response
         var body = await response.AssertValidationResponseAsync();
-        
-        body.ShouldHaveError<CreateMenuItemRequest>(menuItemRequest => 
+
+        body.ShouldHaveError<CreateMenuItemRequest>(menuItemRequest =>
             menuItemRequest.MenuItemPrice, ValidationErrors.Range.MessageKey);
     }
 }

@@ -62,6 +62,10 @@ class Program
 
                 results.Add($"{converted:yyyy-MM-dd HH:mm:ss} {ToZone}");
             }
+            catch (TimeZoneNotFoundException ex)
+            {
+                results.Add($"Invalid Timezone: {fromZone}");
+            }
             catch (Exception ex)
             {
                 results.Add($"Error: {ex.Message}");

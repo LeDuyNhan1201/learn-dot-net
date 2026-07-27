@@ -1,6 +1,6 @@
 using BuildingBlocks.Domain.Repositories.UnitOfWork;
 using MediatR;
-using Restaurant.Domain.Contracts;
+using Restaurant.Domain.Contracts.Commands;
 using Restaurant.Domain.Entities;
 using Restaurant.Domain.Repositories;
 

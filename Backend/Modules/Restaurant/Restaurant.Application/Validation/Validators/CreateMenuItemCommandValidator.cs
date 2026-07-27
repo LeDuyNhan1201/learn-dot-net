@@ -1,7 +1,7 @@
 using BuildingBlocks.Application.Extensions;
 using FluentValidation;
 using Restaurant.Application.Validation.Extensions;
-using Restaurant.Domain.Contracts;
+using Restaurant.Domain.Contracts.Commands;
 using Restaurant.Domain.Enumerations;
 using Restaurant.Domain.Errors;
 

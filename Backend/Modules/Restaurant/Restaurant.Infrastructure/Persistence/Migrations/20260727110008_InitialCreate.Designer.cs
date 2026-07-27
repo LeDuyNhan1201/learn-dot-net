@@ -12,7 +12,7 @@ using Restaurant.Infrastructure.Persistence;
 namespace Restaurant.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20260725061457_InitialCreate")]
+    [Migration("20260727110008_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace Restaurant.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("ProductVersion", "10.0.10")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -240,7 +240,7 @@ namespace Restaurant.Infrastructure.Persistence.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("integer")
-                        .HasColumnName("total_amount");
+                        .HasColumnName("status");
 
                     b.Property<decimal>("TotalPrice")
                         .HasPrecision(18, 2)
@@ -321,7 +321,11 @@ namespace Restaurant.Infrastructure.Persistence.Migrations
 
                     b.HasKey("BillId", "MenuItemId");
 
+                    b.HasIndex("BillId");
+
                     b.HasIndex("IsDeleted");
+
+                    b.HasIndex("MenuItemId");
 
                     b.ToTable("bill_items", null, t =>
                         {
@@ -437,7 +441,7 @@ namespace Restaurant.Infrastructure.Persistence.Migrations
 
                     b.HasOne("Restaurant.Domain.Entities.MenuItem", "MenuItem")
                         .WithMany("BillItems")
-                        .HasForeignKey("BillId")
+                        .HasForeignKey("MenuItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

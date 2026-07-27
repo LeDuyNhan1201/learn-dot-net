@@ -1,6 +1,7 @@
 using BuildingBlocks.Domain.Contracts;
 using MassTransit;
-using Restaurant.Domain.Contracts;
+using Restaurant.Domain.Contracts.DomainEvents;
+using Restaurant.Domain.Contracts.IntegrationEvents;
 
 namespace Restaurant.Application.Handlers.DomainEvent;
 

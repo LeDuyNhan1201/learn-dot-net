@@ -14,4 +14,8 @@
         <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Persistence\BuildingBlocks.Persistence.csproj"/>
         <ProjectReference Include="..\Restaurant.Application\Restaurant.Application.csproj"/>
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Persistence\Migrations\" />
+    </ItemGroup>
 </Project>

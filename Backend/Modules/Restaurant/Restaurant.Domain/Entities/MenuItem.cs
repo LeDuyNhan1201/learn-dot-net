@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BuildingBlocks.Domain.Entities;
-using Restaurant.Domain.Contracts;
+using Restaurant.Domain.Contracts.Commands;
+using Restaurant.Domain.Contracts.DomainEvents;
 using Restaurant.Domain.Enumerations;
 
 namespace Restaurant.Domain.Entities;

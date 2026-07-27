@@ -12,11 +12,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Restaurant.Testing\Restaurant.Testing.csproj" />
+        <ProjectReference Include="..\Restaurant.Testing\Restaurant.Testing.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="APIs\" />
-      <Folder Include="Outbox\" />
+        <Folder Include="APIs\"/>
     </ItemGroup>
 </Project>

@@ -11,7 +11,7 @@ public record BaseResponse
     public string? Message { get; set; }
 }
 
-public sealed record BaseResponse<T>  : BaseResponse
+public sealed record BaseResponse<T> : BaseResponse
 {
     public T? Data { get; init; }
 }

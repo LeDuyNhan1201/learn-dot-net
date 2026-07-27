@@ -1,7 +1,7 @@
 using MediatR;
 using Restaurant.Domain.Enumerations;
 
-namespace Restaurant.Domain.Contracts;
+namespace Restaurant.Domain.Contracts.Commands;
 
 public record CreateMenuItemCommand : IRequest<string>
 {

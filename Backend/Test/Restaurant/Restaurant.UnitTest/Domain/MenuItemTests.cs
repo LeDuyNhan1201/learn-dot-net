@@ -1,5 +1,6 @@
 using FluentAssertions;
-using Restaurant.Domain.Contracts;
+using Restaurant.Domain.Contracts.Commands;
+using Restaurant.Domain.Contracts.DomainEvents;
 using Restaurant.Domain.Entities;
 using Restaurant.Domain.Enumerations;
 

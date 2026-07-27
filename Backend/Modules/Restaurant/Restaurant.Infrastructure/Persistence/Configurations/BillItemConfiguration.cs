@@ -43,6 +43,10 @@ public sealed class BillItemConfiguration : AuditEntityConfiguration<BillItem>
         builder.Property(x => x.TotalPrice)
             .HasPrecision(18, 2)
             .IsRequired();
+        
+        builder.HasIndex(x => x.BillId);
+
+        builder.HasIndex(x => x.MenuItemId);
 
         builder.HasOne(x => x.Bill)
             .WithMany(x => x.Items)

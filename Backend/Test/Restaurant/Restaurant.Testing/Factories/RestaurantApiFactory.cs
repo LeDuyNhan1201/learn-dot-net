@@ -16,10 +16,7 @@ public sealed class RestaurantApiFactory(PostgreSqlFixture postgres) : WebApplic
         {
             services.RemoveAll<DbContextOptions<RestaurantDbContext>>();
 
-            services.AddDbContext<RestaurantDbContext>(options =>
-            {
-                options.UseNpgsql(postgres.ConnectionString);
-            });
+            services.AddDbContext<RestaurantDbContext>(options => { options.UseNpgsql(postgres.ConnectionString); });
         });
     }
 

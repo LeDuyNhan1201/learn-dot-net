@@ -16,7 +16,8 @@ using Restaurant.Application.Handlers.DomainEvent;
 using Restaurant.Application.Services;
 using Restaurant.Application.Services.Interfaces;
 using Restaurant.Application.Validation.Validators;
-using Restaurant.Domain.Contracts;
+using Restaurant.Domain.Contracts.Commands;
+using Restaurant.Domain.Contracts.DomainEvents;
 using Restaurant.Domain.Repositories;
 using Restaurant.Infrastructure.OpenApi;
 using Restaurant.Infrastructure.Persistence;
@@ -45,9 +46,9 @@ public static class ServiceCollectionExtensions
         services.AddObservability(configuration);
 
         services.AddScoped<IDomainEventHandler<MenuItemCreatedDomainEvent>, CreateMenuItemDomainEventHandler>();
-        
+
         services.AddValidatorsFromAssemblyContaining<CreateMenuItemCommandValidator>();
-        
+
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssemblyContaining<CreateMenuItemCommand>();

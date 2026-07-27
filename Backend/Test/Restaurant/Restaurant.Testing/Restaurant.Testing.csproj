@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Testing\BuildingBlocks.Testing.csproj" />
-      <ProjectReference Include="..\..\..\Modules\Restaurant\Restaurant.API\Restaurant.API.csproj" />
+        <ProjectReference Include="..\..\..\BuildingBlocks\BuildingBlocks.Testing\BuildingBlocks.Testing.csproj"/>
+        <ProjectReference Include="..\..\..\Modules\Restaurant\Restaurant.API\Restaurant.API.csproj"/>
     </ItemGroup>
 </Project>

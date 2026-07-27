@@ -29,7 +29,7 @@ public class BillConfiguration : AuditEntityConfiguration<Bill, Guid>
 
         builder.HasMany(x => x.Items)
             .WithOne(x => x.Bill)
-            .HasForeignKey(x => x.MenuItemId)
+            .HasForeignKey(x => x.BillId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

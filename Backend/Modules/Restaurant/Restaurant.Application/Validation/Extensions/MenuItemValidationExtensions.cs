@@ -2,7 +2,7 @@ using BuildingBlocks.Application.Extensions;
 using BuildingBlocks.SharedKernel.Errors.Models;
 using FluentValidation;
 using Restaurant.Application.Validation.Rules;
-using Restaurant.Domain.Contracts;
+using Restaurant.Domain.Contracts.Commands;
 using Restaurant.Domain.Enumerations;
 using Restaurant.Domain.Errors;
 

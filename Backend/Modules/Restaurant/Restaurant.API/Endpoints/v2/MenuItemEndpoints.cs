@@ -4,7 +4,7 @@ using BuildingBlocks.SharedKernel.DTOs;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Application.DTOs;
-using Restaurant.Domain.Contracts;
+using Restaurant.Domain.Contracts.Commands;
 
 namespace Restaurant.API.Endpoints.v2;
 
