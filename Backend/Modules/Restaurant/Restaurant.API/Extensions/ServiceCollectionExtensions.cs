@@ -11,6 +11,7 @@ using BuildingBlocks.Persistence.Extensions;
 using BuildingBlocks.SharedKernel.Localization;
 using FluentValidation;
 using Microsoft.IdentityModel.Logging;
+using Restaurant.Application.Consumers;
 using Restaurant.Application.Handlers.Command;
 using Restaurant.Application.Handlers.DomainEvent;
 using Restaurant.Application.Services;
@@ -37,7 +38,7 @@ public static class ServiceCollectionExtensions
 
         services
             .AddBaseOptions()
-            .AddMessaging<RestaurantDbContext>()
+            .AddMessaging<RestaurantDbContext>(typeof(MenuItemCreatedConsumer))
             .AddPostgresDatabase<RestaurantDbContext>()
             .AddI18NLocalization()
             .AddExceptionObservability()

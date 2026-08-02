@@ -12,13 +12,13 @@ export KEYCLOAK_REPO_NAME="quay.io/keycloak"
 export POSTGRES_REPO_NAME=""
 
 export ENVOY_TAG="tools-dev" # https://hub.docker.com/r/envoyproxy/envoy/tags
-export GRAFANA_TAG="nightly-slim" # https://hub.docker.com/r/grafana/grafana/tags
-export LOKI_TAG="3.7.4" # https://hub.docker.com/r/grafana/loki/tags
-export TEMPO_TAG="2.9.4" # https://hub.docker.com/r/grafana/tempo/tags
+export GRAFANA_TAG="main-distroless-slim" # https://hub.docker.com/r/grafana/grafana/tags
+export LOKI_TAG="3.7.2" # https://hub.docker.com/r/grafana/loki/tags
+export TEMPO_TAG="2.9.2" # https://hub.docker.com/r/grafana/tempo/tags
 export PROMETHEUS_TAG="main-distroless" # https://hub.docker.com/r/prom/prometheus/tags
 export OTEL_TAG="nightly" # https://hub.docker.com/r/otel/opentelemetry-collector-contrib/tags
-export KEYCLOAK_TAG="26.7" # https://quay.io/repository/keycloak/keycloak?tab=tags
-export POSTGRES_TAG="18.4" # https://hub.docker.com/_/postgres/tags
+export KEYCLOAK_TAG="26.6" # https://quay.io/repository/keycloak/keycloak?tab=tags
+export POSTGRES_TAG="15.18" # https://hub.docker.com/_/postgres/tags
 
 # For hardened images, use the following repository names and tags:
 #export ENVOY_REPO_NAME="dhi" 
