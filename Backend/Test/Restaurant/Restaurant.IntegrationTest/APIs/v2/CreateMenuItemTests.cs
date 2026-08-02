@@ -26,7 +26,7 @@ public class CreateMenuItemTests(PostgreSqlFixture postgres) : MenuItemHttpEndpo
         // Assert database
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<RestaurantDbContext>();
-        db.MenuItems.Should().Contain(menuItem => menuItem.Name == "Chicken");
+        db.MenuItems.Should().Contain(menuItem => menuItem.Name == request.MenuItemName);
     }
 
     [Fact]

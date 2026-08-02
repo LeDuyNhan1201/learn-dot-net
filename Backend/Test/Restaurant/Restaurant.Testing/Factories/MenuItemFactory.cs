@@ -1,4 +1,5 @@
 using Restaurant.Application.DTOs;
+using Restaurant.Domain.Contracts.Commands;
 using Restaurant.Domain.Enumerations;
 
 namespace Restaurant.Testing.Factories;
@@ -15,13 +16,23 @@ public static class MenuItemFactory
         SubCategory = MenuSubCategory.Dinner
     };
 
-    public static CreateMenuItemRequest InvalidPriceRequest()
+    public static CreateMenuItemRequest InvalidPriceCreateRequest => ValidCreateRequest with
     {
-        const decimal invalidPrice = -10;
+        MenuItemPrice = -10,
+    };
+    
+    public static CreateMenuItemCommand ValidCreateCommand => new()
+    {
+        MenuItemName = ValidCreateRequest.MenuItemName,
+        MenuItemDescription = ValidCreateRequest.MenuItemDescription,
+        ImageUrl = ValidCreateRequest.MenuItemImageUrl,
+        MenuItemPrice = ValidCreateRequest.MenuItemPrice,
+        Category = ValidCreateRequest.Category,
+        SubCategory = ValidCreateRequest.SubCategory
+    };
 
-        var request = ValidCreateRequest;
-        request.MenuItemPrice = invalidPrice;
-
-        return request;
-    }
+    public static CreateMenuItemCommand InvalidPriceCreateCommand => ValidCreateCommand with
+    {
+        MenuItemPrice = -10,
+    };
 }

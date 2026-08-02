@@ -8,7 +8,7 @@ public sealed class RestaurantFixture : IAsyncLifetime
 {
     private readonly PostgreSqlFixture _postgres = new();
 
-    public RestaurantApiFactory Factory { get; private set; } = null!;
+    public RestaurantTestFactory Factory { get; private set; } = null!;
 
     public HttpClient Client { get; private set; } = null!;
 
@@ -16,7 +16,7 @@ public sealed class RestaurantFixture : IAsyncLifetime
     {
         await _postgres.InitializeAsync();
 
-        Factory = new RestaurantApiFactory(_postgres);
+        Factory = new RestaurantTestFactory(_postgres);
 
         await Factory.InitializeDatabaseAsync();
 
