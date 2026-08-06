@@ -34,8 +34,7 @@ public static class AuthenticationExtensions
                     if (environment.IsEnvironment("Local"))
                         options.BackchannelHttpHandler = new HttpClientHandler
                         {
-                            ServerCertificateCustomValidationCallback =
-                                HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                         };
                     options.ConfigureJwtBearer();
                 });

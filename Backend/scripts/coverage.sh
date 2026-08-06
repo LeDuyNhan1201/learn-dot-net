@@ -1,10 +1,17 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-dotnet test Backend.slnx --settings cover.runsettings
+rm -rf Coverage
+find . -name "*.cobertura.xml" -delete
+
+dotnet test \
+  --solution Backend.slnx \
+  --coverage \
+  --coverage-output-format cobertura \
+  --coverage-settings cover.settings.xml
 
 reportgenerator \
-    -reports:"**/TestResults/**/coverage.cobertura.xml" \
+    -reports:"**/TestResults/*.cobertura.xml" \
     -targetdir:"Coverage" \
     -reporttypes:"Html;HtmlSummary;MarkdownSummary"
 

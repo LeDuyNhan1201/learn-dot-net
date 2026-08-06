@@ -18,12 +18,10 @@
         <DuendeVersion>4.2.0</DuendeVersion>
 
         <!-- Testing -->
-        <MicrosoftTestSdkVersion>18.8.1</MicrosoftTestSdkVersion>
-        <XunitVersion>3.2.2</XunitVersion>
-        <XunitRunnerVersion>3.1.5</XunitRunnerVersion>
+        <XunitVersion>4.0.0-pre.154</XunitVersion>
         <FluentAssertionsVersion>8.10.0</FluentAssertionsVersion>
         <NSubstituteVersion>6.0.0</NSubstituteVersion>
-        <CoverletVersion>10.0.1</CoverletVersion>
+        <CodeCoverageVersion>18.9.0</CodeCoverageVersion>
         <TestcontainersVersion>4.13.0</TestcontainersVersion>
     </PropertyGroup>
 
@@ -31,95 +29,97 @@
 
         <!-- Ardalis Specification -->
         <PackageVersion Include="Ardalis.Specification"
-                        Version="$(ArdalisSpecificationVersion)" />
+                        Version="$(ArdalisSpecificationVersion)"/>
         <PackageVersion Include="Ardalis.Specification.EntityFrameworkCore"
-                        Version="$(ArdalisSpecificationVersion)" />
+                        Version="$(ArdalisSpecificationVersion)"/>
 
         <!-- FluentValidation -->
         <PackageVersion Include="FluentValidation"
-                        Version="$(FluentValidationVersion)" />
+                        Version="$(FluentValidationVersion)"/>
         <PackageVersion Include="FluentValidation.DependencyInjectionExtensions"
-                        Version="$(FluentValidationVersion)" />
+                        Version="$(FluentValidationVersion)"/>
 
         <!-- MassTransit -->
         <PackageVersion Include="MassTransit"
-                        Version="$(MassTransitVersion)" />
+                        Version="$(MassTransitVersion)"/>
         <PackageVersion Include="MassTransit.EntityFrameworkCore"
-                        Version="$(MassTransitVersion)" />
+                        Version="$(MassTransitVersion)"/>
         <PackageVersion Include="MassTransit.Kafka"
-                        Version="$(MassTransitVersion)" />
+                        Version="$(MassTransitVersion)"/>
         <PackageVersion Include="MassTransit.TestFramework"
-                        Version="$(MassTransitVersion)" />
+                        Version="$(MassTransitVersion)"/>
 
         <!-- Keycloak -->
         <PackageVersion Include="Keycloak.AuthServices.Authentication"
-                        Version="$(KeycloakVersion)" />
+                        Version="$(KeycloakVersion)"/>
         <PackageVersion Include="Keycloak.AuthServices.Sdk"
-                        Version="$(KeycloakVersion)" />
+                        Version="$(KeycloakVersion)"/>
 
         <!-- OpenTelemetry -->
         <PackageVersion Include="OpenTelemetry.Extensions.Hosting"
-                        Version="$(OpenTelemetryVersion)" />
+                        Version="$(OpenTelemetryVersion)"/>
         <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore"
-                        Version="$(OpenTelemetryVersion)" />
+                        Version="$(OpenTelemetryVersion)"/>
         <PackageVersion Include="OpenTelemetry.Instrumentation.Http"
-                        Version="$(OpenTelemetryVersion)" />
+                        Version="$(OpenTelemetryVersion)"/>
         <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime"
-                        Version="$(OpenTelemetryVersion)" />
+                        Version="$(OpenTelemetryVersion)"/>
         <PackageVersion Include="OpenTelemetry.Exporter.Console"
-                        Version="$(OpenTelemetryVersion)" />
+                        Version="$(OpenTelemetryVersion)"/>
         <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol"
-                        Version="$(OpenTelemetryVersion)" />
+                        Version="$(OpenTelemetryVersion)"/>
 
-        <!-- Chưa cùng version -->
+        <!-- Unavailable version -->
         <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore"
-                        Version="1.17.0-beta.1" />
+                        Version="1.17.0-beta.1"/>
 
         <!-- ASP.NET Core -->
         <PackageVersion Include="Microsoft.AspNetCore.OpenApi"
-                        Version="$(AspNetCoreVersion)" />
+                        Version="$(AspNetCoreVersion)"/>
         <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing"
-                        Version="$(AspNetCoreVersion)" />
+                        Version="$(AspNetCoreVersion)"/>
 
         <!-- Entity Framework -->
         <PackageVersion Include="Microsoft.EntityFrameworkCore"
-                        Version="$(EntityFrameworkVersion)" />
+                        Version="$(EntityFrameworkVersion)"/>
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Design"
-                        Version="$(EntityFrameworkVersion)" />
+                        Version="$(EntityFrameworkVersion)"/>
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Proxies"
-                        Version="$(EntityFrameworkVersion)" />
+                        Version="$(EntityFrameworkVersion)"/>
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Analyzers"
-                        Version="$(EntityFrameworkVersion)" />
+                        Version="$(EntityFrameworkVersion)"/>
 
         <!-- Others -->
         <PackageVersion Include="MediatR"
-                        Version="$(MediatRVersion)" />
+                        Version="$(MediatRVersion)"/>
         <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL"
-                        Version="$(NpgsqlVersion)" />
+                        Version="$(NpgsqlVersion)"/>
         <PackageVersion Include="Scalar.AspNetCore"
-                        Version="$(ScalarVersion)" />
+                        Version="$(ScalarVersion)"/>
         <PackageVersion Include="Duende.AccessTokenManagement"
-                        Version="$(DuendeVersion)" />
+                        Version="$(DuendeVersion)"/>
 
         <!-- Testing -->
-        <PackageVersion Include="Microsoft.NET.Test.Sdk"
-                        Version="$(MicrosoftTestSdkVersion)" />
         <PackageVersion Include="xunit.v3"
-                        Version="$(XunitVersion)" />
-        <PackageVersion Include="xunit.runner.visualstudio"
-                        Version="$(XunitRunnerVersion)" />
+                        Version="$(XunitVersion)"/>
+        <PackageVersion Include="xunit.v3.extensibility.core"
+                        Version="$(XunitVersion)"/>
         <PackageVersion Include="FluentAssertions"
-                        Version="$(FluentAssertionsVersion)" />
+                        Version="$(FluentAssertionsVersion)"/>
         <PackageVersion Include="NSubstitute"
-                        Version="$(NSubstituteVersion)" />
-        <PackageVersion Include="coverlet.collector"
-                        Version="$(CoverletVersion)" />
+                        Version="$(NSubstituteVersion)"/>
+        <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" 
+                        Version="$(CodeCoverageVersion)" />
 
         <!-- Testcontainers -->
+        <PackageVersion Include="Testcontainers"
+                        Version="$(TestcontainersVersion)"/>
         <PackageVersion Include="Testcontainers.PostgreSql"
-                        Version="$(TestcontainersVersion)" />
+                        Version="$(TestcontainersVersion)"/>
+        <PackageVersion Include="Testcontainers.Keycloak"
+                        Version="$(TestcontainersVersion)"/>
         <PackageVersion Include="Testcontainers.Kafka"
-                        Version="$(TestcontainersVersion)" />
+                        Version="$(TestcontainersVersion)"/>
 
     </ItemGroup>
 </Project>

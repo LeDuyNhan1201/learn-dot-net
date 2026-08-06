@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Application.Consumers;
 using Restaurant.Domain.Contracts.IntegrationEvents;
 using Restaurant.Testing.Integration;
+using Xunit;
 
 namespace Restaurant.IntegrationTest.Messaging;
 
@@ -22,12 +23,12 @@ public class CreateMenuItemTests(PostgreSqlFixture postgres) : MenuItemHttpEndpo
         // Assert execution
         var isEventPublished = await harness.Published.Any<MenuItemCreatedIntegrationEvent>
             (TestContext.Current.CancellationToken);
-        
+
         isEventPublished.Should().BeTrue();
-        
+
         await harness.Stop(TestContext.Current.CancellationToken);
     }
-    
+
     [Fact]
     public async Task Should_Consume_Integration_Event()
     {
@@ -40,9 +41,9 @@ public class CreateMenuItemTests(PostgreSqlFixture postgres) : MenuItemHttpEndpo
         var consumerHarness = harness.GetConsumerHarness<MenuItemCreatedConsumer>();
 
         var isEventConsumed = await consumerHarness.Consumed.Any<MenuItemCreatedIntegrationEvent>
-                (TestContext.Current.CancellationToken);
-        
-        isEventConsumed .Should().BeTrue();
+            (TestContext.Current.CancellationToken);
+
+        isEventConsumed.Should().BeTrue();
 
         await harness.Stop(TestContext.Current.CancellationToken);
     }

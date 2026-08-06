@@ -24,12 +24,9 @@ public static class InMemoryMassTransitConfiguration
             });
 
             foreach (var consumerType in consumerTypes) busConfig.AddConsumer(consumerType);
-            
-            busConfig.AddConfigureEndpointsCallback((context, name, cfg) =>
-            {
-                cfg.UseEntityFrameworkOutbox<T>(context);
-            });
-            
+
+            busConfig.AddConfigureEndpointsCallback((context, name, cfg) => { cfg.UseEntityFrameworkOutbox<T>(context); });
+
             busConfig.UsingInMemory((context, cfg) => { cfg.ConfigureEndpoints(context); });
         });
 

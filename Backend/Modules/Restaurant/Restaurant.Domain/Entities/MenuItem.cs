@@ -36,7 +36,9 @@ public class MenuItem : AuditEntity<Guid>
             Name = command.MenuItemName!,
             Description = command.MenuItemDescription!,
             ImageUrl = command.ImageUrl,
-            Price = command.MenuItemPrice
+            Price = command.MenuItemPrice,
+            Category = command.Category,
+            SubCategory = command.SubCategory
         };
 
         var domainEvent = new MenuItemCreatedDomainEvent
@@ -45,7 +47,9 @@ public class MenuItem : AuditEntity<Guid>
             MenuItemName = entity.Name,
             MenuItemDescription = entity.Description,
             ImageUrl = entity.ImageUrl,
-            MenuItemPrice = entity.Price
+            MenuItemPrice = entity.Price,
+            Category = entity.Category,
+            SubCategory = entity.SubCategory
         };
 
         entity.Raise(domainEvent);

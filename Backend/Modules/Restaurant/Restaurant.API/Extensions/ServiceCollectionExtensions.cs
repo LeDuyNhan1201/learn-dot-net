@@ -60,7 +60,7 @@ public static class ServiceCollectionExtensions
         });
 
         services.AddScoped<IMenuItemRepository, MenuItemRepository>();
-
+        
         services.AddKeycloakAdmin(configuration);
 
         services.AddAuthenticationWithAuthorization(configuration, environment);

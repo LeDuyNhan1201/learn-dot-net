@@ -7,9 +7,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace BuildingBlocks.Application.Exceptions;
 
-public sealed class ExceptionMapper(
-    IHostEnvironment environment)
-    : IExceptionMapper
+public sealed class ExceptionMapper(IHostEnvironment environment) : IExceptionMapper
 {
     public ExceptionContext Map(Exception exception)
     {
@@ -42,15 +40,13 @@ public sealed class ExceptionMapper(
         };
     }
 
-    private static Dictionary<string, string> BuildExceptionData(
-        Exception exception,
-        bool includeDetails)
+    private static Dictionary<string, string> BuildExceptionData(Exception exception, bool includeDetails)
     {
         var data = exception.Data
             .Cast<DictionaryEntry>()
             .ToDictionary(
-                x => x.Key.ToString()!,
-                x => x.Value?.ToString() ?? string.Empty);
+                entry => entry.Key.ToString()!,
+                entry => entry.Value?.ToString() ?? string.Empty);
 
         if (!includeDetails)
             return data;

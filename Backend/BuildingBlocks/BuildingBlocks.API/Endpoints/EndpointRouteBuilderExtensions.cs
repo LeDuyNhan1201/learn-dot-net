@@ -2,6 +2,7 @@ using BuildingBlocks.API.Interfaces;
 using BuildingBlocks.OpenApi.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 
 namespace BuildingBlocks.API.Endpoints;
 
@@ -18,7 +19,7 @@ public static class EndpointRouteBuilderExtensions
             foreach (var module in modules.Where(x => x.Version == version)) module.MapEndpoints(group);
         }
 
-        app.UseScalarUi();
+        if (!app.Environment.IsEnvironment("Testing")) app.UseScalarUi();
 
         return app;
     }

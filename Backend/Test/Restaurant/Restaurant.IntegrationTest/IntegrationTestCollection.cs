@@ -1,4 +1,5 @@
 using BuildingBlocks.Testing.Fixtures;
+using Xunit;
 
 namespace Restaurant.IntegrationTest;
 

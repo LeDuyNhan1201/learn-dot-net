@@ -46,15 +46,15 @@ public static class ValidationErrorBuilder
             .ToList();
 
         var errors = validationErrors
-            .Where(x => !string.IsNullOrWhiteSpace(x.Field))
-            .GroupBy(x => x.Field)
+            .Where(arg => !string.IsNullOrWhiteSpace(arg.Field))
+            .GroupBy(arg => arg.Field)
             .ToDictionary(
-                g => g.Key,
-                g => g.Select(x => ToValidationError(x.Failure)).ToArray());
+                grouping => grouping.Key,
+                grouping => grouping.Select(x => ToValidationError(x.Failure)).ToArray());
 
         var otherErrors = validationErrors
-            .Where(x => string.IsNullOrWhiteSpace(x.Field))
-            .Select(x => x.Failure.ErrorMessage)
+            .Where(arg => string.IsNullOrWhiteSpace(arg.Field))
+            .Select(arg => arg.Failure.ErrorMessage)
             .ToArray();
 
         return (errors, otherErrors);

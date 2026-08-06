@@ -19,11 +19,16 @@ COPY --link BuildingBlocks/BuildingBlocks.Observability/*.csproj BuildingBlocks/
 COPY --link BuildingBlocks/BuildingBlocks.OpenApi/*.csproj BuildingBlocks/BuildingBlocks.OpenApi/
 COPY --link BuildingBlocks/BuildingBlocks.Persistence/*.csproj BuildingBlocks/BuildingBlocks.Persistence/
 COPY --link BuildingBlocks/BuildingBlocks.SharedKernel/*.csproj BuildingBlocks/BuildingBlocks.SharedKernel/
+COPY --link BuildingBlocks/BuildingBlocks.Testing/*.csproj BuildingBlocks/BuildingBlocks.Testing/
 
 COPY --link Modules/Restaurant/Restaurant.API/*.csproj Modules/Restaurant/Restaurant.API/
 COPY --link Modules/Restaurant/Restaurant.Application/*.csproj Modules/Restaurant/Restaurant.Application/
 COPY --link Modules/Restaurant/Restaurant.Domain/*.csproj Modules/Restaurant/Restaurant.Domain/
 COPY --link Modules/Restaurant/Restaurant.Infrastructure/*.csproj Modules/Restaurant/Restaurant.Infrastructure/
+
+COPY --link Test/Restaurant/Restaurant.Testing/*.csproj Test/Restaurant/Restaurant.Testing/
+COPY --link Test/Restaurant/Restaurant.UnitTest/*.csproj Test/Restaurant/Restaurant.UnitTest/
+COPY --link Test/Restaurant/Restaurant.IntegrationTest/*.csproj Test/Restaurant/Restaurant.IntegrationTest/
 
 # Restore
 RUN --mount=type=cache,target=/root/.nuget/packages \

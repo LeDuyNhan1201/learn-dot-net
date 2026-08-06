@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Restaurant.Application.Validation.Validators;
 using Restaurant.Domain.Contracts.Commands;
+using Xunit;
 
 namespace Restaurant.UnitTest.Application;
 

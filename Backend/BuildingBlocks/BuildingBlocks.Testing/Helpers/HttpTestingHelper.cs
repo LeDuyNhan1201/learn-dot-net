@@ -6,7 +6,6 @@ using System.Text.Json.Serialization;
 using BuildingBlocks.SharedKernel.DTOs;
 using BuildingBlocks.SharedKernel.Errors.Models;
 using FluentAssertions;
-using Xunit;
 
 namespace BuildingBlocks.Testing.Helpers;
 
@@ -19,7 +18,7 @@ public static class HttpTestingHelper
         where T : BaseResponse
     {
         var body = response.Content.ReadFromJsonAsync<T>(TestContext.Current.CancellationToken).Result;
-        Assert.NotNull(body);
+        body.Should().NotBeNull();
 
         response.StatusCode.Should().Be(expectedHttpStatusCode);
 
@@ -57,11 +56,25 @@ public static class HttpTestingHelper
         response.Errors[field].Should().Contain(messages);
     }
 
-    private static string GetJsonPropertyName<T, TValue>(Expression<Func<T, TValue>> expression)
+    private static string GetJsonPropertyName<T, TValue>(
+        Expression<Func<T, TValue>> expression)
     {
-        if (expression.Body is not MemberExpression member) throw new ArgumentException("Expression must be a property access.", nameof(expression));
+        Expression body = expression.Body;
 
-        var property = (PropertyInfo)member.Member;
+        if (body is UnaryExpression
+            {
+                NodeType: ExpressionType.Convert or ExpressionType.ConvertChecked
+            } unary)
+        {
+            body = unary.Operand;
+        }
+
+        if (body is not MemberExpression member)
+            throw new ArgumentException("Expression must be a property access.", nameof(expression));
+
+        if (member.Member is not PropertyInfo property) 
+            throw new ArgumentException("Expression must be a property access.", nameof(expression));
+
         return property.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? property.Name;
     }
 }

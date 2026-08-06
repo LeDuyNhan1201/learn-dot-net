@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Application.DTOs;
 using Restaurant.Infrastructure.Persistence;
 using Restaurant.Testing.Integration;
+using Xunit;
 
 namespace Restaurant.IntegrationTest.APIs.v2;
 
@@ -40,6 +41,6 @@ public class CreateMenuItemTests(PostgreSqlFixture postgres) : MenuItemHttpEndpo
         var body = await response.AssertValidationResponseAsync();
 
         body.ShouldHaveError<CreateMenuItemRequest>(menuItemRequest =>
-            menuItemRequest.MenuItemPrice, ValidationErrors.Range.MessageKey);
+            menuItemRequest.MenuItemPrice, ValidationErrors.Valid.MessageKey);
     }
 }

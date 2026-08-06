@@ -4,12 +4,14 @@ using BuildingBlocks.SharedKernel.Errors.Models;
 using BuildingBlocks.SharedKernel.Localization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 
 namespace BuildingBlocks.Domain.Exceptions.Handlers;
 
 public sealed class HttpExceptionHandler<TMessage>(
     IExceptionProcessor processor,
     IExceptionMapper mapper,
+    IHostEnvironment environment,
     CompositeLocalizer<TMessage> localizer)
     : IExceptionHandler
     where TMessage : class
@@ -66,6 +68,8 @@ public sealed class HttpExceptionHandler<TMessage>(
 
     private string Localize(ValidationError error)
     {
+        if (environment.IsEnvironment("Testing")) return error.MessageKey;
+        
         var args = error.Arguments
             .Prepend(localizer[$"Field.{error.Field}"])
             .Distinct()

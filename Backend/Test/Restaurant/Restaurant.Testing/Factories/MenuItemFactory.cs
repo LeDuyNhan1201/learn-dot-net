@@ -8,9 +8,9 @@ public static class MenuItemFactory
 {
     public static CreateMenuItemRequest ValidCreateRequest => new()
     {
-        MenuItemName = "Chicken",
-        MenuItemDescription = "Crispy",
-        MenuItemImageUrl = "abc",
+        MenuItemName = "Fried Chicken",
+        MenuItemDescription = "Crispy fried chicken",
+        MenuItemImageUrl = "https://example.com/chicken.jpg",
         MenuItemPrice = 10,
         Category = MenuCategory.Food,
         SubCategory = MenuSubCategory.Dinner
@@ -18,9 +18,9 @@ public static class MenuItemFactory
 
     public static CreateMenuItemRequest InvalidPriceCreateRequest => ValidCreateRequest with
     {
-        MenuItemPrice = -10,
+        MenuItemPrice = -10
     };
-    
+
     public static CreateMenuItemCommand ValidCreateCommand => new()
     {
         MenuItemName = ValidCreateRequest.MenuItemName,
@@ -33,6 +33,6 @@ public static class MenuItemFactory
 
     public static CreateMenuItemCommand InvalidPriceCreateCommand => ValidCreateCommand with
     {
-        MenuItemPrice = -10,
+        MenuItemPrice = -10
     };
 }

@@ -1,16 +1,15 @@
 using FluentAssertions;
-using Restaurant.Domain.Contracts.Commands;
 using Restaurant.Domain.Contracts.DomainEvents;
 using Restaurant.Domain.Entities;
-using Restaurant.Domain.Enumerations;
 using Restaurant.Testing.Factories;
+using Xunit;
 
 namespace Restaurant.UnitTest.Domain;
 
 public class MenuItemTests
 {
     [Fact]
-    public void Create_Should_Create_MenuItem()
+    public void Should_Create_MenuItem()
     {
         // Arrange
         var request = MenuItemFactory.ValidCreateRequest;

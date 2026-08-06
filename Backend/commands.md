@@ -1,5 +1,6 @@
 ```shell
 dotnet tool install --global dotnet-ef
+dotnet tool install -g dotnet-reportgenerator-globaltool
 
 ~/.dotnet/tools/dotnet-ef database drop \
     --project Modules/Restaurant/Restaurant.Infrastructure \

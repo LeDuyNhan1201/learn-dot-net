@@ -81,6 +81,9 @@ nunit-*.xml
 hs_err_pid*
 replay_pid*
 
+**/Coverage/
+**/TestResults/
+
 **/.idea
 **/.gradle
 **/build/
