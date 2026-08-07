@@ -10,6 +10,11 @@ WORKDIR /src
 # Copy solution + project files
 COPY --link Backend.slnx ./
 
+COPY --link global.json ./
+COPY --link Directory.Build.props ./
+COPY --link Directory.Packages.props ./
+COPY --link cover.settings.xml ./
+
 COPY --link BuildingBlocks/BuildingBlocks.API/*.csproj BuildingBlocks/BuildingBlocks.API/
 COPY --link BuildingBlocks/BuildingBlocks.Application/*.csproj BuildingBlocks/BuildingBlocks.Application/
 COPY --link BuildingBlocks/BuildingBlocks.Domain/*.csproj BuildingBlocks/BuildingBlocks.Domain/
