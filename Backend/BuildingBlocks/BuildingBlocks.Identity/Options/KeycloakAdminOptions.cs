@@ -1,6 +1,6 @@
 using Keycloak.AuthServices.Common;
 
-namespace BuildingBlocks.Identity.keycloakAdmin.Options;
+namespace BuildingBlocks.Identity.Options;
 
 public sealed class KeycloakAdminOptions : KeycloakInstallationOptions
 {

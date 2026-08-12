@@ -1,30 +1,31 @@
 using BuildingBlocks.SharedKernel.DTOs;
 using Keycloak.AuthServices.Sdk.Admin.Models;
+using Keycloak.AuthServices.Sdk.Admin.Requests.Users;
 
 namespace BuildingBlocks.Application.RestClients;
 
 public interface IKeycloakAdminClient
 {
-    Task<Guid?> CreateUserAsync(
-        KeycloakModels.CreateUser request,
+    Task<KeycloakTokenResponse> GetTokensAsync(
+        string username,
+        string password,
+        CancellationToken cancellationToken = default);
+    
+    Task<string?> CreateUserAsync(
+        CreateKeycloakUserRequest request,
         CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyCollection<Guid>> CreateUsersAsync(
-        IEnumerable<KeycloakModels.CreateUser> requests,
+    Task<IReadOnlyCollection<string>> CreateUsersAsync(
+        IEnumerable<CreateKeycloakUserRequest> requests,
         CancellationToken cancellationToken = default);
 
-    Task<UserRepresentation?> GetUserAsync(
-        Guid id,
-        CancellationToken cancellationToken = default);
+    Task<UserRepresentation?> GetUserAsync(string id, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<UserRepresentation>> GetUsersAsync(
+        GetUsersRequestParameters? parameters = null, 
         CancellationToken cancellationToken = default);
 
-    Task DeleteUserAsync(
-        Guid id,
-        CancellationToken cancellationToken = default);
+    Task DeleteUserAsync(string id, CancellationToken cancellationToken = default);
 
-    Task DeleteUsersAsync(
-        IEnumerable<Guid> ids,
-        CancellationToken cancellationToken = default);
+    Task DeleteUsersAsync(IEnumerable<string> ids, CancellationToken cancellationToken = default);
 }

@@ -35,6 +35,6 @@ public class MenuItemEndpoints : IEndpointModule
             var id = await sender.Send(command, cancellationToken);
 
             return Results.Created($"/menu-items/{id}", new BaseResponse<string> { Data = id });
-        });
+        }).RequireAuthorization();
     }
 }

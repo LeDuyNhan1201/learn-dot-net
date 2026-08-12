@@ -4,8 +4,9 @@ namespace BuildingBlocks.Testing.Fixtures;
 
 public sealed class PostgreSqlFixture : IAsyncLifetime
 {
+    private const string PostgreSqlImage = "postgres:15.18-alpine";
     private readonly PostgreSqlContainer _container =
-        new PostgreSqlBuilder("postgres:17")
+        new PostgreSqlBuilder(PostgreSqlImage)
             .WithDatabase("restaurant")
             .WithUsername("postgres")
             .WithPassword("postgres")

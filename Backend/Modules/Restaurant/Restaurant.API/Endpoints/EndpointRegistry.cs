@@ -1,3 +1,4 @@
+using BuildingBlocks.API.Endpoints;
 using BuildingBlocks.API.Interfaces;
 using Restaurant.API.Endpoints.v1;
 
@@ -10,6 +11,7 @@ public static class EndpointRegistry
         new HealthEndpoints(),
         new TodoEndpoints(),
         new MenuItemEndpoints(),
+        new DataInitializationEndpoints(),
 
         new v2.HealthEndpoints(),
         new v2.MenuItemEndpoints()

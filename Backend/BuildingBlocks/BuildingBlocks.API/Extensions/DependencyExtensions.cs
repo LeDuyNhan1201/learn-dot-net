@@ -1,4 +1,4 @@
-using BuildingBlocks.Identity.keycloakAdmin.Options;
+using BuildingBlocks.Identity.Options;
 using BuildingBlocks.Observability.Options;
 using BuildingBlocks.OpenApi.Options;
 using BuildingBlocks.Persistence.Options;

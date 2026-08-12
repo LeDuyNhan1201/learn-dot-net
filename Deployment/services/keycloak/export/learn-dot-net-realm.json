@@ -316,7 +316,26 @@
           "attributes": {}
         }
       ],
-      "restaurant-internal": [],
+      "restaurant-internal": [
+        {
+          "id": "0c204bbb-b790-46d3-9a0e-573ab2188dec",
+          "name": "customer",
+          "description": "Customer",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "061564d1-03f9-4823-8806-5a5468b3b23f",
+          "attributes": {}
+        },
+        {
+          "id": "69f517b2-7987-4a16-82ac-d4fd2c1c929b",
+          "name": "admin",
+          "description": "Admin",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "061564d1-03f9-4823-8806-5a5468b3b23f",
+          "attributes": {}
+        }
+      ],
       "account": [
         {
           "id": "045fb212-fb31-4467-9689-ee19603b38b7",
@@ -474,6 +493,11 @@
       "realmRoles": [
         "default-roles-learn-dot-net"
       ],
+      "clientRoles": {
+        "realm-management": [
+          "manage-users"
+        ]
+      },
       "notBefore": 0,
       "groups": []
     }
@@ -745,7 +769,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "secret",
+      "secret": "**********",
       "redirectUris": [
         "/*"
       ],
@@ -765,10 +789,11 @@
       "attributes": {
         "realm_client": "false",
         "oidc.ciba.grant.enabled": "false",
-        "client.secret.creation.time": "1784099698",
+        "client.secret.creation.time": "1786529454",
         "backchannel.logout.session.required": "true",
-        "standard.token.exchange.enabled": "false",
         "oauth2.jwt.authorization.grant.enabled": "false",
+        "standard.token.exchange.enabled": "false",
+        "post.logout.redirect.uris": "+",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false",
         "dpop.bound.access.tokens": "false"
@@ -1656,14 +1681,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "saml-user-property-mapper",
-            "saml-role-list-mapper",
-            "oidc-full-name-mapper",
+            "oidc-address-mapper",
             "oidc-usermodel-property-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
-            "saml-user-attribute-mapper",
             "oidc-usermodel-attribute-mapper",
-            "oidc-address-mapper"
+            "oidc-full-name-mapper",
+            "saml-user-property-mapper",
+            "saml-user-attribute-mapper",
+            "saml-role-list-mapper",
+            "oidc-sha256-pairwise-sub-mapper"
           ]
         }
       },
@@ -1711,14 +1736,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "oidc-usermodel-property-mapper",
-            "saml-user-property-mapper",
-            "saml-role-list-mapper",
-            "oidc-usermodel-attribute-mapper",
-            "oidc-address-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
             "oidc-full-name-mapper",
-            "saml-user-attribute-mapper"
+            "oidc-usermodel-attribute-mapper",
+            "oidc-sha256-pairwise-sub-mapper",
+            "saml-role-list-mapper",
+            "oidc-usermodel-property-mapper",
+            "saml-user-attribute-mapper",
+            "saml-user-property-mapper",
+            "oidc-address-mapper"
           ]
         }
       },
@@ -2668,7 +2693,7 @@
     "clientSessionMaxLifespan": "0",
     "scimApiEnabled": "false"
   },
-  "keycloakVersion": "26.6.2",
+  "keycloakVersion": "26.6.4",
   "userManagedAccessAllowed": false,
   "organizationsEnabled": false,
   "verifiableCredentialsEnabled": false,

@@ -17,6 +17,7 @@ namespace BuildingBlocks.API.Serialization.Resolvers;
 [JsonSerializable(typeof(BaseResponse<string>))]
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(IDictionary<string, string>))]
+[JsonSerializable(typeof(BaseResponse<IReadOnlyCollection<string>>))]
 [JsonSerializable(typeof(BaseResponse<Dictionary<string, string>>))]
 [JsonSerializable(typeof(BaseResponse<IDictionary<string, string>>))]
 [JsonSerializable(typeof(BaseResponse<Dictionary<string, string[]>>))]

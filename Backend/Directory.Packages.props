@@ -52,6 +52,8 @@
         <!-- Keycloak -->
         <PackageVersion Include="Keycloak.AuthServices.Authentication"
                         Version="$(KeycloakVersion)"/>
+        <PackageVersion Include="Keycloak.AuthServices.Authorization"
+                        Version="$(KeycloakVersion)"/>
         <PackageVersion Include="Keycloak.AuthServices.Sdk"
                         Version="$(KeycloakVersion)"/>
 

@@ -1,23 +1,54 @@
+using System.Text.Json.Serialization;
+
 namespace BuildingBlocks.SharedKernel.DTOs;
 
-public static class KeycloakModels
-{
-    public sealed class CreateUser
-    {
-        public required string Username { get; init; }
+public sealed record CreateKeycloakRoleRequest(
+    [property: JsonPropertyName("name")]
+    string Name,
 
-        public required string Email { get; init; }
+    [property: JsonPropertyName("description")]
+    string? Description);
 
-        public required string FirstName { get; init; }
+public sealed record CreateKeycloakUserRequest(
+    [property: JsonPropertyName("username")]
+    string Username,
 
-        public required string LastName { get; init; }
+    [property: JsonPropertyName("email")]
+    string Email,
 
-        public required string Password { get; init; }
+    [property: JsonPropertyName("firstName")]
+    string FirstName,
 
-        public bool Enabled { get; init; } = true;
+    [property: JsonPropertyName("lastName")]
+    string LastName,
 
-        public bool EmailVerified { get; init; }
+    [property: JsonPropertyName("password")]
+    string Password,
 
-        public IDictionary<string, ICollection<string>>? Attributes { get; init; }
-    }
-}
+    [property: JsonPropertyName("enabled")]
+    bool Enabled,
+
+    [property: JsonPropertyName("emailVerified")]
+    bool EmailVerified,
+
+    [property: JsonPropertyName("attributes")]
+    IDictionary<string, ICollection<string>>? Attributes,
+    
+    [property: JsonPropertyName("roles")]
+    ICollection<string>? Roles);
+
+public sealed record KeycloakTokenResponse(
+    [property: JsonPropertyName("access_token")]
+    string AccessToken,
+
+    [property: JsonPropertyName("expires_in")]
+    int ExpiresIn,
+
+    [property: JsonPropertyName("refresh_token")]
+    string? RefreshToken,
+
+    [property: JsonPropertyName("refresh_expires_in")]
+    int? RefreshExpiresIn,
+
+    [property: JsonPropertyName("token_type")]
+    string TokenType);

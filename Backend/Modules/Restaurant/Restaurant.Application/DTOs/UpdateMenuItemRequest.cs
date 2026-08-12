@@ -4,7 +4,7 @@ using Restaurant.Domain.Enumerations;
 
 namespace Restaurant.Application.DTOs;
 
-public sealed record CreateMenuItemRequest
+public sealed record UpdateMenuItemRequest
 {
     [JsonPropertyName("name")] 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

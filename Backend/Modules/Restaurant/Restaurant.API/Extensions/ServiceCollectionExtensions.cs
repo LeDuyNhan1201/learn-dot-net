@@ -1,9 +1,10 @@
 using BuildingBlocks.API.Extensions;
 using BuildingBlocks.Application.Behaviors;
+using BuildingBlocks.Application.Services;
 using BuildingBlocks.Domain.Contracts;
 using BuildingBlocks.Domain.Exceptions.Handlers;
+using BuildingBlocks.Domain.Services;
 using BuildingBlocks.Identity.Extensions;
-using BuildingBlocks.Identity.keycloakAdmin.Extensions;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.OpenApi.Extensions;
@@ -36,20 +37,22 @@ public static class ServiceCollectionExtensions
 
         if (environment.IsDevelopment() || environment.IsEnvironment("Local")) IdentityModelEventSource.ShowPII = true;
 
+        // Inject Infrastructure
         services
             .AddBaseOptions()
             .AddMessaging<RestaurantDbContext>(typeof(MenuItemCreatedConsumer))
             .AddPostgresDatabase<RestaurantDbContext>()
             .AddI18NLocalization()
             .AddExceptionObservability()
+            .AddObservability(configuration)
             .AddScalarOpenApi(options => { options.AddSchemaTransformer<SampleSchemaOperationTransformer>(); });
 
-        services.AddObservability(configuration);
-
+        services.AddValidatorsFromAssemblyContaining<CreateMenuItemCommandValidator>();
+        
+        // Inject Domain Event Handlers
         services.AddScoped<IDomainEventHandler<MenuItemCreatedDomainEvent>, CreateMenuItemDomainEventHandler>();
 
-        services.AddValidatorsFromAssemblyContaining<CreateMenuItemCommandValidator>();
-
+        // Inject MediatR Components
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssemblyContaining<CreateMenuItemCommand>();
@@ -59,16 +62,19 @@ public static class ServiceCollectionExtensions
             cfg.AddOpenBehavior(typeof(PerformanceBehavior<,>));
         });
 
+        // Inject Repositories
         services.AddScoped<IMenuItemRepository, MenuItemRepository>();
         
-        services.AddKeycloakAdmin(configuration);
-
+        // Inject Security
+        services.AddKeycloakAdmin(configuration, environment);
         services.AddAuthenticationWithAuthorization(configuration, environment);
 
+        // Inject Services
         services.AddScoped<ITodoService, TodoService>();
+        services.AddScoped<IUserSeederService, UserSeederService>();
 
+        // Other Configurations
         services.ConfigureApplicationJson();
-
         services.AddExceptionHandler<HttpExceptionHandler<Messages>>();
         services.AddProblemDetails();
 
