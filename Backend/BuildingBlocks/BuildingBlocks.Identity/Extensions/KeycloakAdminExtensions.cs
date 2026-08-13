@@ -36,7 +36,7 @@ public static class KeycloakAdminExtensions
             client.BaseAddress = new Uri(options.AuthServerUrl ?? throw new InvalidOperationException("AuthServerUrl is not configured."));
         });
 
-        if (environment.IsEnvironment("Local"))
+        if (environment.IsEnvironment("Local") || environment.IsEnvironment("Testing"))
         {
             services
                 .AddHttpClient(ClientCredentialsTokenManagementDefaults.BackChannelHttpClientName)

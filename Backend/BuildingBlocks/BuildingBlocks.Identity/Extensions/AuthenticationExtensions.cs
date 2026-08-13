@@ -10,10 +10,11 @@ namespace BuildingBlocks.Identity.Extensions;
 
 public static class AuthenticationExtensions
 {
-    public static IServiceCollection AddAuthenticationWithAuthorization(
+    public static IServiceCollection AddAuthenticationWithAuthorization<T>(
         this IServiceCollection services,
         IConfiguration configuration,
         IHostEnvironment environment)
+        where T : class
     {
         ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
@@ -36,7 +37,7 @@ public static class AuthenticationExtensions
                         {
                             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                         };
-                    options.ConfigureJwtBearer();
+                    options.ConfigureJwtBearer<T>();
                 });
 
         services.AddAuthorizationBuilder();

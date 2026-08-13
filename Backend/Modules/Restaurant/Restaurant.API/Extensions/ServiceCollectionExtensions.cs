@@ -44,9 +44,10 @@ public static class ServiceCollectionExtensions
             .AddPostgresDatabase<RestaurantDbContext>()
             .AddI18NLocalization()
             .AddExceptionObservability()
-            .AddObservability(configuration)
             .AddScalarOpenApi(options => { options.AddSchemaTransformer<SampleSchemaOperationTransformer>(); });
 
+        if (!environment.IsEnvironment("Testing")) services.AddObservability(configuration);
+        
         services.AddValidatorsFromAssemblyContaining<CreateMenuItemCommandValidator>();
         
         // Inject Domain Event Handlers
@@ -67,7 +68,7 @@ public static class ServiceCollectionExtensions
         
         // Inject Security
         services.AddKeycloakAdmin(configuration, environment);
-        services.AddAuthenticationWithAuthorization(configuration, environment);
+        services.AddAuthenticationWithAuthorization<Messages>(configuration, environment);
 
         // Inject Services
         services.AddScoped<ITodoService, TodoService>();

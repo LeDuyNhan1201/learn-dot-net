@@ -1,5 +1,9 @@
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using BuildingBlocks.Identity.Serialization;
 using BuildingBlocks.SharedKernel.DTOs;
+using BuildingBlocks.SharedKernel.Errors.Models;
+using BuildingBlocks.SharedKernel.Localization;
 using Keycloak.AuthServices.Common;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +14,8 @@ namespace BuildingBlocks.Identity.Extensions;
 
 internal static class JwtBearerExtensions
 {
-    internal static void ConfigureJwtBearer(this JwtBearerOptions options)
+    internal static void ConfigureJwtBearer<T>(this JwtBearerOptions options)
+        where T : class
     {
         options.TokenValidationParameters.NameClaimType = KeycloakConstants.NameClaimType;
         options.TokenValidationParameters.RoleClaimType = KeycloakConstants.RoleClaimType;
@@ -48,6 +53,10 @@ internal static class JwtBearerExtensions
 
             OnChallenge = async context =>
             {
+                var localizer = context
+                    .HttpContext.RequestServices
+                    .GetRequiredService<CompositeLocalizer<T>>();
+                
                 context.HandleResponse();
 
                 if (context.Response.HasStarted) return;
@@ -56,22 +65,26 @@ internal static class JwtBearerExtensions
                     StatusCodes.Status401Unauthorized,
                     new BaseResponse<object>
                     {
-                        Code = "TOKEN_INVALID",
-                        Message = "Authentication required"
+                        Code = AuthErrors.Unauthorized.Code,
+                        Message = localizer[AuthErrors.Unauthorized.MessageKey]
                     },
                     context.HttpContext.RequestAborted);
             },
 
             OnForbidden = async context =>
             {
+                var localizer = context
+                    .HttpContext.RequestServices
+                    .GetRequiredService<CompositeLocalizer<T>>();
+                
                 if (context.Response.HasStarted) return;
 
                 await context.Response.WriteAuthenticationErrorAsync(
                     StatusCodes.Status403Forbidden,
                     new BaseResponse<object>
                     {
-                        Code = "ACCESS_DENIED",
-                        Message = "You do not have permission to access this resource"
+                        Code = AuthErrors.Forbidden.Code,
+                        Message = localizer[AuthErrors.Forbidden.MessageKey]
                     },
                     context.HttpContext.RequestAborted);
             }
@@ -85,12 +98,18 @@ internal static class JwtBearerExtensions
         CancellationToken cancellationToken)
     {
         response.StatusCode = statusCode;
-        response.ContentType = "application/json";
+        response.ContentType = "application/json; charset=utf-8";
+        
+        var options = new JsonSerializerOptions
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+            TypeInfoResolver = AuthenticationJsonSerializerContext.Default
+        };
 
         return response.WriteAsJsonAsync(
             baseResponse,
-            AuthenticationJsonSerializerContext.Default.BaseResponseObject,
-            "application/json",
+            options,
+            response.ContentType,
             cancellationToken);
     }
 }

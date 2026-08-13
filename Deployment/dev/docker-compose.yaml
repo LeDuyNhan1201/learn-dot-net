@@ -80,7 +80,7 @@ services:
       KeycloakAdmin__Realm: "learn-dot-net-dev"
       KeycloakAdmin__AuthServerUrl: "https://${APP_HOSTNAME}/auth"
       KeycloakAdmin__Resource: "restaurant-internal"
-      KeycloakAdmin__Credentials__Secret: "secret"
+      KeycloakAdmin__Credentials__Secret: "WaEANSGZZiuElVX87bRe2RZIYapUuFOS"
       KeycloakAdmin__SslRequired: "external"
       
       # ---------- Observability ---------

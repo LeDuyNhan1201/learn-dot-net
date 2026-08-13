@@ -27,7 +27,7 @@
         <value>Hello {0}</value>
     </data>
     <data name="Error.Validation" xml:space="preserve">
-      <value>Validation failed</value>
+        <value>Validation failed.</value>
     </data>
 
     <data name="Error.Validation.Required" xml:space="preserve">
@@ -62,6 +62,12 @@
       <value>Password</value>
     </data>
     <data name="Error.InternalServer" xml:space="preserve">
-        <value>Unexpected error</value>
+        <value>Unexpected error.</value>
+    </data>
+    <data name="Error.Auth.Unauthorized" xml:space="preserve">
+        <value>Authentication is required.</value>
+    </data>
+    <data name="Error.Auth.Forbidden" xml:space="preserve">
+        <value>Cannot access this resource.</value>
     </data>
 </root>

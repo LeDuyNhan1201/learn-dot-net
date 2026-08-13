@@ -1,16 +1,16 @@
-using BuildingBlocks.Testing.Fixtures;
 using FluentAssertions;
 using MassTransit.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Restaurant.Application.Consumers;
 using Restaurant.Domain.Contracts.IntegrationEvents;
+using Restaurant.Testing.Fixtures;
 using Restaurant.Testing.Integration;
 using Xunit;
 
 namespace Restaurant.IntegrationTest.Messaging;
 
 [Collection("RestaurantIntegrationTest")]
-public class CreateMenuItemTests(PostgreSqlFixture postgres) : MenuItemHttpEndpointTest(postgres)
+public class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpointTest(fixture)
 {
     [Fact]
     public async Task Should_Publish_Integration_Event()

@@ -27,7 +27,7 @@
         <value>Xin chào {0}</value>
     </data>
     <data name="Error.Validation" xml:space="preserve">
-      <value>Dữ liệu không hợp lệ</value>
+        <value>Dữ liệu không hợp lệ.</value>
     </data>
 
     <data name="Error.Validation.Required" xml:space="preserve">
@@ -62,6 +62,12 @@
       <value>Mật khẩu</value>
     </data>
     <data name="Error.InternalServer" xml:space="preserve">
-        <value>Lỗi không xác định</value>
+        <value>Lỗi không xác định.</value>
+    </data>
+    <data name="Error.Auth.Unauthorized" xml:space="preserve">
+        <value>Yêu cầu xác thực.</value>
+    </data>
+    <data name="Error.Auth.Forbidden" xml:space="preserve">
+        <value>Không thể truy cập tài nguyên này.</value>
     </data>
 </root>

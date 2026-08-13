@@ -1,35 +1,18 @@
-using BuildingBlocks.Testing.Fixtures;
 using BuildingBlocks.Testing.Integration;
 using Restaurant.Application.DTOs;
 using Restaurant.Domain.Contracts.Commands;
 using Restaurant.Testing.Factories;
+using Restaurant.Testing.Fixtures;
 
 namespace Restaurant.Testing.Integration;
 
-public class MenuItemHttpEndpointTest(PostgreSqlFixture postgres) : HttpEndpointTest, IDisposable
+public class MenuItemHttpEndpointTest(RestaurantFixture fixture) : HttpEndpointTest
 {
     protected const string MenuItemUri = "/restaurant/api/v2/menu-items";
-    private readonly RestaurantTestFactory _factory = new(postgres);
-    private bool _disposed;
-    protected override HttpClient Client => _factory.CreateClient();
-    protected override IServiceProvider Services => _factory.Services;
+    protected override HttpClient Client => fixture.Client;
+    protected override IServiceProvider Services => fixture.Factory.Services;
     protected static CreateMenuItemRequest ValidRequest => MenuItemFactory.ValidCreateRequest;
     protected static CreateMenuItemRequest InvalidPriceRequest => MenuItemFactory.InvalidPriceCreateRequest;
     protected static CreateMenuItemCommand ValidCommand => MenuItemFactory.ValidCreateCommand;
     protected static CreateMenuItemCommand InvalidPriceCommand => MenuItemFactory.InvalidPriceCreateCommand;
-
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    protected virtual void Dispose(bool disposing)
-    {
-        if (_disposed) return;
-
-        if (disposing) _factory.Dispose();
-
-        _disposed = true;
-    }
 }
