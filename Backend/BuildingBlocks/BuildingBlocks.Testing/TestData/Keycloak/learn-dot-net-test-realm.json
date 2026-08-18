@@ -318,7 +318,26 @@
           "attributes": {}
         }
       ],
-      "restaurant-internal": [],
+      "restaurant-internal": [
+        {
+          "id": "0c204bbb-b790-46d3-9a0e-573ab2188dec",
+          "name": "customer",
+          "description": "Customer",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "cb97a4ce-da9b-486e-8db4-442a5ce8c801",
+          "attributes": {}
+        },
+        {
+          "id": "69f517b2-7987-4a16-82ac-d4fd2c1c929b",
+          "name": "admin",
+          "description": "Admin",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "cb97a4ce-da9b-486e-8db4-442a5ce8c801",
+          "attributes": {}
+        }
+      ],
       "account": [
         {
           "id": "3e5f5d44-3a48-460e-9831-b85eb500a09c",
