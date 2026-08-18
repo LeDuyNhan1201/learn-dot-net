@@ -43,8 +43,15 @@ public sealed class KeycloakAdminClient(
         using var content = new FormUrlEncodedContent(values);
 
         var response = await httpClient.PostAsync($"/realms/{realm}/protocol/openid-connect/token", content, cancellationToken);
-
-        response.EnsureSuccessStatusCode();
+        var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new InvalidOperationException(
+                $"Keycloak token request failed. " +
+                $"Status: {(int)response.StatusCode} {response.StatusCode}. " +
+                $"Response: {responseBody}");
+        }
 
         var tokens = await response.Content.ReadFromJsonAsync<KeycloakTokenResponse>(cancellationToken);
 
@@ -105,9 +112,20 @@ public sealed class KeycloakAdminClient(
         return ids;
     }
 
-    public async Task<UserRepresentation?> GetUserAsync(string id, CancellationToken cancellationToken = default)
+    public async Task<UserRepresentation?> GetUserByIdAsync(string id, CancellationToken cancellationToken = default)
     {
         return await keycloak.GetUserAsync(_realm, id, true, cancellationToken);
+    }
+    
+    public async Task<UserRepresentation?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        var parameters = new GetUsersRequestParameters
+        {
+            Email = email
+        };
+        
+        var users = await keycloak.GetUsersAsync(_realm, parameters, cancellationToken);
+        return users.FirstOrDefault();
     }
 
     public async Task<IEnumerable<UserRepresentation>> GetUsersAsync(

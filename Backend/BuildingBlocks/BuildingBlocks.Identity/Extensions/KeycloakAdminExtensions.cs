@@ -31,7 +31,7 @@ public static class KeycloakAdminExtensions
             });
 
         var keycloakAdminHttpClient = services.AddKeycloakAdminHttpClient(options);
-        var adminClient = services.AddHttpClient<KeycloakAdminClient>(client =>
+        var adminClient = services.AddHttpClient<IKeycloakAdminClient, KeycloakAdminClient>(client =>
         {
             client.BaseAddress = new Uri(options.AuthServerUrl ?? throw new InvalidOperationException("AuthServerUrl is not configured."));
         });
@@ -47,7 +47,7 @@ public static class KeycloakAdminExtensions
 
         keycloakAdminHttpClient.AddClientCredentialsTokenHandler(tokenClientName);
 
-        services.AddScoped<IKeycloakAdminClient, KeycloakAdminClient>();
+        // services.AddScoped<IKeycloakAdminClient, KeycloakAdminClient>();
 
         return services;
     }

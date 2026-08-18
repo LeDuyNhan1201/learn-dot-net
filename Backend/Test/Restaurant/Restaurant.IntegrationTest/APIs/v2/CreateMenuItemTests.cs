@@ -13,8 +13,12 @@ using Xunit;
 namespace Restaurant.IntegrationTest.APIs.v2;
 
 [Collection("RestaurantIntegrationTest")]
-public class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpointTest(fixture), IAsyncLifetime
+public sealed class CreateMenuItemTests : MenuItemHttpEndpointTest, IAsyncLifetime
 {
+    public CreateMenuItemTests(RestaurantFixture fixture) : base(fixture)
+    {
+    }
+    
     public ValueTask InitializeAsync()
     {
         // BEFORE EACH
@@ -32,7 +36,8 @@ public class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpoi
     {
         // Arrange
         var request = ValidRequest;
-        var response = await PostAsync(MenuItemUri, request);
+        var accessToken = Fixture.Factory.AdminAccessToken;
+        var response = await PostAsync(MenuItemUri, request, accessToken);
 
         // Assert response
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -41,6 +46,7 @@ public class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpoi
         using var scope = Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<RestaurantDbContext>();
         db.MenuItems.Should().Contain(menuItem => menuItem.Name == request.MenuItemName);
+        db.MenuItems.Should().Contain(menuItem => menuItem.CreatedBy == Fixture.Factory.AdminUser.Id);
     }
     
     [Fact]
@@ -61,7 +67,8 @@ public class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpoi
     {
         // Arrange
         var request = InvalidPriceRequest;
-        var response = await PostAsync(MenuItemUri, request);
+        var accessToken = Fixture.Factory.AdminAccessToken;
+        var response = await PostAsync(MenuItemUri, request, accessToken);
 
         // Assert response
         var body = await response.AssertValidationResponseAsync();

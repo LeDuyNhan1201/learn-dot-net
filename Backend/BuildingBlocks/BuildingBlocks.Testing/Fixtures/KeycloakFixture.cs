@@ -10,8 +10,8 @@ public sealed class KeycloakFixture : IAsyncLifetime
             .WithRealm(Path.Combine(AppContext.BaseDirectory, "TestData/Keycloak", "learn-dot-net-test-realm.json"))
             .WithUsername("admin")
             .WithPassword("admin")
+            .WithPortBinding(3333, 8080)
             .Build();
-
     public async ValueTask InitializeAsync()
     {
         await _container.StartAsync();

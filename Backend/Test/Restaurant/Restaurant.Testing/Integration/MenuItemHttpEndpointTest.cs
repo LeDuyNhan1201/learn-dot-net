@@ -6,11 +6,19 @@ using Restaurant.Testing.Fixtures;
 
 namespace Restaurant.Testing.Integration;
 
-public class MenuItemHttpEndpointTest(RestaurantFixture fixture) : HttpEndpointTest
+public class MenuItemHttpEndpointTest: HttpEndpointTest
 {
     protected const string MenuItemUri = "/restaurant/api/v2/menu-items";
-    protected override HttpClient Client => fixture.Client;
-    protected override IServiceProvider Services => fixture.Factory.Services;
+    
+    protected RestaurantFixture Fixture { get; }
+
+    protected MenuItemHttpEndpointTest(RestaurantFixture fixture)
+    {
+        Fixture = fixture;
+    }
+    
+    protected override HttpClient Client => Fixture.Client;
+    protected override IServiceProvider Services => Fixture.Factory.Services;
     protected static CreateMenuItemRequest ValidRequest => MenuItemFactory.ValidCreateRequest;
     protected static CreateMenuItemRequest InvalidPriceRequest => MenuItemFactory.InvalidPriceCreateRequest;
     protected static CreateMenuItemCommand ValidCommand => MenuItemFactory.ValidCreateCommand;

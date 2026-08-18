@@ -1,6 +1,7 @@
 using BuildingBlocks.Application.RestClients;
 using BuildingBlocks.Domain.Services;
 using BuildingBlocks.SharedKernel.DTOs;
+using BuildingBlocks.SharedKernel.Helpers;
 
 namespace BuildingBlocks.Application.Services;
 
@@ -12,10 +13,10 @@ public sealed class UserSeederService(IKeycloakAdminClient keycloakAdminClient) 
         {
             new CreateKeycloakUserRequest(
                 Username: "admin",
-                Email: "admin@test.com",
+                Email: Constants.AdministratorSampleEmail,
                 FirstName: "Test",
                 LastName: "Admin",
-                Password: "Admin@123",
+                Password: Constants.AdministratorSamplePassword,
                 Enabled: true,
                 EmailVerified: true,
                 Attributes: null,
@@ -32,10 +33,10 @@ public sealed class UserSeederService(IKeycloakAdminClient keycloakAdminClient) 
         {
             new CreateKeycloakUserRequest(
                 Username: "customer",
-                Email: "customer@test.com",
+                Email: Constants.CustomerSampleEmail,
                 FirstName: "Test",
                 LastName: "Customer",
-                Password: "Customer@123",
+                Password: Constants.CustomerSamplePassword,
                 Enabled: true,
                 EmailVerified: true,
                 Attributes: null,

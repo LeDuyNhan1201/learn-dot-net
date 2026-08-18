@@ -19,7 +19,9 @@ public interface IKeycloakAdminClient
         IEnumerable<CreateKeycloakUserRequest> requests,
         CancellationToken cancellationToken = default);
 
-    Task<UserRepresentation?> GetUserAsync(string id, CancellationToken cancellationToken = default);
+    Task<UserRepresentation?> GetUserByIdAsync(string id, CancellationToken cancellationToken = default);
+    
+    Task<UserRepresentation?> GetUserByEmailAsync(string email, CancellationToken cancellationToken = default);
 
     Task<IEnumerable<UserRepresentation>> GetUsersAsync(
         GetUsersRequestParameters? parameters = null, 

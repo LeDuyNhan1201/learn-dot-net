@@ -1,3 +1,4 @@
+using BuildingBlocks.SharedKernel.Helpers;
 using BuildingBlocks.Testing.Fixtures;
 using Restaurant.Testing.Factories;
 
@@ -15,5 +16,11 @@ public sealed class RestaurantFixture : BaseTestFixture<RestaurantTestFactory>
         await base.InitializeAsync();
         await Factory.InitializeDatabaseAsync();
         await Factory.InitializeKeycloakUsersAsync();
+        
+        Factory.AdminAccessToken = await Factory.GetAccessTokenAsync(Constants.AdministratorSampleEmail, Constants.AdministratorSamplePassword);
+        Factory.CustomerAccessToken = await Factory.GetAccessTokenAsync(Constants.CustomerSampleEmail, Constants.CustomerSamplePassword);
+        
+        Factory.AdminUser = await Factory.GetUserByEmailAsync(Constants.AdministratorSampleEmail);
+        Factory.CustomerUser = await Factory.GetUserByEmailAsync(Constants.CustomerSampleEmail);
     }
 }

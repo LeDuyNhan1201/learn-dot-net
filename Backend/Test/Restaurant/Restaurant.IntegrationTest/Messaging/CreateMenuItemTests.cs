@@ -18,7 +18,9 @@ public class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpoi
         // Arrange
         var harness = Services.GetRequiredService<ITestHarness>();
         await harness.Start();
-        await PostAsync(MenuItemUri, ValidRequest);
+        
+        var accessToken = Fixture.Factory.AdminAccessToken;
+        await PostAsync(MenuItemUri, ValidRequest, accessToken);
 
         // Assert execution
         var isEventPublished = await harness.Published.Any<MenuItemCreatedIntegrationEvent>
@@ -35,7 +37,9 @@ public class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpoi
         // Arrange
         var harness = Services.GetRequiredService<ITestHarness>();
         await harness.Start();
-        await PostAsync(MenuItemUri, ValidRequest);
+        
+        var accessToken = Fixture.Factory.AdminAccessToken;
+        await PostAsync(MenuItemUri, ValidRequest, accessToken);
 
         // Assert execution
         var consumerHarness = harness.GetConsumerHarness<MenuItemCreatedConsumer>();
