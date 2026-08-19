@@ -1,6 +1,7 @@
 using BuildingBlocks.Application.RestClients;
+using BuildingBlocks.Domain.Enumerations;
+using BuildingBlocks.Domain.Models;
 using BuildingBlocks.Domain.Services;
-using BuildingBlocks.SharedKernel.DTOs;
 using BuildingBlocks.SharedKernel.Helpers;
 
 namespace BuildingBlocks.Application.Services;
@@ -20,7 +21,7 @@ public sealed class UserSeederService(IKeycloakAdminClient keycloakAdminClient) 
                 Enabled: true,
                 EmailVerified: true,
                 Attributes: null,
-                Roles: ["admin"]
+                Group: KeycloakUserGroup.Administrators
             )
         };
 
@@ -40,7 +41,7 @@ public sealed class UserSeederService(IKeycloakAdminClient keycloakAdminClient) 
                 Enabled: true,
                 EmailVerified: true,
                 Attributes: null,
-                Roles: ["customer"]
+                Group: KeycloakUserGroup.Customers
             )
         };
 

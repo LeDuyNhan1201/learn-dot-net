@@ -409,7 +409,36 @@
       ]
     }
   },
-  "groups": [],
+  "groups": [
+    {
+      "id": "601f7e70-f25b-40df-9f0f-1b54f5baaa02",
+      "name": "Administrators",
+      "description": "Manage",
+      "path": "/Administrators",
+      "subGroups": [],
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {
+        "restaurant-internal": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "id": "045d4be0-ee06-4e6e-96b3-232b643c4029",
+      "name": "Customers",
+      "description": "Usage",
+      "path": "/Customers",
+      "subGroups": [],
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {
+        "restaurant-internal": [
+          "customer"
+        ]
+      }
+    }
+  ],
   "defaultRole": {
     "id": "c0863735-5a08-4581-b8ef-a3d251002769",
     "name": "default-roles-learn-dot-netl-dev",

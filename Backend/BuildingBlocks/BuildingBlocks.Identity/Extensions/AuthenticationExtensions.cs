@@ -1,6 +1,9 @@
+using BuildingBlocks.Domain.Enumerations;
+using BuildingBlocks.Identity.Configurations;
 using BuildingBlocks.Identity.Models;
 using Keycloak.AuthServices.Authentication;
 using Keycloak.AuthServices.Common;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,27 +23,29 @@ public static class AuthenticationExtensions
         ArgumentNullException.ThrowIfNull(configuration);
 
         services.AddScoped<CurrentIdentity>();
+        services.AddTransient<IClaimsTransformation, KeycloakRoleClaimsTransformation>();
+
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddKeycloakWebApi(
+            .AddKeycloakWebApi(options => configuration.BindKeycloakOptions(options),
                 options =>
                 {
                     if (environment.IsEnvironment("Local"))
-                        configuration.BindKeycloakOptions(options);
-                    else
-                        options.BindKeycloakOptionsForAot(configuration);
-                },
-                options =>
-                {
-                    if (environment.IsEnvironment("Local"))
+                    {
                         options.BackchannelHttpHandler = new HttpClientHandler
                         {
                             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                         };
+                    }
+
                     options.ConfigureJwtBearer<T>();
                 });
 
-        services.AddAuthorizationBuilder();
+        services.AddAuthorizationBuilder()
+            .AddPolicy(nameof(KeycloakUserGroup.Administrators), 
+                policy => policy.RequireRole(nameof(KeycloakUserRole.Admin).ToLower()))
+            .AddPolicy(nameof(KeycloakUserGroup.Customers), 
+                policy => policy.RequireRole(nameof(KeycloakUserRole.Customer).ToLower()));
 
         return services;
     }

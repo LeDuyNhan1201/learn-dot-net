@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
+using BuildingBlocks.Domain.Enumerations;
 
-namespace BuildingBlocks.SharedKernel.DTOs;
+namespace BuildingBlocks.Domain.Models;
 
 public sealed record CreateKeycloakRoleRequest(
     [property: JsonPropertyName("name")]
@@ -34,8 +35,8 @@ public sealed record CreateKeycloakUserRequest(
     [property: JsonPropertyName("attributes")]
     IDictionary<string, ICollection<string>>? Attributes,
     
-    [property: JsonPropertyName("roles")]
-    ICollection<string>? Roles);
+    [property: JsonPropertyName("group")]
+    KeycloakUserGroup Group);
 
 public sealed record KeycloakTokenResponse(
     [property: JsonPropertyName("access_token")]

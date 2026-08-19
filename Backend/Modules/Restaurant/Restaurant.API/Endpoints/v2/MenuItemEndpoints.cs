@@ -1,4 +1,5 @@
 using BuildingBlocks.API.Interfaces;
+using BuildingBlocks.Domain.Enumerations;
 using BuildingBlocks.OpenApi.Versions;
 using BuildingBlocks.SharedKernel.DTOs;
 using MediatR;
@@ -35,6 +36,6 @@ public class MenuItemEndpoints : IEndpointModule
             var id = await sender.Send(command, cancellationToken);
 
             return Results.Created($"/menu-items/{id}", new BaseResponse<string> { Data = id });
-        }).RequireAuthorization();
+        }).RequireAuthorization(nameof(KeycloakUserGroup.Administrators));
     }
 }

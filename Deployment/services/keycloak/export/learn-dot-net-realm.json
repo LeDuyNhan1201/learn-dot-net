@@ -426,7 +426,36 @@
       ]
     }
   },
-  "groups": [],
+  "groups": [
+    {
+      "id": "601f7e70-f25b-40df-9f0f-1b54f5baaa02",
+      "name": "Administrators",
+      "description": "Manage",
+      "path": "/Administrators",
+      "subGroups": [],
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {
+        "restaurant-internal": [
+          "admin"
+        ]
+      }
+    },
+    {
+      "id": "045d4be0-ee06-4e6e-96b3-232b643c4029",
+      "name": "Customers",
+      "description": "Usage",
+      "path": "/Customers",
+      "subGroups": [],
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {
+        "restaurant-internal": [
+          "customer"
+        ]
+      }
+    }
+  ],
   "defaultRole": {
     "id": "6485e350-f145-491c-83ae-fcae05e9ed9b",
     "name": "default-roles-learn-dot-net",
@@ -769,7 +798,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "secret",
+      "secret": "**********",
       "redirectUris": [
         "/*"
       ],
@@ -1681,13 +1710,13 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
+            "saml-user-property-mapper",
             "oidc-address-mapper",
             "oidc-usermodel-property-mapper",
-            "oidc-usermodel-attribute-mapper",
             "oidc-full-name-mapper",
-            "saml-user-property-mapper",
-            "saml-user-attribute-mapper",
             "saml-role-list-mapper",
+            "oidc-usermodel-attribute-mapper",
+            "saml-user-attribute-mapper",
             "oidc-sha256-pairwise-sub-mapper"
           ]
         }
@@ -1736,14 +1765,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
+            "saml-user-attribute-mapper",
             "oidc-full-name-mapper",
-            "oidc-usermodel-attribute-mapper",
             "oidc-sha256-pairwise-sub-mapper",
             "saml-role-list-mapper",
             "oidc-usermodel-property-mapper",
-            "saml-user-attribute-mapper",
+            "oidc-address-mapper",
             "saml-user-property-mapper",
-            "oidc-address-mapper"
+            "oidc-usermodel-attribute-mapper"
           ]
         }
       },

@@ -1,3 +1,4 @@
+using BuildingBlocks.Domain.Models;
 using BuildingBlocks.SharedKernel.DTOs;
 using Keycloak.AuthServices.Sdk.Admin.Models;
 using Keycloak.AuthServices.Sdk.Admin.Requests.Users;

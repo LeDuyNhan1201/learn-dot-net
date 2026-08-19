@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BuildingBlocks.Identity.Extensions;
 
@@ -17,8 +18,11 @@ internal static class JwtBearerExtensions
     internal static void ConfigureJwtBearer<T>(this JwtBearerOptions options)
         where T : class
     {
-        options.TokenValidationParameters.NameClaimType = KeycloakConstants.NameClaimType;
-        options.TokenValidationParameters.RoleClaimType = KeycloakConstants.RoleClaimType;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            NameClaimType = KeycloakConstants.NameClaimType,
+            RoleClaimType = KeycloakConstants.RoleClaimType
+        };
         options.MapInboundClaims = false;
 
         options.Events = new JwtBearerEvents

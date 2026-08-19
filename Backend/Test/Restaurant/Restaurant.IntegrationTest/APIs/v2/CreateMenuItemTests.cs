@@ -13,12 +13,8 @@ using Xunit;
 namespace Restaurant.IntegrationTest.APIs.v2;
 
 [Collection("RestaurantIntegrationTest")]
-public sealed class CreateMenuItemTests : MenuItemHttpEndpointTest, IAsyncLifetime
+public sealed class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpointTest(fixture), IAsyncLifetime
 {
-    public CreateMenuItemTests(RestaurantFixture fixture) : base(fixture)
-    {
-    }
-    
     public ValueTask InitializeAsync()
     {
         // BEFORE EACH
@@ -60,6 +56,20 @@ public sealed class CreateMenuItemTests : MenuItemHttpEndpointTest, IAsyncLifeti
         await response.AssertResponseAsync<BaseResponse<object>>(
             HttpStatusCode.Unauthorized, 
             AuthErrors.Unauthorized.Code);
+    }
+    
+    [Fact]
+    public async Task Should_Return_403_When_User_Is_Not_Admin()
+    {
+        // Arrange
+        var request = ValidRequest;
+        var accessToken = Fixture.Factory.CustomerAccessToken;
+        var response = await PostAsync(MenuItemUri, request, accessToken);
+
+        // Assert response
+        await response.AssertResponseAsync<BaseResponse<object>>(
+            HttpStatusCode.Forbidden, 
+            AuthErrors.Forbidden.Code);
     }
 
     [Fact]

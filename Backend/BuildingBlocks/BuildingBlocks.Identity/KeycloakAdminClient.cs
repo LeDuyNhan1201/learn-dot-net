@@ -1,10 +1,13 @@
 using System.Net;
 using System.Net.Http.Json;
 using BuildingBlocks.Application.RestClients;
+using BuildingBlocks.Domain.Enumerations;
+using BuildingBlocks.Domain.Models;
 using BuildingBlocks.SharedKernel.DTOs;
 using Keycloak.AuthServices.Sdk;
 using Keycloak.AuthServices.Sdk.Admin;
 using Keycloak.AuthServices.Sdk.Admin.Models;
+using Keycloak.AuthServices.Sdk.Admin.Requests.Groups;
 using Keycloak.AuthServices.Sdk.Admin.Requests.Users;
 using Microsoft.Extensions.Options;
 
@@ -62,6 +65,21 @@ public sealed class KeycloakAdminClient(
         CreateKeycloakUserRequest request,
         CancellationToken cancellationToken = default)
     {
+        var groupParameters = new GetGroupsRequestParameters
+        {
+            Search = request.Group.ToString(),
+            Exact = true,
+            BriefRepresentation = true
+        };
+        var groups = (await keycloak.GetGroupsAsync(_realm, groupParameters, cancellationToken))?.ToList();
+
+        if (groups is null || groups.Count == 0)
+        {
+            throw new InvalidOperationException($"Failed to retrieve Keycloak groups. Group '{request.Group}' not found.");
+        }
+        
+        var groupId = groups.First().Id ?? throw new InvalidOperationException($"Group '{request.Group}' does not have a valid ID.");
+        
         var user = new UserRepresentation
         {
             Username = request.Username,
@@ -79,11 +97,7 @@ public sealed class KeycloakAdminClient(
                     Temporary = false,
                     Value = request.Password
                 }
-            ],
-            ClientRoles =  new Dictionary<string, ICollection<string>>
-            {
-                [options.Value.Resource] = request.Roles ?? Array.Empty<string>()
-            }
+            ]
         };
 
         using var response = await keycloak.CreateUserWithResponseAsync(_realm, user, cancellationToken);
@@ -94,7 +108,11 @@ public sealed class KeycloakAdminClient(
         }
 
         var location = response.Headers.Location ?? throw new InvalidOperationException("Keycloak did not return Location header.");
-        return location.Segments[^1];
+        var userId = location.Segments[^1];
+        
+        await keycloak.JoinGroupWithResponseAsync(_realm, userId, groupId, cancellationToken);
+        
+        return userId;
     }
 
     public async Task<IReadOnlyCollection<string>> CreateUsersAsync(
