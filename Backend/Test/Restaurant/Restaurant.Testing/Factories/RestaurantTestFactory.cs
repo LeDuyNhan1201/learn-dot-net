@@ -1,5 +1,5 @@
-using BuildingBlocks.Application.RestClients;
-using BuildingBlocks.Domain.Services;
+using BuildingBlocks.Application.Abstractions;
+using BuildingBlocks.Domain.Abstractions.Bussiness;
 using BuildingBlocks.Testing.Factories;
 using BuildingBlocks.Testing.Fixtures;
 using BuildingBlocks.Testing.Messaging;
@@ -18,10 +18,10 @@ public sealed class RestaurantTestFactory(PostgreSqlFixture postgres) : BaseTest
 {
     public string AdminAccessToken { get; set; } = string.Empty;
     public string CustomerAccessToken { get; set; } = string.Empty;
-    
+
     public UserRepresentation AdminUser { get; set; } = null!;
     public UserRepresentation CustomerUser { get; set; } = null!;
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         base.ConfigureWebHost(builder);
@@ -38,7 +38,7 @@ public sealed class RestaurantTestFactory(PostgreSqlFixture postgres) : BaseTest
         var db = scope.ServiceProvider.GetRequiredService<RestaurantDbContext>();
         await db.Database.MigrateAsync();
     }
-    
+
     public async Task InitializeKeycloakUsersAsync()
     {
         using var scope = Services.CreateScope();
@@ -46,7 +46,7 @@ public sealed class RestaurantTestFactory(PostgreSqlFixture postgres) : BaseTest
         await seeder.InitAdministrators();
         await seeder.InitCustomers();
     }
-    
+
     public async Task<string> GetAccessTokenAsync(string username, string password)
     {
         using var scope = Services.CreateScope();
@@ -54,7 +54,7 @@ public sealed class RestaurantTestFactory(PostgreSqlFixture postgres) : BaseTest
         var response = await keycloakAdminClient.GetTokensAsync(username, password);
         return response.AccessToken;
     }
-    
+
     public async Task<UserRepresentation> GetUserByEmailAsync(string email)
     {
         using var scope = Services.CreateScope();

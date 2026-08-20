@@ -7,10 +7,10 @@ public record BaseResponse
     [JsonPropertyName("code")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Code { get; init; }
-    
+
     [JsonPropertyName("message")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string? Message { get; set; }
+    public string? Message { get; set; }
 }
 
 public sealed record BaseResponse<T> : BaseResponse

@@ -1,12 +1,13 @@
 using BuildingBlocks.API.Extensions;
 using BuildingBlocks.Application.Behaviors;
 using BuildingBlocks.Application.Services;
-using BuildingBlocks.Domain.Contracts;
-using BuildingBlocks.Domain.Exceptions.Handlers;
-using BuildingBlocks.Domain.Services;
+using BuildingBlocks.Domain.Abstractions.Bussiness;
+using BuildingBlocks.Domain.Abstractions.Event;
+using BuildingBlocks.Domain.Exceptions;
 using BuildingBlocks.Identity.Extensions;
 using BuildingBlocks.Messaging.Extensions;
 using BuildingBlocks.Observability.Extensions;
+using BuildingBlocks.OpenApi.Abstractions;
 using BuildingBlocks.OpenApi.Extensions;
 using BuildingBlocks.Persistence.Extensions;
 using BuildingBlocks.SharedKernel.Localization;
@@ -44,12 +45,15 @@ public static class ServiceCollectionExtensions
             .AddPostgresDatabase<RestaurantDbContext>()
             .AddI18NLocalization()
             .AddExceptionObservability()
-            .AddScalarOpenApi(options => { options.AddSchemaTransformer<SampleSchemaOperationTransformer>(); });
+            .AddScalarOpenApi();
+        
+        // Inject OpenAPI Schema Example Provider
+        services.AddSingleton<ISchemaExampleProvider, CreateMenuItemExample>();
 
         if (!environment.IsEnvironment("Testing")) services.AddObservability(configuration);
-        
+
         services.AddValidatorsFromAssemblyContaining<CreateMenuItemCommandValidator>();
-        
+
         // Inject Domain Event Handlers
         services.AddScoped<IDomainEventHandler<MenuItemCreatedDomainEvent>, CreateMenuItemDomainEventHandler>();
 
@@ -65,7 +69,7 @@ public static class ServiceCollectionExtensions
 
         // Inject Repositories
         services.AddScoped<IMenuItemRepository, MenuItemRepository>();
-        
+
         // Inject Security
         services.AddKeycloakAdmin(configuration, environment);
         services.AddAuthenticationWithAuthorization<Messages>(configuration, environment);

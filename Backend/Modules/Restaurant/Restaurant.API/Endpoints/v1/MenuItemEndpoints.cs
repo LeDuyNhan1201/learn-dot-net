@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using BuildingBlocks.API.Interfaces;
+using BuildingBlocks.API.Abstractions;
 using BuildingBlocks.API.Validation;
 using BuildingBlocks.OpenApi.Versions;
 using Restaurant.Application.DTOs;

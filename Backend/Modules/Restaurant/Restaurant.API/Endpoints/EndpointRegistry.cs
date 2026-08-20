@@ -1,5 +1,5 @@
+using BuildingBlocks.API.Abstractions;
 using BuildingBlocks.API.Endpoints;
-using BuildingBlocks.API.Interfaces;
 using Restaurant.API.Endpoints.v1;
 
 namespace Restaurant.API.Endpoints;

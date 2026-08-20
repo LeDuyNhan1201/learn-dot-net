@@ -1,6 +1,6 @@
 using BuildingBlocks.OpenApi.Extensions;
 using BuildingBlocks.OpenApi.Options;
-using BuildingBlocks.OpenApi.Utils;
+using BuildingBlocks.SharedKernel.Utils;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

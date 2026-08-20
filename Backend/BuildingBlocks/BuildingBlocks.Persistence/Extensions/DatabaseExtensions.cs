@@ -1,6 +1,4 @@
-using BuildingBlocks.Domain.DbContexts;
-using BuildingBlocks.Domain.ExecutionContext.Interfaces;
-using BuildingBlocks.Domain.Repositories.UnitOfWork;
+using BuildingBlocks.Domain.Abstractions.Data;
 using BuildingBlocks.Persistence.ExecutionContext;
 using BuildingBlocks.Persistence.Interceptors;
 using BuildingBlocks.Persistence.Options;

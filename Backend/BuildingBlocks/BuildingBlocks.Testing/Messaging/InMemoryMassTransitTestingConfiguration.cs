@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.DbContexts;
+using BuildingBlocks.Domain.Abstractions.Data;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +20,7 @@ public static class InMemoryMassTransitTestingConfiguration
             //     configurator.UsePostgres();
             //     configurator.UseBusOutbox();
             // });
-            
+
             foreach (var consumerType in consumerTypes) busConfig.AddConsumer(consumerType);
 
             // busConfig.AddConfigureEndpointsCallback((context, name, endpoint) => { endpoint.UseEntityFrameworkOutbox<T>(context); });

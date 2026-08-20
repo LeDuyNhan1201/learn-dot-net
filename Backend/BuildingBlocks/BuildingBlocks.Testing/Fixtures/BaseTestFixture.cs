@@ -13,8 +13,6 @@ public abstract class BaseTestFixture<TFactory> : IAsyncLifetime
 
     public HttpClient Client { get; private set; } = null!;
 
-    protected abstract TFactory CreateFactory();
-
     public virtual async ValueTask InitializeAsync()
     {
         await Postgres.InitializeAsync();
@@ -32,4 +30,6 @@ public abstract class BaseTestFixture<TFactory> : IAsyncLifetime
         await Postgres.DisposeAsync();
         await Keycloak.DisposeAsync();
     }
+
+    protected abstract TFactory CreateFactory();
 }

@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.Exceptions.Processors;
+using BuildingBlocks.Domain.Abstractions.Exception;
 
 namespace BuildingBlocks.Application.Exceptions;
 

@@ -1,4 +1,5 @@
-using BuildingBlocks.Application.RestClients;
+using BuildingBlocks.Application.Abstractions;
+using BuildingBlocks.Identity.Clients;
 using BuildingBlocks.Identity.Options;
 using Duende.AccessTokenManagement;
 using Keycloak.AuthServices.Sdk;

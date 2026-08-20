@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.Entities;
+using BuildingBlocks.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

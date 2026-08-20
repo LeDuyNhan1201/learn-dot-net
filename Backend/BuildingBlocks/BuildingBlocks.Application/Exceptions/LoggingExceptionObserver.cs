@@ -1,5 +1,5 @@
+using BuildingBlocks.Domain.Abstractions.Exception;
 using BuildingBlocks.Domain.Exceptions;
-using BuildingBlocks.Domain.Exceptions.Processors;
 using Microsoft.Extensions.Logging;
 
 namespace BuildingBlocks.Application.Exceptions;

@@ -26,7 +26,7 @@ public sealed class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHtt
         // AFTER EACH
         return ValueTask.CompletedTask;
     }
-    
+
     [Fact]
     public async Task Should_Create_MenuItem()
     {
@@ -44,7 +44,7 @@ public sealed class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHtt
         db.MenuItems.Should().Contain(menuItem => menuItem.Name == request.MenuItemName);
         db.MenuItems.Should().Contain(menuItem => menuItem.CreatedBy == Fixture.Factory.AdminUser.Id);
     }
-    
+
     [Fact]
     public async Task Should_Return_401_When_AccessToken_Invalid()
     {
@@ -54,10 +54,10 @@ public sealed class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHtt
 
         // Assert response
         await response.AssertResponseAsync<BaseResponse<object>>(
-            HttpStatusCode.Unauthorized, 
+            HttpStatusCode.Unauthorized,
             AuthErrors.Unauthorized.Code);
     }
-    
+
     [Fact]
     public async Task Should_Return_403_When_User_Is_Not_Admin()
     {
@@ -68,7 +68,7 @@ public sealed class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHtt
 
         // Assert response
         await response.AssertResponseAsync<BaseResponse<object>>(
-            HttpStatusCode.Forbidden, 
+            HttpStatusCode.Forbidden,
             AuthErrors.Forbidden.Code);
     }
 

@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.Events;
+using BuildingBlocks.Domain.Models;
 using Restaurant.Domain.Enumerations;
 
 namespace Restaurant.Domain.Contracts.DomainEvents;

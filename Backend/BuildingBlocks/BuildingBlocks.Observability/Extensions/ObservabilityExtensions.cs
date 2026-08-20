@@ -1,5 +1,5 @@
 using BuildingBlocks.Application.Exceptions;
-using BuildingBlocks.Domain.Exceptions.Processors;
+using BuildingBlocks.Domain.Abstractions.Exception;
 using BuildingBlocks.Observability.Configurations;
 using BuildingBlocks.Observability.Exceptions;
 using BuildingBlocks.Observability.Meters;

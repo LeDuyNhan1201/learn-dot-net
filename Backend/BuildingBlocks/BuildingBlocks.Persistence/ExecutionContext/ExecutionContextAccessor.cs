@@ -1,5 +1,5 @@
-using BuildingBlocks.Domain.ExecutionContext;
-using BuildingBlocks.Domain.ExecutionContext.Interfaces;
+using BuildingBlocks.Domain.Abstractions.Data;
+using BuildingBlocks.Domain.Models;
 
 namespace BuildingBlocks.Persistence.ExecutionContext;
 

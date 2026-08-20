@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.Repositories;
+using BuildingBlocks.Domain.Abstractions.Data;
 using Restaurant.Domain.Entities;
 
 namespace Restaurant.Domain.Repositories;

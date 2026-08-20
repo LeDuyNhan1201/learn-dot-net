@@ -1,7 +1,6 @@
-using BuildingBlocks.Domain.Contracts;
-using BuildingBlocks.Domain.DbContexts;
-using BuildingBlocks.Domain.Events;
-using BuildingBlocks.Domain.Repositories.UnitOfWork;
+using BuildingBlocks.Domain.Abstractions.Data;
+using BuildingBlocks.Domain.Abstractions.Event;
+using BuildingBlocks.Domain.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace BuildingBlocks.Persistence.Repositories;

@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using BuildingBlocks.Domain.Entities;
+using BuildingBlocks.Domain.Models;
 
 namespace Restaurant.Domain.Entities;
 

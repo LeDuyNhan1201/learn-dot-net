@@ -1,8 +1,8 @@
-﻿using BuildingBlocks.OpenApi.Options;
+﻿using BuildingBlocks.OpenApi.Metadata;
+using BuildingBlocks.OpenApi.Options;
 using BuildingBlocks.OpenApi.Utils;
 using BuildingBlocks.OpenApi.Versions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -27,9 +27,7 @@ public static class OpenApiExtensions
                 .AddDocumentTransformer<Version2DocumentTransformer>())
     ];
 
-    public static IServiceCollection AddScalarOpenApi(
-        this IServiceCollection services,
-        params Action<OpenApiOptions>[] moduleConfigurations)
+    public static IServiceCollection AddScalarOpenApi(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
 
@@ -37,8 +35,7 @@ public static class OpenApiExtensions
             services.AddOpenApi(document.Version, options =>
             {
                 document.Configure(options);
-
-                foreach (var configure in moduleConfigurations) configure(options);
+                options.AddSchemaTransformer<SchemaExampleTransformer>();
             });
 
         services.AddEndpointsApiExplorer();

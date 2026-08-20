@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BuildingBlocks.Domain.Entities;
+using BuildingBlocks.Domain.Models;
 using Restaurant.Domain.Enumerations;
 
 namespace Restaurant.Domain.Entities;

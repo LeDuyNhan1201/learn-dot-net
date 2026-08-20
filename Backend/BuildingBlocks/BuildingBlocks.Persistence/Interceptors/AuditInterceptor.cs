@@ -1,5 +1,5 @@
-using BuildingBlocks.Domain.Entities;
-using BuildingBlocks.Domain.ExecutionContext.Interfaces;
+using BuildingBlocks.Domain.Abstractions.Data;
+using BuildingBlocks.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 

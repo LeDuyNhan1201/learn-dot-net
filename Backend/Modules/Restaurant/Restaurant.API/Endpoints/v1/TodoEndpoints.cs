@@ -1,4 +1,4 @@
-using BuildingBlocks.API.Interfaces;
+using BuildingBlocks.API.Abstractions;
 using BuildingBlocks.OpenApi.Versions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Restaurant.Application.Services.Interfaces;

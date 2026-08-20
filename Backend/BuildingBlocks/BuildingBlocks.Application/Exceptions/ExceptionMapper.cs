@@ -1,6 +1,6 @@
 using System.Collections;
+using BuildingBlocks.Domain.Abstractions.Exception;
 using BuildingBlocks.Domain.Exceptions;
-using BuildingBlocks.Domain.Exceptions.Processors;
 using BuildingBlocks.SharedKernel.Errors.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;

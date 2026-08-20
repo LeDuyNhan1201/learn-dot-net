@@ -1,6 +1,6 @@
 using System.Reflection;
-using BuildingBlocks.Domain.Contracts;
-using BuildingBlocks.Domain.DbContexts;
+using BuildingBlocks.Domain.Abstractions.Data;
+using BuildingBlocks.Domain.Abstractions.Event;
 using BuildingBlocks.Messaging.Configurations;
 using BuildingBlocks.Messaging.Events;
 using BuildingBlocks.SharedKernel.Attributes;

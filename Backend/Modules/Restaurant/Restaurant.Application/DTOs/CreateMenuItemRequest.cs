@@ -6,20 +6,19 @@ namespace Restaurant.Application.DTOs;
 
 public sealed record CreateMenuItemRequest
 {
-    [JsonPropertyName("name")] 
+    [JsonPropertyName("name")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? MenuItemName { get; init; }
-    
-    [JsonPropertyName("description")] 
+
+    [JsonPropertyName("description")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? MenuItemDescription { get; init; }
-    
+
     [JsonPropertyName("imageUrl")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? MenuItemImageUrl { get; init; }
-    
-    [JsonPropertyName("price")]
-    public decimal MenuItemPrice { get; init; }
+
+    [JsonPropertyName("price")] public decimal MenuItemPrice { get; init; }
 
     [DefaultValue(MenuCategory.Food)]
     [JsonPropertyName("category")]

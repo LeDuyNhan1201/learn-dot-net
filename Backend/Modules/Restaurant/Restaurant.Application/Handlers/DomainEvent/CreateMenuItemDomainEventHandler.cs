@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.Contracts;
+using BuildingBlocks.Domain.Abstractions.Event;
 using MassTransit;
 using Restaurant.Domain.Contracts.DomainEvents;
 using Restaurant.Domain.Contracts.IntegrationEvents;

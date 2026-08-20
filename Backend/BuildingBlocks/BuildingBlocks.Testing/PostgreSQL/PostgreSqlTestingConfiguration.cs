@@ -1,4 +1,4 @@
-using BuildingBlocks.Domain.DbContexts;
+using BuildingBlocks.Domain.Abstractions.Data;
 using BuildingBlocks.Testing.Fixtures;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +8,7 @@ namespace BuildingBlocks.Testing.PostgreSQL;
 
 public static class PostgreSqlTestingConfiguration
 {
-    public static void ConfigureTestPostgres<T>(this IServiceCollection services, PostgreSqlFixture postgres) 
+    public static void ConfigureTestPostgres<T>(this IServiceCollection services, PostgreSqlFixture postgres)
         where T : DbContext, IApplicationDbContext
     {
         services.RemoveAll<DbContextOptions<T>>();

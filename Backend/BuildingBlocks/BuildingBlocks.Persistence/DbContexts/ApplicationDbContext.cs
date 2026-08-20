@@ -1,4 +1,4 @@
-﻿using BuildingBlocks.Domain.DbContexts;
+﻿using BuildingBlocks.Domain.Abstractions.Data;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 

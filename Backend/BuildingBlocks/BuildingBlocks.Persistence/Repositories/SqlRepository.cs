@@ -1,8 +1,7 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
-using BuildingBlocks.Domain.DbContexts;
-using BuildingBlocks.Domain.Entities;
-using BuildingBlocks.Domain.Repositories;
+using BuildingBlocks.Domain.Abstractions.Data;
+using BuildingBlocks.Domain.Models;
 using BuildingBlocks.SharedKernel.DTOs;
 using Microsoft.EntityFrameworkCore;
 

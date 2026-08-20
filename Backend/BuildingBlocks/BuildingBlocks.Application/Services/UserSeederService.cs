@@ -1,8 +1,8 @@
-using BuildingBlocks.Application.RestClients;
+using BuildingBlocks.Application.Abstractions;
+using BuildingBlocks.Domain.Abstractions.Bussiness;
 using BuildingBlocks.Domain.Enumerations;
 using BuildingBlocks.Domain.Models;
-using BuildingBlocks.Domain.Services;
-using BuildingBlocks.SharedKernel.Helpers;
+using BuildingBlocks.SharedKernel.Utils;
 
 namespace BuildingBlocks.Application.Services;
 
@@ -13,35 +13,35 @@ public sealed class UserSeederService(IKeycloakAdminClient keycloakAdminClient) 
         var administrators = new[]
         {
             new CreateKeycloakUserRequest(
-                Username: "admin",
-                Email: Constants.AdministratorSampleEmail,
-                FirstName: "Test",
-                LastName: "Admin",
-                Password: Constants.AdministratorSamplePassword,
-                Enabled: true,
-                EmailVerified: true,
-                Attributes: null,
-                Group: KeycloakUserGroup.Administrators
+                "admin",
+                Constants.AdministratorSampleEmail,
+                "Test",
+                "Admin",
+                Constants.AdministratorSamplePassword,
+                true,
+                true,
+                null,
+                KeycloakUserGroup.Administrators
             )
         };
 
         return await keycloakAdminClient.CreateUsersAsync(administrators, cancellationToken);
     }
-    
+
     public async Task<IReadOnlyCollection<string>> InitCustomers(CancellationToken cancellationToken = default)
     {
         var customers = new[]
         {
             new CreateKeycloakUserRequest(
-                Username: "customer",
-                Email: Constants.CustomerSampleEmail,
-                FirstName: "Test",
-                LastName: "Customer",
-                Password: Constants.CustomerSamplePassword,
-                Enabled: true,
-                EmailVerified: true,
-                Attributes: null,
-                Group: KeycloakUserGroup.Customers
+                "customer",
+                Constants.CustomerSampleEmail,
+                "Test",
+                "Customer",
+                Constants.CustomerSamplePassword,
+                true,
+                true,
+                null,
+                KeycloakUserGroup.Customers
             )
         };
 

@@ -18,7 +18,7 @@ public class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpoi
         // Arrange
         var harness = Services.GetRequiredService<ITestHarness>();
         await harness.Start();
-        
+
         var accessToken = Fixture.Factory.AdminAccessToken;
         await PostAsync(MenuItemUri, ValidRequest, accessToken);
 
@@ -37,7 +37,7 @@ public class CreateMenuItemTests(RestaurantFixture fixture) : MenuItemHttpEndpoi
         // Arrange
         var harness = Services.GetRequiredService<ITestHarness>();
         await harness.Start();
-        
+
         var accessToken = Fixture.Factory.AdminAccessToken;
         await PostAsync(MenuItemUri, ValidRequest, accessToken);
 

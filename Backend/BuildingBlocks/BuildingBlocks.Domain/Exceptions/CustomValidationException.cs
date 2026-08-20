@@ -25,6 +25,5 @@ public sealed class CustomValidationException : Exception
     }
 
     public IReadOnlyDictionary<string, ValidationError[]> Errors { get; }
-
     public IReadOnlyList<string> OtherErrors { get; }
 }

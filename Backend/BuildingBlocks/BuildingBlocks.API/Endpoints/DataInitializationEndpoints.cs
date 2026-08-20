@@ -1,5 +1,5 @@
-using BuildingBlocks.API.Interfaces;
-using BuildingBlocks.Domain.Services;
+using BuildingBlocks.API.Abstractions;
+using BuildingBlocks.Domain.Abstractions.Bussiness;
 using BuildingBlocks.OpenApi.Versions;
 using BuildingBlocks.SharedKernel.DTOs;
 using Microsoft.AspNetCore.Builder;
@@ -22,7 +22,7 @@ public class DataInitializationEndpoints : IEndpointModule
             var adminIds = await service.InitAdministrators(cancellationToken);
             var customerIds = await service.InitCustomers(cancellationToken);
             var userIds = adminIds.Concat(customerIds).ToList();
-            return Results.Created($"/users", new BaseResponse<IReadOnlyCollection<string>> { Data = userIds });
+            return Results.Created("/users", new BaseResponse<IReadOnlyCollection<string>> { Data = userIds });
         });
     }
 }

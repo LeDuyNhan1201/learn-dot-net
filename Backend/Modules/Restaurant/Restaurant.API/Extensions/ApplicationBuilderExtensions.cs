@@ -1,4 +1,4 @@
-using BuildingBlocks.API.Endpoints;
+using BuildingBlocks.API.Extensions;
 using BuildingBlocks.Identity.Middlewares;
 using BuildingBlocks.Observability.Extensions;
 using BuildingBlocks.Persistence.Extensions;

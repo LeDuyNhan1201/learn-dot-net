@@ -60,7 +60,7 @@ internal static class JwtBearerExtensions
                 var localizer = context
                     .HttpContext.RequestServices
                     .GetRequiredService<CompositeLocalizer<T>>();
-                
+
                 context.HandleResponse();
 
                 if (context.Response.HasStarted) return;
@@ -80,7 +80,7 @@ internal static class JwtBearerExtensions
                 var localizer = context
                     .HttpContext.RequestServices
                     .GetRequiredService<CompositeLocalizer<T>>();
-                
+
                 if (context.Response.HasStarted) return;
 
                 await context.Response.WriteAuthenticationErrorAsync(
@@ -103,7 +103,7 @@ internal static class JwtBearerExtensions
     {
         response.StatusCode = statusCode;
         response.ContentType = "application/json; charset=utf-8";
-        
+
         var options = new JsonSerializerOptions
         {
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,

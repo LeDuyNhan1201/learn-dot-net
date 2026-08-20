@@ -59,20 +59,18 @@ public static class HttpTestingHelper
     private static string GetJsonPropertyName<T, TValue>(
         Expression<Func<T, TValue>> expression)
     {
-        Expression body = expression.Body;
+        var body = expression.Body;
 
         if (body is UnaryExpression
             {
                 NodeType: ExpressionType.Convert or ExpressionType.ConvertChecked
             } unary)
-        {
             body = unary.Operand;
-        }
 
         if (body is not MemberExpression member)
             throw new ArgumentException("Expression must be a property access.", nameof(expression));
 
-        if (member.Member is not PropertyInfo property) 
+        if (member.Member is not PropertyInfo property)
             throw new ArgumentException("Expression must be a property access.", nameof(expression));
 
         return property.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? property.Name;

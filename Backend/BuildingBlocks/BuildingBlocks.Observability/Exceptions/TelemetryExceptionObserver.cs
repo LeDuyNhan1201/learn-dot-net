@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using BuildingBlocks.Domain.Exceptions.Processors;
+using BuildingBlocks.Domain.Abstractions.Exception;
 using BuildingBlocks.Observability.Meters;
 
 namespace BuildingBlocks.Observability.Exceptions;

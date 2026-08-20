@@ -1,4 +1,4 @@
-using BuildingBlocks.API.Interfaces;
+using BuildingBlocks.API.Abstractions;
 using BuildingBlocks.OpenApi.Versions;
 using BuildingBlocks.SharedKernel.Localization;
 using BuildingBlocks.SharedKernel.Options;

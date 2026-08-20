@@ -31,20 +31,18 @@ public static class AuthenticationExtensions
                 options =>
                 {
                     if (environment.IsEnvironment("Local"))
-                    {
                         options.BackchannelHttpHandler = new HttpClientHandler
                         {
                             ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
                         };
-                    }
 
                     options.ConfigureJwtBearer<T>();
                 });
 
         services.AddAuthorizationBuilder()
-            .AddPolicy(nameof(KeycloakUserGroup.Administrators), 
+            .AddPolicy(nameof(KeycloakUserGroup.Administrators),
                 policy => policy.RequireRole(nameof(KeycloakUserRole.Admin).ToLower()))
-            .AddPolicy(nameof(KeycloakUserGroup.Customers), 
+            .AddPolicy(nameof(KeycloakUserGroup.Customers),
                 policy => policy.RequireRole(nameof(KeycloakUserRole.Customer).ToLower()));
 
         return services;
