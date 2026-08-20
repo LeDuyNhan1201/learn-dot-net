@@ -1,59 +1,3 @@
-```shell
-docker exec keycloak0 /opt/keycloak/bin/kc.sh export \
-		--realm learn-dot-netl-dev \
-		--dir /opt/keycloak/data/export \
-		--users realm_file \
-		--log-level info
-```
-
-```shell
-docker exec keycloak0 /opt/keycloak/bin/kc.sh export \
-		--realm learn-dot-netl-dev \
-		--dir /opt/keycloak/data/export \
-        --users different_files --users-per-file 200 \
-        --log-level info
-```
-
-```shell
-docker run -d --name kafka-ui -p 8088:8080 \
--e KAFKA_CLUSTERS_0_NAME=local \
--e KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=b-1-public.mskcluster.feggi5.c2.kafka.ap-southeast-2.amazonaws.com:9196,b-2-public.mskcluster.feggi5.c2.kafka.ap-southeast-2.amazonaws.com:9196 \
--e KAFKA_CLUSTERS_0_PROPERTIES_SECURITY_PROTOCOL=SASL_SSL \
--e KAFKA_CLUSTERS_0_PROPERTIES_SASL_MECHANISM=SCRAM-SHA-512 \
--e KAFKA_CLUSTERS_0_PROPERTIES_SASL_JAAS_CONFIG='org.apache.kafka.common.security.scram.ScramLoginModule required username="admin" password="Xk!J7%#r@avW67j*d3%M1JpM#i%jH*&5kX3&J2yjkZf2x";' \
-provectuslabs/kafka-ui:latest
-```
-
-```yaml
-apiVersion: kafka.strimzi.io/v1
-kind: KafkaNodePool
-metadata:
-  name: dual-broker
-  labels:
-    strimzi.io/cluster: cluster-0
-spec:
-  replicas: 3
-  roles:
-    - controller
-    - broker
-  storage:
-    type: jbod
-    volumes:
-      - id: 0
-        type: persistent-claim
-        size: 100Gi
-        kraftMetadata: shared
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kafka-metrics
-  labels:
-    app: strimzi
-data:
-  kafka-metrics-config.yml: |
-    ...
----
 apiVersion: kafka.strimzi.io/v1
 kind: Kafka
 metadata:
@@ -67,19 +11,19 @@ spec:
         port: 9092
         type: internal
         tls: true
-
+        
         authentication:
           type: scram-sha-512
-
+          
       - name: tls
         port: 9093
         type: internal
         tls: true
-
+        
         authentication:
           type: custom
           sasl: true
-
+          
           listenerConfig:
             sasl.enabled.mechanisms: OAUTHBEARER
             oauthbearer.sasl.server.callback.handler.class: io.strimzi.kafka.oauth.server.JaasServerOauthValidatorCallbackHandler
@@ -105,7 +49,7 @@ spec:
               oauth.ssl.truststore.location="/mnt/oauth-certs/tls.crt"
               oauth.ssl.truststore.password="${CERT_SECRET}";
             connections.max.reauth.ms: 3600
-
+            
     authorization:
       type: custom
       authorizerClass: io.strimzi.kafka.oauth.server.authorizer.KeycloakAuthorizer
@@ -115,7 +59,7 @@ spec:
     config:
       # Needed for Oauth authentication and Keycloak authroization
       principal.builder.class: io.strimzi.kafka.oauth.server.OAuthKafkaPrincipalBuilder
-
+      
       # Needed for Keycloak authorization
       strimzi.authorization.client.id: kafka
       strimzi.authorization.token.endpoint.uri: https://${KEYCLOAK_DOMAIN}/realms/${KAFKA_IDP_REALM}/protocol/openid-connect/token
@@ -123,34 +67,33 @@ spec:
       strimzi.authorization.delegate.to.kafka.acl: "false"
       strimzi.authorization.ssl.truststore.location: /mnt/oauth-certs/tls.crt
       strimzi.authorization.ssl.truststore.type: PEM
-
+      
       # Other Kafka configuration options
       offsets.topic.replication.factor: 3
       transaction.state.log.replication.factor: 3
       transaction.state.log.min.isr: 2
       default.replication.factor: 3
       min.insync.replicas: 2
-
+      
     template:
       pod:
         volumes:
           - name: oauth-certs
             secret:
               secretName: oauth-server-cert
-
+              
       kafkaContainer:
         volumeMounts:
           - name: oauth-certs
             mountPath: /mnt/oauth-
-
+            
     metricsConfig:
       type: jmxPrometheusExporter
       valueFrom:
         configMapKeyRef:
           name: kafka-metrics
           key: kafka-metrics-config.yml
-
+          
   entityOperator:
     topicOperator: {}
     userOperator: {}
-```
