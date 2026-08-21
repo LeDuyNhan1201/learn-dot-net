@@ -1,0 +1,8 @@
+apiVersion: v2
+name: kafka-cluster
+description: Kafka cluster deployed using Strimzi Operator
+
+type: application
+
+version: 0.1.0
+appVersion: "4.3.1" # https://github.com/strimzi/strimzi-kafka-operator/blob/main/kafka-versions.yaml

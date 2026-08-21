@@ -1,0 +1,50 @@
+kafka:
+  version: 4.3.1 # https://github.com/strimzi/strimzi-kafka-operator/blob/main/kafka-versions.yaml
+  metadataVersion: 4.3-IV0 # https://github.com/strimzi/strimzi-kafka-operator/blob/main/kafka-versions.yaml
+  
+node:
+  replicas: 3
+
+cluster:
+  defaultReplicationFactor: 3
+  minInSyncReplicas: 2
+
+  offsetsTopicReplicationFactor: 3
+
+  transaction:
+    stateLogReplicationFactor: 3
+    stateLogMinInSyncReplicas: 2
+
+  oauth:
+    maxReauthMs: 3600000
+
+    expectedAudience: "account"
+    usernameClaim: "sub"
+
+    jwks:
+      refreshSeconds: 600
+      expirySeconds: 3600
+      refreshMinPauseSeconds: 3
+
+    http:
+      retries: 3
+      retryPauseMillis: 1000
+      connectTimeoutSeconds: 5
+      readTimeoutSeconds: 10
+      includeAcceptHeader: true
+
+    keycloak:
+      baseUrl: "https://leduynhan1201.learn-dot-net.dev:60000/auth"
+      realm: "kafka-authz"
+
+  authorization:
+    grants:
+      refreshPeriodSeconds: 60
+      refreshPoolSize: 5
+      maxIdleTimeSeconds: 300
+      gcPeriodSeconds: 60
+
+    http:
+      retries: 3
+      connectTimeoutSeconds: 5
+      readTimeoutSeconds: 10
