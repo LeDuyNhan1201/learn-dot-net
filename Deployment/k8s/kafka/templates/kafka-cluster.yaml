@@ -16,7 +16,7 @@ spec:
           listenerConfig:
             ssl.client.auth: required
             ssl.principal.mapping.rules: RULE:^CN=(.*?),(.*)$/$1@cluster-0.com/
-            ssl.truststore.location: /mnt/oauth-certs/ca.crt
+            ssl.truststore.location: /mnt/kafka-certs/kafka-ca.crt
             ssl.truststore.type: PEM
             
         configuration:
@@ -48,7 +48,7 @@ spec:
           listenerConfig:
             ssl.client.auth: required
             ssl.principal.mapping.rules: RULE:^CN=(.*?),(.*)$/$1@cluster-0.com/
-            ssl.truststore.location: /mnt/oauth-certs/ca.crt
+            ssl.truststore.location: /mnt/kafka-certs/kafka-ca.crt
             ssl.truststore.type: PEM
           
       - name: sasl-ssl
@@ -84,7 +84,7 @@ spec:
 
               oauth.ssl.endpoint.identification.algorithm="https"
               oauth.ssl.truststore.type="PEM"
-              oauth.ssl.truststore.location="/mnt/oauth-certs/ca.crt"
+              oauth.ssl.truststore.location="/mnt/oauth-certs/oauth-ca.crt"
               
               oauth.http.retries={{ .Values.cluster.oauth.http.retries }}
               oauth.http.retry.pause.millis={{ .Values.cluster.oauth.http.retryPauseMillis }}
@@ -126,7 +126,7 @@ spec:
       # TLS validation: Kafka verifies Keycloak server certificate
       strimzi.authorization.ssl.endpoint.identification.algorithm: https
       strimzi.authorization.ssl.truststore.type: PEM
-      strimzi.authorization.ssl.truststore.location: /mnt/oauth-certs/ca.crt
+      strimzi.authorization.ssl.truststore.location: /mnt/oauth-certs/oauth-ca.crt
       
       # Metrics
       strimzi.authorization.enable.metrics: true
@@ -144,11 +144,17 @@ spec:
           - name: oauth-certs
             secret:
               secretName: oauth-ca
+          - name: kafka-certs
+            secret:
+              secretName: kafka-ca
 
       kafkaContainer:
         volumeMounts:
           - name: oauth-certs
             mountPath: /mnt/oauth-certs
+            readOnly: true
+          - name: kafka-certs
+            mountPath: /mnt/kafka-certs
             readOnly: true
             
     metricsConfig:
