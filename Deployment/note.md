@@ -60,21 +60,59 @@ metadata:
   name: cluster-0
 spec:
   kafka:
-    version: 4.3.1
-    metadataVersion: 4.3-IV0
+    version: {{ .Values.kafka.version }}
+    metadataVersion: {{ .Values.kafka.metadataVersion }}
     listeners:
-      - name: tls
+      - name: ingress-mtls
+        port: 9095
+        type: ingress
+        tls: true
+        authentication:
+          type: tls
+          listenerConfig:
+            ssl.client.auth: required
+            ssl.principal.mapping.rules: RULE:^CN=(.*?),(.*)$/$1@cluster-0.com/
+            ssl.truststore.location: /mnt/kafka-certs/kafka-ca.crt
+            ssl.truststore.type: PEM
+
+        configuration:
+          hostTemplate: broker-{nodeId}.cluster-0-kafka.test
+          bootstrap:
+            host: bootstrap.cluster-0-kafka.test
+
+      - name: lb-ssl
+        port: 9094
+        type: loadbalancer
+        tls: true
+        configuration:
+          externalTrafficPolicy: Cluster # Local: avoids hops to other nodes and preserves the client IP
+          brokerCertChainAndKey:
+            secretName: server-certs
+            certificate: server.crt
+            key: server.key
+
+      - name: scram-ssl
         port: 9092
         type: internal
         tls: true
+        configuration:
+          useServiceDnsDomain: true # false: ignore the suffix of the service DNS domain, eg: [dns.svc].cluster.local
 
         authentication:
           type: scram-sha-512
 
-      - name: tls
+          listenerConfig:
+            ssl.client.auth: required
+            ssl.principal.mapping.rules: RULE:^CN=(.*?),(.*)$/$1@cluster-0.com/
+            ssl.truststore.location: /mnt/kafka-certs/kafka-ca.crt
+            ssl.truststore.type: PEM
+
+      - name: sasl-ssl
         port: 9093
         type: internal
         tls: true
+        configuration:
+          useServiceDnsDomain: true # false: ignore the suffix of the service DNS domain, eg: [dns.svc].cluster.local
 
         authentication:
           type: custom
@@ -85,26 +123,35 @@ spec:
             oauthbearer.sasl.server.callback.handler.class: io.strimzi.kafka.oauth.server.JaasServerOauthValidatorCallbackHandler
             oauthbearer.sasl.jaas.config: >
               org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required
-              oauth.valid.issuer.uri="${KAFKA_IDP_EXPECTED_ISSUER}"
-              oauth.expected.audience="${KAFKA_IDP_EXPECTED_AUDIENCE}"
-              oauth.username.claim="${KAFKA_IDP_SUB_CLAIM_NAME}"
-              oauth.jwks.endpoint.uri="https://${KEYCLOAK_DOMAIN}/realms/${KAFKA_IDP_REALM}/protocol/openid-connect/certs"
-              oauth.fallback.username.claim="preferred_username"
+
+              oauth.fail.fast=true
               oauth.check.audience=true
               oauth.check.issuer=true
-              oauth.clock.skew.seconds="${KAFKA_IDP_CLOCK_SKEW_SECONDS}"
-              oauth.jwks.refresh.seconds="${KAFKA_IDP_JWKS_REFRESH_SECONDS}"
-              oauth.jwks.expiry.seconds=3600
-              oauth.jwks.refresh.min.pause.seconds=1
+
+              oauth.valid.issuer.uri={{ printf "https://%s/realms/%s" .Values.cluster.oauth.keycloak.baseUrl .Values.cluster.oauth.keycloak.realm | quote }}
+              oauth.expected.audience={{ .Values.cluster.oauth.expectedAudience | quote }}
+              oauth.username.claim={{ .Values.cluster.oauth.usernameClaim | quote }}
+              oauth.jwks.endpoint.uri={{ printf "https://%s/realms/%s/protocol/openid-connect/certs" .Values.cluster.oauth.keycloak.baseUrl .Values.cluster.oauth.keycloak.realm | quote }}
+              oauth.fallback.username.claim="preferred_username"
+
+              oauth.jwks.refresh.seconds={{ .Values.cluster.oauth.jwks.refreshSeconds }}
+              oauth.jwks.expiry.seconds={{ .Values.cluster.oauth.jwks.expirySeconds }}
+              oauth.jwks.refresh.min.pause.seconds={{ .Values.cluster.oauth.jwks.refreshMinPauseSeconds }}
+
               oauth.ssl.endpoint.identification.algorithm="https"
-              oauth.ssl.keystore.type="PEM"
-              oauth.ssl.keystore.location="/mnt/oauth-certs/key-tls.crt"
-              oauth.ssl.keystore.password="${CERT_SECRET}"
-              oauth.ssl.key.password="${CERT_SECRET}"
               oauth.ssl.truststore.type="PEM"
-              oauth.ssl.truststore.location="/mnt/oauth-certs/tls.crt"
-              oauth.ssl.truststore.password="${CERT_SECRET}";
-            connections.max.reauth.ms: 3600
+              oauth.ssl.truststore.location="/mnt/oauth-certs/oauth-ca.crt"
+
+              oauth.http.retries={{ .Values.cluster.oauth.http.retries }}
+              oauth.http.retry.pause.millis={{ .Values.cluster.oauth.http.retryPauseMillis }}
+              oauth.connect.timeout.seconds={{ .Values.cluster.oauth.http.connectTimeoutSeconds }}
+              oauth.read.timeout.seconds={{ .Values.cluster.oauth.http.readTimeoutSeconds }}
+              oauth.include.accept.header={{ .Values.cluster.oauth.http.includeAcceptHeader }}
+
+              oauth.enable.metrics=true
+              oauth.config.id=keycloak
+
+            connections.max.reauth.ms: {{ .Values.cluster.oauth.maxReauthMs }}
 
     authorization:
       type: custom
@@ -113,35 +160,58 @@ spec:
         - service-account-kafka
 
     config:
-      # Needed for Oauth authentication and Keycloak authroization
+      # Strimzi authorization
       principal.builder.class: io.strimzi.kafka.oauth.server.OAuthKafkaPrincipalBuilder
-
-      # Needed for Keycloak authorization
       strimzi.authorization.client.id: kafka
-      strimzi.authorization.token.endpoint.uri: https://${KEYCLOAK_DOMAIN}/realms/${KAFKA_IDP_REALM}/protocol/openid-connect/token
-      strimzi.authorization.ssl.endpoint.identification.algorithm: ""
+      strimzi.authorization.kafka.cluster.name: cluster-0
+      strimzi.authorization.token.endpoint.uri: {{ printf "https://%s/realms/%s/protocol/openid-connect/token" .Values.cluster.oauth.keycloak.baseUrl .Values.cluster.oauth.keycloak.realm | quote }}
       strimzi.authorization.delegate.to.kafka.acl: "false"
-      strimzi.authorization.ssl.truststore.location: /mnt/oauth-certs/tls.crt
+
+      # Grant refresh and caching
+      # strimzi.authorization.reuse.grants: true # Default is true
+      strimzi.authorization.grants.refresh.period.seconds: {{ .Values.cluster.authorization.grants.refreshPeriodSeconds }}
+      strimzi.authorization.grants.refresh.pool.size: {{ .Values.cluster.authorization.grants.refreshPoolSize }}
+      strimzi.authorization.grants.max.idle.time.seconds: {{ .Values.cluster.authorization.grants.maxIdleTimeSeconds }}
+      strimzi.authorization.grants.gc.period.seconds: {{ .Values.cluster.authorization.grants.gcPeriodSeconds }}
+
+      # HTTP behavior for grant retrieval
+      strimzi.authorization.http.retries: {{ .Values.cluster.authorization.http.retries }}
+      strimzi.authorization.connect.timeout.seconds: {{ .Values.cluster.authorization.http.connectTimeoutSeconds }}
+      strimzi.authorization.read.timeout.seconds: {{ .Values.cluster.authorization.http.readTimeoutSeconds }}
+
+      # TLS validation: Kafka verifies Keycloak server certificate
+      strimzi.authorization.ssl.endpoint.identification.algorithm: https
       strimzi.authorization.ssl.truststore.type: PEM
+      strimzi.authorization.ssl.truststore.location: /mnt/oauth-certs/oauth-ca.crt
+
+      # Metrics
+      strimzi.authorization.enable.metrics: true
 
       # Other Kafka configuration options
-      offsets.topic.replication.factor: 3
-      transaction.state.log.replication.factor: 3
-      transaction.state.log.min.isr: 2
-      default.replication.factor: 3
-      min.insync.replicas: 2
+      default.replication.factor: {{ .Values.cluster.defaultReplicationFactor }}
+      min.insync.replicas: {{ .Values.cluster.minInSyncReplicas }}
+      offsets.topic.replication.factor: {{ .Values.cluster.offsetsTopicReplicationFactor }}
+      transaction.state.log.replication.factor: {{ .Values.cluster.transaction.stateLogReplicationFactor }}
+      transaction.state.log.min.isr: {{ .Values.cluster.transaction.stateLogMinInSyncReplicas }}
 
     template:
       pod:
         volumes:
           - name: oauth-certs
             secret:
-              secretName: oauth-server-cert
+              secretName: oauth-ca
+          - name: kafka-certs
+            secret:
+              secretName: kafka-ca
 
       kafkaContainer:
         volumeMounts:
           - name: oauth-certs
-            mountPath: /mnt/oauth-
+            mountPath: /mnt/oauth-certs
+            readOnly: true
+          - name: kafka-certs
+            mountPath: /mnt/kafka-certs
+            readOnly: true
 
     metricsConfig:
       type: jmxPrometheusExporter
@@ -151,6 +221,21 @@ spec:
           key: kafka-metrics-config.yml
 
   entityOperator:
-    topicOperator: {}
+    topicOperator:
+      watchedNamespace: cluster-0-topic
+      reconciliationIntervalMs: 60000
+
+      logging:
+        type: inline # external
+
+        valueFrom: # use if type is external
+          configMapKeyRef:
+            name: operator-logging # name and key are mandatory
+            key: log4j2.properties
+
+        loggers:
+          rootLogger.level: INFO
+          logger.jetty.level: WARN
+
     userOperator: {}
 ```

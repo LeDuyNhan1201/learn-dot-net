@@ -7,51 +7,38 @@ spec:
     version: {{ .Values.kafka.version }}
     metadataVersion: {{ .Values.kafka.metadataVersion }}
     listeners:
-      - name: ingress-mtls
+      - name: ingress
         port: 9095
         type: ingress
         tls: true
+
         authentication:
-          type: tls
+          type: custom
+          sasl: false
           listenerConfig:
             ssl.client.auth: required
-            ssl.principal.mapping.rules: RULE:^CN=(.*?),(.*)$/$1@cluster-0.com/
-            ssl.truststore.location: /mnt/kafka-certs/kafka-ca.crt
+            ssl.principal.mapping.rules: 'RULE:^CN=(.*?),(.*)$/$1@cluster-0.com/'
+            ssl.truststore.location: /mnt/kafka-certs/ca.crt
             ssl.truststore.type: PEM
-            
+
         configuration:
-          hostTemplate: broker-{nodeId}.cluster-0-ingress.com
+          class: nginx
+          hostTemplate: broker-{nodeId}.cluster-0-kafka.test
           bootstrap:
-            host: bootstrap.cluster-0-ingress.com
-              
-      - name: lb-ssl
-        port: 9094
-        type: loadbalancer
-        tls: true
-        configuration:
-          externalTrafficPolicy: Cluster # Local: avoids hops to other nodes and preserves the client IP
-          brokerCertChainAndKey:
-            secretName: server-certs
-            certificate: server.crt
-            key: server.key
+            host: bootstrap.cluster-0-kafka.test
             
-      - name: scram-ssl
+      - name: scram
         port: 9092
         type: internal
         tls: true
-        configuration:
-          useServiceDnsDomain: true # false: ignore the suffix of the service DNS domain, eg: [dns.svc].cluster.local
-          
+
         authentication:
           type: scram-sha-512
+
+        configuration:
+          useServiceDnsDomain: true
           
-          listenerConfig:
-            ssl.client.auth: required
-            ssl.principal.mapping.rules: RULE:^CN=(.*?),(.*)$/$1@cluster-0.com/
-            ssl.truststore.location: /mnt/kafka-certs/kafka-ca.crt
-            ssl.truststore.type: PEM
-          
-      - name: sasl-ssl
+      - name: oauth
         port: 9093
         type: internal
         tls: true
@@ -84,7 +71,7 @@ spec:
 
               oauth.ssl.endpoint.identification.algorithm="https"
               oauth.ssl.truststore.type="PEM"
-              oauth.ssl.truststore.location="/mnt/oauth-certs/oauth-ca.crt"
+              oauth.ssl.truststore.location="/mnt/oauth-certs/ca.crt"
               
               oauth.http.retries={{ .Values.cluster.oauth.http.retries }}
               oauth.http.retry.pause.millis={{ .Values.cluster.oauth.http.retryPauseMillis }}
@@ -126,7 +113,7 @@ spec:
       # TLS validation: Kafka verifies Keycloak server certificate
       strimzi.authorization.ssl.endpoint.identification.algorithm: https
       strimzi.authorization.ssl.truststore.type: PEM
-      strimzi.authorization.ssl.truststore.location: /mnt/oauth-certs/oauth-ca.crt
+      strimzi.authorization.ssl.truststore.location: /mnt/oauth-certs/ca.crt
       
       # Metrics
       strimzi.authorization.enable.metrics: true
@@ -166,16 +153,10 @@ spec:
           
   entityOperator:
     topicOperator:
-      watchedNamespace: cluster-0-topic
       reconciliationIntervalMs: 60000
       
       logging:
         type: inline # external
-        
-        valueFrom: # use if type is external
-          configMapKeyRef:
-            name: operator-logging # name and key are mandatory
-            key: log4j2.properties
             
         loggers:
           rootLogger.level: INFO
