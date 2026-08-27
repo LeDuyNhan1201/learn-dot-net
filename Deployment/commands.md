@@ -86,9 +86,13 @@ helm template cluster-0 ./kafka -n learn-kafka > ./tmp/kafka-rendered.yaml
 helm upgrade --install cluster-0 ./kafka -n learn-kafka
 
 # Check the status of the Kafka cluster
+kubectl get pods -n learn-kafka -o wide
 kubectl get kafkanodepool -n learn-kafka
 kubectl get configmap kafka-metrics -n learn-kafka
 kubectl get kafka -n learn-kafka
+kubectl describe kafka cluster-0 -n learn-kafka
+
+kubectl logs cluster-0-dual-broker-1 -n learn-kafka -c kafka --previous | tail -100
 
 username: my-connect-username
 passwordSecret:

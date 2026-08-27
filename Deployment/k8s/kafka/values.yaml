@@ -34,7 +34,7 @@ cluster:
       includeAcceptHeader: true
 
     keycloak:
-      baseUrl: "https://leduynhan1201.learn-dot-net.dev:60000/auth"
+      baseUrl: "leduynhan1201.learn-dot-net.dev:60000/auth"
       realm: "kafka-authz"
 
   authorization:

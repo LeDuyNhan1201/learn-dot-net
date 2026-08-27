@@ -80,7 +80,7 @@ spec:
               oauth.include.accept.header={{ .Values.cluster.oauth.http.includeAcceptHeader }}
               
               oauth.enable.metrics=true
-              oauth.config.id=keycloak
+              oauth.config.id=keycloak;
 
             connections.max.reauth.ms: {{ .Values.cluster.oauth.maxReauthMs }}
             
