@@ -19,7 +19,7 @@ cluster:
     maxReauthMs: 3600000
 
     expectedAudience: "account"
-    usernameClaim: "sub"
+    usernameClaim: "preferred_username" # sub
 
     jwks:
       refreshSeconds: 600

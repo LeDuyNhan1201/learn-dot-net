@@ -73,14 +73,6 @@ kubectl get secret kafka-ca -n learn-kafka
 kubectl create secret generic server-certs --from-file=certs/server.crt=server.crt --from-file=certs/server.key=server.key -n learn-kafka
 kubectl create secret generic scram-sha512 --from-file=secrets/scram-sha512-password.txt=secrets/scram-sha512-password.txt -n learn-kafka
 
-# Apply Kafka nodes configuration
-kubectl apply -f kafka/templates/kafka-nodes.yaml -n learn-kafka
-kubectl get kafkanodepool -n learn-kafka
-
-# Apply Kafka metrics configuration
-kubectl apply -f kafka/templates/kafka-metrics.yaml -n learn-kafka
-kubectl get configmap kafka-metrics -n learn-kafka
-
 # Apply Kafka cluster configuration
 helm template cluster-0 ./kafka -n learn-kafka > ./tmp/kafka-rendered.yaml
 helm upgrade --install cluster-0 ./kafka -n learn-kafka
@@ -88,11 +80,34 @@ helm upgrade --install cluster-0 ./kafka -n learn-kafka
 # Check the status of the Kafka cluster
 kubectl get pods -n learn-kafka -o wide
 kubectl get kafkanodepool -n learn-kafka
-kubectl get configmap kafka-metrics -n learn-kafka
+
+kubectl get configmap kafka-metrics -n learn-kafka -o yaml
+kubectl get configmap cluster-0-dual-broker-0 -n learn-kafka -o yaml
+
 kubectl get kafka -n learn-kafka
 kubectl describe kafka cluster-0 -n learn-kafka
 
-kubectl logs cluster-0-dual-broker-1 -n learn-kafka -c kafka --previous | tail -100
+kubectl get secret -n learn-kafka
+kubectl get configmap -n learn-kafka
+
+kubectl get all -n learn-kafka
+kubectl get strimzipodset -n learn-kafka
+kubectl get pods,svc,sts,deploy,job,cm,secret,pvc -n learn-kafka
+kubectl get kafka,kafkanodepool,strimzipodset,pvc,secret,configmap -n learn-kafka
+
+# Check the logs of the Kafka brokers
+kubectl logs cluster-0-dual-broker-2 -n learn-kafka --tail=200
+kubectl logs cluster-0-dual-broker-0 -n learn-kafka --tail=300 | grep -i -E 'oauth|token|login|callback|exception|error|failed|warn'
+
+# Clean up
+helm uninstall cluster-0 -n learn-kafka
+kubectl delete kafka cluster-0 -n learn-kafka --ignore-not-found
+kubectl delete kafkanodepool dual-broker -n learn-kafka --ignore-not-found
+kubectl delete strimzipodset -n learn-kafka --all --ignore-not-found     
+kubectl delete secret kafka-ca oauth-ca -n learn-kafka
+kubectl delete pvc data-0-cluster-0-dual-broker-0 data-0-cluster-0-dual-broker-1 data-0-cluster-0-dual-broker-2 -n learn-kafka
+kubectl delete pvc -n learn-kafka --all
+
 
 username: my-connect-username
 passwordSecret:

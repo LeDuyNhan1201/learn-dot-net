@@ -52,36 +52,7 @@ spec:
           listenerConfig:
             sasl.enabled.mechanisms: OAUTHBEARER
             oauthbearer.sasl.server.callback.handler.class: io.strimzi.kafka.oauth.server.JaasServerOauthValidatorCallbackHandler
-            oauthbearer.sasl.jaas.config: >
-              org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required
-              
-              oauth.fail.fast=true
-              oauth.check.audience=true
-              oauth.check.issuer=true
-              
-              oauth.valid.issuer.uri={{ printf "https://%s/realms/%s" .Values.cluster.oauth.keycloak.baseUrl .Values.cluster.oauth.keycloak.realm | quote }}
-              oauth.expected.audience={{ .Values.cluster.oauth.expectedAudience | quote }}
-              oauth.username.claim={{ .Values.cluster.oauth.usernameClaim | quote }}
-              oauth.jwks.endpoint.uri={{ printf "https://%s/realms/%s/protocol/openid-connect/certs" .Values.cluster.oauth.keycloak.baseUrl .Values.cluster.oauth.keycloak.realm | quote }}
-              oauth.fallback.username.claim="preferred_username"
-              
-              oauth.jwks.refresh.seconds={{ .Values.cluster.oauth.jwks.refreshSeconds }}
-              oauth.jwks.expiry.seconds={{ .Values.cluster.oauth.jwks.expirySeconds }}
-              oauth.jwks.refresh.min.pause.seconds={{ .Values.cluster.oauth.jwks.refreshMinPauseSeconds }}
-
-              oauth.ssl.endpoint.identification.algorithm="https"
-              oauth.ssl.truststore.type="PEM"
-              oauth.ssl.truststore.location="/mnt/oauth-certs/ca.crt"
-              
-              oauth.http.retries={{ .Values.cluster.oauth.http.retries }}
-              oauth.http.retry.pause.millis={{ .Values.cluster.oauth.http.retryPauseMillis }}
-              oauth.connect.timeout.seconds={{ .Values.cluster.oauth.http.connectTimeoutSeconds }}
-              oauth.read.timeout.seconds={{ .Values.cluster.oauth.http.readTimeoutSeconds }}
-              oauth.include.accept.header={{ .Values.cluster.oauth.http.includeAcceptHeader }}
-              
-              oauth.enable.metrics=true
-              oauth.config.id=keycloak;
-
+            oauthbearer.sasl.jaas.config: org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule required oauth.client.id="kafka" oauth.fail.fast="true" oauth.check.audience="true" oauth.check.issuer="true" oauth.valid.issuer.uri="{{ printf "https://%s/realms/%s" .Values.cluster.oauth.keycloak.baseUrl .Values.cluster.oauth.keycloak.realm }}" oauth.expected.audience="{{ .Values.cluster.oauth.expectedAudience }}" oauth.username.claim="{{ .Values.cluster.oauth.usernameClaim }}" oauth.jwks.endpoint.uri="{{ printf "https://%s/realms/%s/protocol/openid-connect/certs" .Values.cluster.oauth.keycloak.baseUrl .Values.cluster.oauth.keycloak.realm }}" oauth.fallback.username.claim="preferred_username" oauth.jwks.refresh.seconds="{{ .Values.cluster.oauth.jwks.refreshSeconds }}" oauth.jwks.expiry.seconds="{{ .Values.cluster.oauth.jwks.expirySeconds }}" oauth.jwks.refresh.min.pause.seconds="{{ .Values.cluster.oauth.jwks.refreshMinPauseSeconds }}" oauth.ssl.endpoint.identification.algorithm="https" oauth.ssl.truststore.type="PEM" oauth.ssl.truststore.location="/mnt/oauth-certs/ca.crt" oauth.http.retries="{{ .Values.cluster.oauth.http.retries }}" oauth.http.retry.pause.millis="{{ .Values.cluster.oauth.http.retryPauseMillis }}" oauth.connect.timeout.seconds="{{ .Values.cluster.oauth.http.connectTimeoutSeconds }}" oauth.read.timeout.seconds="{{ .Values.cluster.oauth.http.readTimeoutSeconds }}" oauth.include.accept.header="{{ .Values.cluster.oauth.http.includeAcceptHeader }}" oauth.enable.metrics="true" oauth.config.id="keycloak" unsecuredLoginStringClaim_sub="unused";
             connections.max.reauth.ms: {{ .Values.cluster.oauth.maxReauthMs }}
             
     authorization:
