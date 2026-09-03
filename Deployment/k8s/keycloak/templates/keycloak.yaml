@@ -1,0 +1,26 @@
+apiVersion: k8s.keycloak.org/v2beta1
+kind: Keycloak
+metadata:
+  name: keycloak
+  namespace: keycloak
+spec:
+  instances: 1
+
+  db:
+    vendor: postgres
+    host: postgresql-db
+    usernameSecret:
+      name: keycloak-db-secret
+      key: username
+    passwordSecret:
+      name: keycloak-db-secret
+      key: password
+
+  http:
+    tlsSecret: keycloak-tls
+
+  hostname:
+    hostname: keycloak.cluster-0-kafka.test
+
+  proxy:
+    headers: xforwarded

@@ -1,0 +1,8 @@
+apiVersion: v2
+name: keycloak-cluster
+description: Keycloak cluster deployed using Keycloak Operator
+
+type: application
+
+version: 0.1.0
+appVersion: "26.7.3" # https://www.keycloak.org/guides#operator

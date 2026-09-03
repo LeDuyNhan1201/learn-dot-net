@@ -290,9 +290,8 @@ EOF
 }
 
 generate_tls_certs() {
-  generate_cert_with_keystore_and_truststore "gateway" "gateway" "${APP_HOSTNAME}"
-  generate_cert_with_keystore_and_truststore "postgres" "postgres"
-  generate_cert_with_keystore_and_truststore "keycloak" "keycloak"
+  generate_cert_with_keystore_and_truststore "kafka0" "broker-0.cluster-0-kafka.test" "bootstrap.cluster-0-kafka.test"
+  generate_cert_with_keystore_and_truststore "keycloak0" "keycloak-0.cluster-0-kafka.test" "keycloak-service.keycloak.svc.cluster.local"
 }
 
 # ===== Example usage =====
