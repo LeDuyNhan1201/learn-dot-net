@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: phase1-test-alert
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  groups:
+    - name: phase1-test
+      rules:
+        - alert: Phase1TestAlert
+          expr: vector(1)
+          for: 30s
+          labels:
+            severity: warning
+          annotations:
+            summary: "Phase 1 test alert"
+            description: "This alert verifies Prometheus and Alertmanager."

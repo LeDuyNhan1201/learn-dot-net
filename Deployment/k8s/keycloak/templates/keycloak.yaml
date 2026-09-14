@@ -3,24 +3,118 @@ kind: Keycloak
 metadata:
   name: keycloak
   namespace: keycloak
+  
 spec:
-  instances: 1
+  instances: 2
+
+  resources:
+    requests:
+      cpu: 1200m
+      memory: 896Mi
+      
+    limits:
+      cpu: 6
+      memory: 3Gi
+      
+  features:
+    enabled:
+      - opentelemetry-logs
+      - opentelemetry-metrics
 
   db:
     vendor: postgres
     host: postgresql-db
+    
     usernameSecret:
       name: keycloak-db-secret
       key: username
+      
     passwordSecret:
       name: keycloak-db-secret
       key: password
 
+    poolInitialSize: 1
+    poolMinSize: 2
+    poolMaxSize: 30
+
   http:
     tlsSecret: keycloak-tls
 
+  httpManagement:
+    port: 9000
+
   hostname:
     hostname: keycloak.cluster-0-kafka.test
+    backchannelDynamic: true
 
-  proxy:
-    headers: xforwarded
+  ingress:
+    enabled: true
+    className: nginx
+
+  telemetry:
+    endpoint: https://otel-collector.observability.svc.cluster.local:4317
+    serviceName: keycloak
+    protocol: grpc
+    
+  tracing:
+    enabled: true                                                                   # default 'false'
+    endpoint: https://otel-collector.observability.svc.cluster.local:4317           # default 'http://localhost:4317'
+    samplerType: parentbased_traceidratio                                           # default 'traceidratio'
+    samplerRatio: 0.01                                                              # default '1'
+    resourceAttributes:
+      some.attribute: something
+      
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+    
+  additionalOptions:
+    # Prometheus
+    - name: metrics-enabled
+      value: "true"
+      
+    - name: tracing-jdbc-enabled
+      value: "true"
+
+    # OpenTelemetry
+    - name: telemetry-logs-enabled
+      value: "true"
+
+    - name: telemetry-metrics-enabled
+      value: "true"
+
+    - name: tracing-header-My-Custom-header
+      value: keycloak-custom-header
+
+    - name: tracing-header-Authorization
+      secret:
+        name: tracing-secret
+        key: token
+
+  networkPolicy:
+    enabled: true
+
+    https:
+      # NGINX Ingress
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: ingress-nginx
+
+      # Kafka OAuth / authorization
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: kafka-cluster
+
+    management:
+      # Kubernetes kubelet / node
+      - ipBlock:
+          cidr: 192.168.49.0/24
+
+      # Monitoring
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/metadata.name: monitoring
+
+#  proxy:
+#    headers: xforwarded
