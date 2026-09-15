@@ -32,8 +32,6 @@ source "${GENERATOR_FILE}"
 # -------------------------------
 
 create_env_file
-
-generate_root_ca 3650 'kafka-ca'
-#generate_tls_certs
+generate_tls_certs
 
 echo "Initialize completed successfully."

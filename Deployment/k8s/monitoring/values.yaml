@@ -3,6 +3,52 @@ grafana:
 
   adminUser: admin
   adminPassword: admin
+  
+  grafana.ini:
+    server:
+      protocol: http
+      http_port: 3000
+  
+  extraSecretMounts:
+    - name: grafana-client-tls
+      secretName: grafana-client-tls
+      mountPath: /etc/grafana/certs/prometheus
+      readOnly: true
+      defaultMode: 0440
+  
+  sidecar:
+    datasources:
+      enabled: true
+      defaultDatasourceEnabled: true
+      isDefaultDatasource: true
+      
+      name: Prometheus
+      uid: prometheus
+      
+      url: https://monitoring-kube-prometheus-prometheus.monitoring:9090/
+      
+      httpMethod: POST
+      
+      extraJsonData:
+        tlsSkipVerify: false
+        tlsAuthWithCACert: true
+        
+        secureJsonData:
+          tlsCACert: 
+          tlsClientCert:
+          tlsClientKey:
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+
+    hosts:
+      - grafana.monitoring
+
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.monitoring
 
   persistence:
     enabled: false
@@ -24,6 +70,22 @@ prometheus:
 
   prometheusSpec:
     retention: 2d
+    
+    web:
+      tlsConfig:
+        keySecret:
+          name: prometheus-tls
+          key: tls.key
+        cert:
+          secret:
+            name: prometheus-tls
+            key: tls.crt
+            
+        clientAuthType: RequireAndVerifyClientCert
+        clientCAs:
+          secret:
+            name: monitoring-ca
+            key: ca.crt
 
     resources:
       requests:
@@ -38,6 +100,22 @@ alertmanager:
   enabled: true
 
   alertmanagerSpec:
+    web:
+      tlsConfig:
+        keySecret:
+          name: alertmanager-tls
+          key: tls.key
+        cert:
+          secret:
+            name: alertmanager-tls
+            key: tls.crt
+        
+        clientAuthType: RequireAndVerifyClientCert
+        clientCAs:
+          secret:
+            name: monitoring-ca
+            key: ca.crt
+            
     resources:
       requests:
         cpu: 50m
@@ -45,7 +123,6 @@ alertmanager:
       limits:
         cpu: 200m
         memory: 256Mi
-
 
 kubeStateMetrics:
   enabled: true
