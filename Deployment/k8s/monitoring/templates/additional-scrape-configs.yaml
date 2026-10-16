@@ -1,0 +1,9 @@
+- job_name: tam-backend
+  metrics_path: /q/metrics
+  static_configs: 
+    - targets:
+      - 192.168.155.40:11001
+      labels:
+        service: tam-backend
+        colour: blue
+        deployment_version: "26.6.3"

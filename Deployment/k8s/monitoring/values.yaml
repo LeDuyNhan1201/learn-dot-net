@@ -1,6 +1,5 @@
 grafana:
   enabled: true
-
   adminUser: admin
   adminPassword: admin
   
@@ -9,42 +8,46 @@ grafana:
       protocol: http
       http_port: 3000
   
-  extraSecretMounts:
-    - name: grafana-client-tls
-      secretName: grafana-client-tls
-      mountPath: /etc/grafana/certs/prometheus
-      readOnly: true
-      defaultMode: 0440
-  
   sidecar:
     datasources:
       enabled: true
-      defaultDatasourceEnabled: true
-      isDefaultDatasource: true
+      defaultDatasourceEnabled: false
       
       name: Prometheus
       uid: prometheus
-      
       url: https://monitoring-kube-prometheus-prometheus.monitoring:9090/
-      
-      httpMethod: POST
-      
+      timeout: 30
+      defaultDatasourceScrapeInterval: 15s
       extraJsonData:
-        tlsSkipVerify: false
-        tlsAuthWithCACert: true
-        
-        secureJsonData:
-          tlsCACert: 
-          tlsClientCert:
-          tlsClientKey:
+        prometheusType: Prometheus
+  
+  additionalDataSources:
+    - name: Prometheus
+      type: prometheus
+      uid: prometheus
+      url: https://monitoring-kube-prometheus-prometheus.monitoring.svc:9090/
+      access: proxy
+      isDefault: true
+      jsonData:
+        httpMethod: POST
+        timeInterval: 30s
+        tlsSkipVerify: true
+
+    - name: Alertmanager
+      type: alertmanager
+      uid: alertmanager
+      url: https://monitoring-kube-prometheus-alertmanager.monitoring.svc:9093/
+      access: proxy
+      jsonData:
+        handleGrafanaManagedAlerts: false
+        implementation: prometheus
+        tlsSkipVerify: true
 
   ingress:
     enabled: true
     ingressClassName: nginx
-
     hosts:
       - grafana.monitoring
-
     tls:
       - secretName: grafana-tls
         hosts:
@@ -64,12 +67,16 @@ grafana:
   service:
     type: ClusterIP
 
-
 prometheus:
   enabled: true
 
   prometheusSpec:
     retention: 2d
+    
+    additionalScrapeConfigsSecret:
+      enabled: true
+      name: additional-scrape-configs
+      key: prometheus-additional.yaml
     
     web:
       tlsConfig:
@@ -80,12 +87,6 @@ prometheus:
           secret:
             name: prometheus-tls
             key: tls.crt
-            
-        clientAuthType: RequireAndVerifyClientCert
-        clientCAs:
-          secret:
-            name: monitoring-ca
-            key: ca.crt
 
     resources:
       requests:
@@ -94,7 +95,6 @@ prometheus:
       limits:
         cpu: 1000m
         memory: 2Gi
-
 
 alertmanager:
   enabled: true
@@ -109,13 +109,7 @@ alertmanager:
           secret:
             name: alertmanager-tls
             key: tls.crt
-        
-        clientAuthType: RequireAndVerifyClientCert
-        clientCAs:
-          secret:
-            name: monitoring-ca
-            key: ca.crt
-            
+    
     resources:
       requests:
         cpu: 50m
@@ -127,10 +121,8 @@ alertmanager:
 kubeStateMetrics:
   enabled: true
 
-
 nodeExporter:
   enabled: true
-
 
 defaultRules:
   create: true

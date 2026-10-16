@@ -7,12 +7,25 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo update
 helm search repo prometheus-community/kube-prometheus-stack
 
-# Create certificates for services
-kubectl create secret generic monitoring-ca --from-file=ca.crt=certs/ca/grafana.ca.crt -n monitoring
+# Create secrets for services
 kubectl create secret tls grafana-tls --cert=certs/grafana/grafana.cert.pem --key=certs/grafana/grafana.key.pem -n monitoring
 kubectl create secret tls prometheus-tls --cert=certs/prometheus/prometheus.cert.pem --key=certs/prometheus/prometheus.key.pem -n monitoring
 kubectl create secret tls alertmanager-tls --cert=certs/alertmanager/alertmanager.cert.pem --key=certs/alertmanager/alertmanager.key.pem -n monitoring
-kubectl create secret generic grafana-client-tls --from-file=ca.crt=certs/ca/grafana.ca.crt --from-file=client.crt=certs/grafana/grafana-client.cert.pem --from-file=client.key=certs/grafana/grafana-client.key.pem -n monitoring
+
+kubectl create secret generic monitoring-ca --from-file=ca.crt=certs/ca/grafana.ca.crt -n monitoring
+kubectl create secret generic grafana-client-tls --from-file=ca.crt=certs/ca/grafana.ca.crt --from-file=client.crt=certs/grafana-client/grafana-client.cert.pem --from-file=client.key=certs/grafana-client/grafana-client.key.pem -n monitoring
+
+kubectl create secret generic additional-scrape-configs --namespace monitoring --from-file=prometheus-additional.yaml=monitoring/templates/additional-scrape-configs.yaml
+
+# Verify that the secrets were created successfully
+kubectl get secret grafana-tls -n monitoring
+kubectl get secret prometheus-tls -n monitoring
+kubectl get secret alertmanager-tls -n monitoring
+
+kubectl get secret monitoring-ca -n monitoring
+kubectl get secret grafana-client-tls -n monitoring
+
+kubectl get secret additional-scrape-configs -n monitoring
 
 # Deploy Prometheus, Grafana and Alertmanager using Helm
 helm upgrade --install monitoring prometheus-community/kube-prometheus-stack --namespace monitoring --values monitoring/values.yaml

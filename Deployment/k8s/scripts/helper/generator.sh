@@ -301,10 +301,14 @@ generate_client_cert() {
   for domain in "${client_domains[@]}"; do
     [[ -n "$domain" ]] || continue
 
-    san_text+="DNS.$count = $domain
-"
+    san_text+="DNS.${count} = ${domain}"$'\n'
     ((count++))
   done
+  
+  if (( count == 1 )); then
+    echo "Error: at least one client domain is required" >&2
+    return 1
+  fi
 
   cat > "$conf" <<EOF
 [req]
@@ -386,7 +390,7 @@ generate_tls_certs() {
   generate_server_cert "$kafka_ca_alias" "kafka1" "kafka1.${kafka_namespace}"
   generate_server_cert "$kafka_ca_alias" "kafka2" "kafka2.${kafka_namespace}"
   
-  generate_client_cert "$grafana_ca_alias" "grafana" "grafana-client"
+  generate_client_cert "$grafana_ca_alias" "grafana-client" "grafana-client" "grafana.${grafana_namespace}"
 }
 
 # ===== Example usage =====
