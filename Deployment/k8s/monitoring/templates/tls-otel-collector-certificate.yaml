@@ -1,0 +1,29 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: otel-collector-tls
+  namespace: monitoring
+
+spec:
+  secretName: otel-collector-tls
+  dnsNames:
+    - monitoring-otel-collector.monitoring.svc
+    - monitoring-otel-collector.monitoring.svc.cluster.local
+
+  issuerRef:
+    name: ldnhan-root-ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+
+  privateKey:
+    algorithm: RSA
+    size: 2048
+    rotationPolicy: Always
+
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+
+  duration: 2160h
+  renewBefore: 360h

@@ -384,7 +384,8 @@ generate_tls_certs() {
   generate_server_cert "$grafana_ca_alias" "grafana" "grafana.${grafana_namespace}"
   generate_server_cert "$grafana_ca_alias" "prometheus" "prometheus.${grafana_namespace}" "monitoring-kube-prometheus-prometheus" "monitoring-kube-prometheus-prometheus.monitoring" "monitoring-kube-prometheus-prometheus.monitoring.svc" "monitoring-kube-prometheus-prometheus.monitoring.svc.cluster.local"
   generate_server_cert "$grafana_ca_alias" "alertmanager" "alertmanager.${grafana_namespace}" "monitoring-kube-prometheus-alertmanager" "monitoring-kube-prometheus-alertmanager.monitoring" "monitoring-kube-prometheus-alertmanager.monitoring.svc" "monitoring-kube-prometheus-alertmanager.monitoring.svc.cluster.local"
-  
+  generate_server_cert "$grafana_ca_alias" "otel-collector" "otel-collector.${grafana_namespace}" "monitoring-otel-collector" "monitoring-otel-collector.monitoring" "monitoring-otel-collector.monitoring.svc" "monitoring-otel-collector.monitoring.svc.cluster.local"
+    
   generate_server_cert "$keycloak_ca_alias" "keycloak0" "keycloak0.${keycloak_namespace}"
   generate_server_cert "$kafka_ca_alias" "kafka0" "kafka0.${kafka_namespace}"
   generate_server_cert "$kafka_ca_alias" "kafka1" "kafka1.${kafka_namespace}"

@@ -1,0 +1,7 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: ldnhan-root-ca-issuer
+spec:
+  ca:
+    secretName: ldnhan-root-ca-secret

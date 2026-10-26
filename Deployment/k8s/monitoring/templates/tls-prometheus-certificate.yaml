@@ -1,0 +1,29 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prometheus-tls
+  namespace: monitoring
+
+spec:
+  secretName: prometheus-tls
+  dnsNames:
+    - monitoring-kube-prometheus-prometheus.monitoring.svc
+    - monitoring-kube-prometheus-prometheus.monitoring.svc.cluster.local
+
+  issuerRef:
+    name: ldnhan-root-ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+
+  privateKey:
+    algorithm: RSA
+    size: 2048
+    rotationPolicy: Always
+
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+
+  duration: 2160h
+  renewBefore: 360h

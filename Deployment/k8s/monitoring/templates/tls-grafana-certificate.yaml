@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-tls
+  namespace: monitoring
+  
+spec:
+  secretName: grafana-tls
+  dnsNames:
+    - grafana.monitoring
+
+  issuerRef:
+    name: ldnhan-root-ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+    
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+    
+  duration: 2160h
+  renewBeforePercentage: 33

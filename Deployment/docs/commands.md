@@ -7,7 +7,7 @@ kubectl get namespaces
 # Install Strimzi Kafka Operator using Helm
 helm repo add strimzi https://strimzi.io/charts/
 helm repo update
-helm search repo strimzi
+helm search repo strimzi --versions | head -10
 helm install strimzi-kafka-operator strimzi/strimzi-kafka-operator --namespace kafka
 
 # Check the status of the Strimzi Kafka Operator

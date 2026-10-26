@@ -1,128 +1,235 @@
-grafana:
-  enabled: true
-  adminUser: admin
-  adminPassword: admin
-  
-  grafana.ini:
-    server:
-      protocol: http
-      http_port: 3000
-  
-  sidecar:
-    datasources:
-      enabled: true
-      defaultDatasourceEnabled: false
-      
-      name: Prometheus
-      uid: prometheus
-      url: https://monitoring-kube-prometheus-prometheus.monitoring:9090/
-      timeout: 30
-      defaultDatasourceScrapeInterval: 15s
-      extraJsonData:
-        prometheusType: Prometheus
-  
-  additionalDataSources:
-    - name: Prometheus
-      type: prometheus
-      uid: prometheus
-      url: https://monitoring-kube-prometheus-prometheus.monitoring.svc:9090/
-      access: proxy
-      isDefault: true
-      jsonData:
-        httpMethod: POST
-        timeInterval: 30s
-        tlsSkipVerify: true
-
-    - name: Alertmanager
-      type: alertmanager
-      uid: alertmanager
-      url: https://monitoring-kube-prometheus-alertmanager.monitoring.svc:9093/
-      access: proxy
-      jsonData:
-        handleGrafanaManagedAlerts: false
-        implementation: prometheus
-        tlsSkipVerify: true
-
-  ingress:
+kube-prometheus-stack:
+  grafana:
     enabled: true
-    ingressClassName: nginx
-    hosts:
-      - grafana.monitoring
-    tls:
-      - secretName: grafana-tls
-        hosts:
-          - grafana.monitoring
+    extraConfigmapMounts:
+      - name: ldnhan-root-ca
+        configMap: ldnhan-root-ca
+        mountPath: /etc/grafana/ca
+        readOnly: true
+        subPath: ""
+        
+    adminUser: admin
+    adminPassword: admin
+    
+    grafana.ini:
+      server:
+        protocol: http
+        http_port: 3000
+    
+    additionalDataSources:
+      - name: Prometheus
+        type: prometheus
+        uid: prometheus
+        url: https://monitoring-kube-prometheus-prometheus.monitoring.svc:9090/
+        access: proxy
+        isDefault: true
+        jsonData:
+          httpMethod: POST
+          timeInterval: 30s
+          tlsSkipVerify: false
+  
+      - name: Alertmanager
+        type: alertmanager
+        uid: alertmanager
+        url: https://monitoring-kube-prometheus-alertmanager.monitoring.svc:9093/
+        access: proxy
+        jsonData:
+          handleGrafanaManagedAlerts: false
+          implementation: prometheus
+          tlsSkipVerify: false
+  
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - grafana.monitoring
+      tls:
+        - secretName: grafana-tls
+          hosts:
+            - grafana.monitoring
+  
+    persistence:
+      enabled: false
+  
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 300m
+        memory: 512Mi
+  
+    service:
+      type: ClusterIP
+  
+  prometheus:
+    enabled: true
+  
+    prometheusSpec:
+      retention: 2d
+      
+      additionalScrapeConfigsSecret:
+        enabled: true
+        name: additional-scrape-configs
+        key: prometheus-additional.yaml
+      
+      web:
+        tlsConfig:
+          keySecret:
+            name: prometheus-tls
+            key: tls.key
+          cert:
+            secret:
+              name: prometheus-tls
+              key: tls.crt
+  
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+  
+  alertmanager:
+    enabled: true
+  
+    alertmanagerSpec:
+      web:
+        tlsConfig:
+          keySecret:
+            name: alertmanager-tls
+            key: tls.key
+          cert:
+            secret:
+              name: alertmanager-tls
+              key: tls.crt
+      
+      resources:
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+  
+  kubeStateMetrics:
+    enabled: true
+  
+  nodeExporter:
+    enabled: true
+  
+  defaultRules:
+    create: true
+    
+opentelemetry-collector:
+  mode: deployment
 
-  persistence:
-    enabled: false
+  image:
+    repository: ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s
+
+  command:
+    name: otelcol-k8s
+
+  replicaCount: 1
+
+  service:
+    enabled: true
+    type: ClusterIP
+
+  ports:
+    otlp:
+      enabled: true
+      containerPort: 4317
+      servicePort: 4317
+      protocol: TCP
+
+    otlp-http:
+      enabled: true
+      containerPort: 4318
+      servicePort: 4318
+      protocol: TCP
+
+    prometheus:
+      enabled: true
+      containerPort: 9464
+      servicePort: 9464
+      protocol: TCP
+
+    metrics:
+      enabled: false
 
   resources:
     requests:
       cpu: 100m
       memory: 128Mi
     limits:
-      cpu: 300m
+      cpu: 500m
       memory: 512Mi
 
-  service:
-    type: ClusterIP
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: https://monitoring-otel-collector.monitoring.svc:4317
+          http:
+            endpoint: https://monitoring-otel-collector.monitoring.svc:4318
 
-prometheus:
-  enabled: true
+    processors:
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 80
+        spike_limit_percentage: 25
+      batch: { }
 
-  prometheusSpec:
-    retention: 2d
-    
-    additionalScrapeConfigsSecret:
-      enabled: true
-      name: additional-scrape-configs
-      key: prometheus-additional.yaml
-    
-    web:
-      tlsConfig:
-        keySecret:
-          name: prometheus-tls
-          key: tls.key
-        cert:
-          secret:
-            name: prometheus-tls
-            key: tls.crt
+    exporters:
+      prometheus:
+        endpoint: https://monitoring-otel-collector.monitoring.svc:9464
 
-    resources:
-      requests:
-        cpu: 200m
-        memory: 512Mi
-      limits:
-        cpu: 1000m
-        memory: 2Gi
+      debug:
+        verbosity: basic
 
-alertmanager:
-  enabled: true
+    extensions:
+      health_check:
+        endpoint: https://monitoring-otel-collector.monitoring.svc:13133
 
-  alertmanagerSpec:
-    web:
-      tlsConfig:
-        keySecret:
-          name: alertmanager-tls
-          key: tls.key
-        cert:
-          secret:
-            name: alertmanager-tls
-            key: tls.crt
-    
-    resources:
-      requests:
-        cpu: 50m
-        memory: 64Mi
-      limits:
-        cpu: 200m
-        memory: 256Mi
+    service:
+      extensions:
+        - health_check
 
-kubeStateMetrics:
-  enabled: true
+      pipelines:
+        metrics:
+          receivers:
+            - otlp
+          processors:
+            - memory_limiter
+            - batch
+          exporters:
+            - prometheus
 
-nodeExporter:
-  enabled: true
+        traces:
+          receivers:
+            - otlp
+          processors:
+            - memory_limiter
+            - batch
+          exporters:
+            - debug
 
-defaultRules:
-  create: true
+        logs:
+          receivers:
+            - otlp
+          processors:
+            - memory_limiter
+            - batch
+          exporters:
+            - debug
+
+  serviceMonitor:
+    enabled: true
+    extraLabels:
+      release: monitoring
+    metricsEndpoints:
+      - port: prometheus
+        interval: 30s
